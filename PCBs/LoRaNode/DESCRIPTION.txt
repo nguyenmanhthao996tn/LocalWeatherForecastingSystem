@@ -1,0 +1,4 @@
+@Filename: Ti_Module_RFtt.pdsprj
+@ModifiedDate: 
+@Author:
+@Description: This is the original design that i have received from Mr.Xung. This PCB is designed for Renesas GR-Peach Kit and it compatible with Arduino Uno R3.
