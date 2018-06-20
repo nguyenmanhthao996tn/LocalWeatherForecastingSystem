@@ -1,0 +1,33 @@
+DATABASE STRUCTURE
+
+Data to be store:
+	- Air Direction
+	- Air Speed
+	- Temperature
+	- Humidity
+	- Atmosphere
+	- Hour
+	- Month
+	
+	
+{
+    "_id":"1234abcd1234abcd1234",
+    "DateTime":{
+        "ISOTimeString":"2018-06-20T13:46:04.029Z",
+        "Hour":20,
+        "Month":6
+    },
+    "Data":[
+        {
+            "NodeId":"001",
+            "AirDirection":0,
+            "AirSpeed1Min":0,
+            "AirSpeed5Min":0,
+            "Temperature":0,
+            "Rainfall1Hour":0,
+            "Rainfall24Hour":0,
+            "Humidity":0,
+            "Atmosphere":0
+        }
+    ]
+}
