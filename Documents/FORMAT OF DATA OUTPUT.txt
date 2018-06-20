@@ -1,0 +1,16 @@
+FORMAT OF DATA OUTPUT
+It outputs 37 bytes per second, including the end CR/LF.
+
+For example: c000s000g000t086r000p000h53b10020
+Data Parser:
+	c000： Air Direction, Degree
+	s000： Air Speed (1 minute), 0.1 miles per hour
+	g000： Air Speed (5 minutes), 0.1 miles per hour
+	t086： Temperature, Fahrenheit
+	r000： Rainfall (1 hour), 0.01 inches
+	p000： Rainfall (24 hours), 0.01 inches
+	h53： Humidity, % (00％= 100)
+	b10020： Atmosphere, 0.1 hpa
+
+References:
+	Weather Station with Anemometer/Wind vane/Rain bucket SKU:SEN0186 - https://www.dfrobot.com/wiki/index.php/Weather_Station_with_Anemometer/Wind_vane/Rain_bucket_SKU:SEN0186
