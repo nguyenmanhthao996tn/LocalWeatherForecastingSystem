@@ -1,0 +1,40 @@
+Khóa luận của anh Nguyễn Trần Tiến Đạt:
+	Thời gian dự đoán trước = 4 giờ
+	Input: nhiệt độ, độ ẩm, áp suất, giờ trong ngày, tháng trong năm, hướng gió, sức gió (lượng mưa???)
+	Bộ dự đoán: Fuzy logic (không cải thiện độ chính xác theo thời gian)
+
+FAQ:
+	Vấn đề cần được giải quyết bởi thiết bị (hệ thống) là gì: Nhu cầu dự đoán trước thời tiết tại một vị trí cục bộ, mang tính chất cá nhân, không thể đáp ứng được bởi các hệ thống hiện tại do mật độ phân bố trạm quan trắc thưa thớt.
+
+	Trên thị trường đã có các thiết bị tương tự hay chưa? Nếu có, nêu ưu điểm nhược điểm: Đã có, tuy nhiên không đáp ứng được nhu cầu dự đoán tại một khu vực cục bộ.
+		
+	Chi phi dự đoán cho một thiết bị (hệ thống) tiêu chuẩn? So sánh với giá thành của các thiết bị đã có: 4556k
+
+	Tính khả thi của thiết bị:
+		+ Cải thiện thời gian dự đoán trước 3h, 6h, 9h, 12h
+		+ Sử dụng Machine Learning -> độ chính xác tăng theo thời gian sử dụng
+		+ Áp dụng chuẩn LoRaWan để truyền dữ liệu -> Hướng phát triển có thể tích hơp hệ thống điều khiển IoT
+
+
+
+Chi phí hệ thống cơ bản:
+	LCD Nokia 5110 - 55k
+	RFM95 x 2 = 113k x 2 = 226k
+	Raspberry Pi 3 - 950k (ESP8266 - 90k)
+	SKU:SEN0186 Weather Station Kit with Anemometer/Wind Vane/Rain Bucket - 3145k
+	Cảm biến nhiệt độ, độ ẩm AM2320 - 80k
+	Cảm biến áp suất BMP180 - 45k
+	ATMeaga328 - 55k
+
+	Tổng = 55 + 226 + 950 + 3145 + 80 + 45 + 55 = 4556k (với Raspberry Pi 3)
+	Tổng = 55 + 226 + 90 + 3145 + 80 + 45 + 55  = 3696 (với ESP8266)
+
+Kế hoạch thực hiện:
+	1) Xây dựng phần cứng Node thu thập dữ liệu
+	2) Xây dựng VPS xử lý dữ liệu bằng Neural Network + Xây dựng hệ thống Gateway truyền tải dữ liệu qua giao thức LoRaWan
+	3) Kết nối các thành phần VPS, Giao thức LoRaWan và Node quan trắc lấy dữ liệu từ môi trường
+	4) Chạy thử nghiệm thực tế và thu kết quả
+	
+Deeprain: Conv_lstm network
+Backpropagation NN
+
