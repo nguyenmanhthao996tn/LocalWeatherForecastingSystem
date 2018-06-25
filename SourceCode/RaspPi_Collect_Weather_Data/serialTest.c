@@ -20,6 +20,7 @@
 
 #include "OutputData.h"
 #include "myBuffer.h"
+#include <time.h>
 
 /********************* CONFIGURATIONS *********************/
 #define BAUDRATE B9600
@@ -41,13 +42,20 @@ volatile struct termios oldTSetting;
 void setupSerialPort(struct termios *oldTSetting);
 void signalIO_handler(int status); /* definition of signal handler */
 void setupVariables(void);
+void saveToText(stcOutputData_t **objectArray, int count);
+int getMostAppear(uint8_t *counterArray, int size);
+void getCurrentTimeString(char *buffer, int size);
+void getFilename(char *buffer, int size);
 
 /********************* MAIN *********************/
 int main(int argc, char *argv[])
 {
   char buffer[40];
+  // char consoleBuffer[1024];
+
   stcOutputData_t *dataObject = NULL;
-  char consoleBuffer[1024];
+  stcOutputData_t *dataObjectArray[60] = {NULL};
+  int dataObjectCounter = 0;
 
   setupVariables();
   setupSerialPort(&oldTSetting);
@@ -60,8 +68,26 @@ int main(int argc, char *argv[])
     {
       if (stcOutputData_Parse(buffer, &dataObject))
       {
-        stcOutputData_ToString(dataObject, consoleBuffer);
-        printf("%s\n", consoleBuffer);
+        // stcOutputData_ToString(dataObject, consoleBuffer);
+        // printf("%s\n", consoleBuffer);
+
+        // printf("dataObjectCounter: %d\n", dataObjectCounter + 1);
+        dataObjectArray[dataObjectCounter] = dataObject;
+        dataObjectCounter++;
+        if (dataObjectCounter >= 60)
+        {
+          // Process
+          saveToText(dataObjectArray, dataObjectCounter);
+
+          // Clean memory
+          dataObjectCounter = 0;
+          for (int i = 0; i < 60; i++)
+          {
+            stcOutputData_Delete(dataObjectArray[i]);
+          }
+        }
+
+        dataObject = NULL;
       }
     }
     else
@@ -139,4 +165,149 @@ void signalIO_handler(int status)
 void setupVariables(void)
 {
   myBuffer_Init(BUFFER_ARRAY_SIZE, BUFFER_ELEMENT_LENGTH);
+}
+
+void saveToText(stcOutputData_t **objectArray, int count)
+{
+  char filename[255];
+  FILE *f;
+
+  uint16_t airDirection = 0;
+  uint8_t airDirectionCounterArray[8] = {0};
+  uint16_t outputAirDirectionValue[] = {0, 45, 90, 135, 180, 225, 270, 315};
+
+  char currentTimeString[255];
+  uint32_t airSpeed1Min = 0;
+  uint32_t airSpeed5Min = 0;
+  uint32_t temperature = 0;
+  uint32_t rainfall1Hour = 0;
+  uint32_t rainfall24Hour = 0;
+  uint32_t humidity = 0;
+  uint32_t atmosphere = 0;
+
+  char buffer[255];
+
+  stcOutputData_t *currentObject = NULL;
+
+  for (int i = 0; i < count; i++)
+  {
+    currentObject = objectArray[i];
+
+    // airDirection
+    switch (currentObject->airDirection)
+    {
+    case 0:
+      airDirectionCounterArray[0]++;
+      break;
+    case 45:
+      airDirectionCounterArray[1]++;
+      break;
+    case 90:
+      airDirectionCounterArray[2]++;
+      break;
+    case 135:
+      airDirectionCounterArray[3]++;
+      break;
+    case 180:
+      airDirectionCounterArray[4]++;
+      break;
+    case 225:
+      airDirectionCounterArray[5]++;
+      break;
+    case 270:
+      airDirectionCounterArray[6]++;
+      break;
+    case 315:
+      airDirectionCounterArray[7]++;
+      break;
+    default:
+      break;
+    }
+
+    // airSpeed1Min
+    airSpeed1Min += currentObject->airSpeed1Min;
+
+    // airSpeed5Min
+    airSpeed5Min += currentObject->airSpeed5Min;
+
+    // temperature
+    temperature += currentObject->temperature;
+
+    // rainfall1Hour
+    rainfall1Hour += currentObject->rainfall1Hour;
+
+    // rainfall24Hour
+    rainfall24Hour += currentObject->rainfall24Hour;
+
+    // humidity
+    humidity += currentObject->humidity;
+
+    // atmosphere
+    atmosphere += currentObject->atmosphere;
+  }
+
+  airDirection = outputAirDirectionValue[getMostAppear(airDirectionCounterArray, 8)];
+  airSpeed1Min /= count;
+  airSpeed5Min /= count;
+  temperature /= count;
+  rainfall1Hour /= count;
+  rainfall24Hour /= count;
+  humidity /= count;
+  atmosphere /= count;
+
+  getCurrentTimeString(currentTimeString, 255);
+
+  // Write to file
+  snprintf(buffer, 255, "%s %d %d %d %d %d %d %d %d", currentTimeString, airDirection, airSpeed1Min, airSpeed5Min, temperature, rainfall1Hour, rainfall24Hour, humidity, atmosphere);
+  // printf("%s\n", buffer);
+  getFilename(filename, 255);
+  f = fopen(filename, "a");
+  if (f == NULL)
+  {
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+  fprintf(f, "%s\n", buffer);
+
+  fclose(f);
+}
+
+int getMostAppear(uint8_t *counterArray, int size)
+{
+  int i = 0;
+  uint8_t maxValue = counterArray[0];
+  int maxIndex = 0;
+
+  printf("Value: %d ", counterArray[0]);
+
+  for (i = 1; i < size; i++)
+  {
+    printf("%d ", counterArray[i]);
+    if (counterArray[i] >= maxValue)
+    {
+      maxValue = counterArray[i];
+      maxIndex = i;
+    }
+  }
+
+  printf("| Max: %d | Pos: %d\n", maxValue, maxIndex);
+
+  return maxIndex;
+}
+
+void getCurrentTimeString(char *buffer, int size)
+{
+  time_t now;
+  time(&now);
+
+  strftime(buffer, size, "%FT%TZ", gmtime(&now));
+}
+
+void getFilename(char *buffer, int size)
+{
+  time_t now;
+  time(&now);
+
+  strftime(buffer, size, "%FT.txt", gmtime(&now));
 }
