@@ -1,0 +1,12 @@
+Every line in weather collected data text file contain data formatted as following:
+	CurrentTimeString AirDirection AirSpeed1Min AirSpeed5Min Temperature Rainfall1Hour Rainfall24Hour Humidity Atmosphere
+Data is seperated by a space. For exaple: "2018-06-25T13:28:38Z 270 0 0 0 0 0 0 0"
+	CurrentTimeString: 2018-06-25T13:28:38Z
+	AirDirection: 270
+	AirSpeed1Min: 0
+	AirSpeed5Min: 0
+	Temperature: 0
+	Rainfall1Hour: 0
+	Rainfall24Hour: 0
+	Humidity: 0
+	Atmosphere: 0
