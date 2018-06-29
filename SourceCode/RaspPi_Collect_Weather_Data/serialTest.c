@@ -258,7 +258,7 @@ void saveToText(stcOutputData_t **objectArray, int count)
   getCurrentTimeString(currentTimeString, 255);
 
   // Write to file
-  snprintf(buffer, 255, "%s %d %d %d %d %d %d %d %d", currentTimeString, airDirection, airSpeed1Min, airSpeed5Min, temperature, rainfall1Hour, rainfall24Hour, humidity, atmosphere);
+  snprintf(buffer, 255, " %s %d %d %d %d %d %d %d %d", currentTimeString, airDirection, airSpeed1Min, airSpeed5Min, temperature, rainfall1Hour, rainfall24Hour, humidity, atmosphere);
   // printf("%s\n", buffer);
   getFilename(filename, 255);
   f = fopen(filename, "a");
