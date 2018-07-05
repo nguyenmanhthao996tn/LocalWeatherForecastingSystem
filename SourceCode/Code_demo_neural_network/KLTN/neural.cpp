@@ -1,36 +1,9 @@
-/*
-MLP Library - Version 2.0 - August 2005
-
-Copyright (c) 2005 Sylvain BARTHELEMY
-
-Contact: sylbarth@gmail.com, www.sylbarth.com
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
 #include <string.h>
-
-#include "mlp.h"
+#include "neural.h"
 
 void InitializeRandoms()
 {
@@ -48,46 +21,47 @@ double RandomEqualREAL(double Low, double High)
   return ((double) rand() / RAND_MAX) * (High-Low) + Low;
 }
 
+
 MultiLayerPerceptron::MultiLayerPerceptron(int nl, int npl[]) :
   nNumLayers(0),
   pLayers(0),
   dMSE(0.0),
   dMAE(0.0),
-  dEta(0.25),
-  dAlpha(0.9),
+  dEta(0.9),
+  dAlpha(0.25),
   dGain(1.0),
   dAvgTestError(0.0)
 {
-  int i,j;
+	int i,j;
 
-  /* --- cr�ation des couches */
+  /* --- creation of diapers --- */
   nNumLayers = nl;
   pLayers    = new Layer[nl];
 
-  /* --- init des couches */
+  /* --- init layers --- */
   for ( i = 0; i < nl; i++ )
     {
 
-      /* --- cr�ation des neurones */
+      /* --- creation of neurons --- */
       pLayers[i].nNumNeurons = npl[i];
       pLayers[i].pNeurons    = new Neuron[ npl[i] ];
 
-      /* --- init des neurones */
+      /* --- init neurons --- */
       for( j = 0; j < npl[i]; j++ )
 	{
-	  pLayers[i].pNeurons[j].x  = 1.0;
-	  pLayers[i].pNeurons[j].e  = 0.0;
+	  pLayers[i].pNeurons[j].m_out  = 1.0;
+	  pLayers[i].pNeurons[j].error  = 0.0;
 	  if(i>0)
 	    {
-	      pLayers[i].pNeurons[j].w     = new double[ npl[i-1] ];
-	      pLayers[i].pNeurons[j].dw    = new double[ npl[i-1] ];
-	      pLayers[i].pNeurons[j].wsave = new double[ npl[i-1] ];
+	      pLayers[i].pNeurons[j].weight     = new double[ npl[i-1] ];
+	      pLayers[i].pNeurons[j].last_weight    = new double[ npl[i-1] ];
+	      pLayers[i].pNeurons[j].save_weight = new double[ npl[i-1] ];
 	    }
 	  else
 	    {
-	      pLayers[i].pNeurons[j].w     = NULL;
-	      pLayers[i].pNeurons[j].dw    = NULL;
-	      pLayers[i].pNeurons[j].wsave = NULL;
+	      pLayers[i].pNeurons[j].weight     = NULL;
+	      pLayers[i].pNeurons[j].last_weight    = NULL;
+	      pLayers[i].pNeurons[j].save_weight = NULL;
 	    }
 	}
 
@@ -96,8 +70,7 @@ MultiLayerPerceptron::MultiLayerPerceptron(int nl, int npl[]) :
 
 }
 
-MultiLayerPerceptron::~MultiLayerPerceptron()
-{
+MultiLayerPerceptron::~MultiLayerPerceptron() {
   int i,j;
   for( i = 0; i < nNumLayers; i++ )
     {
@@ -105,12 +78,12 @@ MultiLayerPerceptron::~MultiLayerPerceptron()
 	{
 	  for( j = 0; j < pLayers[i].nNumNeurons; j++ )
 	    {
-	      if ( pLayers[i].pNeurons[j].w )
-		delete[] pLayers[i].pNeurons[j].w;
-	      if ( pLayers[i].pNeurons[j].dw )
-		delete[] pLayers[i].pNeurons[j].dw;
-	      if ( pLayers[i].pNeurons[j].wsave )
-		delete[] pLayers[i].pNeurons[j].wsave;
+	      if ( pLayers[i].pNeurons[j].weight )
+		delete[] pLayers[i].pNeurons[j].weight;
+	      if ( pLayers[i].pNeurons[j].last_weight )
+		delete[] pLayers[i].pNeurons[j].last_weight;
+	      if ( pLayers[i].pNeurons[j].save_weight )
+		delete[] pLayers[i].pNeurons[j].save_weight;
 	    }
 	}
       delete[] pLayers[i].pNeurons;
@@ -127,9 +100,9 @@ void MultiLayerPerceptron::RandomWeights()
 	{
 	  for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
 	    {
-	      pLayers[i].pNeurons[j].w [k]    = RandomEqualREAL(-0.5, 0.5);
-	      pLayers[i].pNeurons[j].dw[k]    = 0.0;
-	      pLayers[i].pNeurons[j].wsave[k] = 0.0;
+	      pLayers[i].pNeurons[j].weight [k]    = RandomEqualREAL(0, 1);
+	      pLayers[i].pNeurons[j].last_weight[k]    = 0.0;
+	      pLayers[i].pNeurons[j].save_weight [k] = 0.0;
 	    }
 	}
     }
@@ -140,7 +113,7 @@ void MultiLayerPerceptron::SetInputSignal(double* input)
   int i;
   for ( i = 0; i < pLayers[0].nNumNeurons; i++ )
     {
-      pLayers[0].pNeurons[i].x = input[i];
+      pLayers[0].pNeurons[i].m_out = input[i];
     }
 }
 
@@ -149,7 +122,7 @@ void MultiLayerPerceptron::GetOutputSignal(double* output)
   int i;
   for ( i = 0; i < pLayers[nNumLayers-1].nNumNeurons; i++ )
     {
-      output[i] = pLayers[nNumLayers-1].pNeurons[i].x;
+      output[i] = pLayers[nNumLayers-1].pNeurons[i].m_out;
     }
 }
 
@@ -159,7 +132,7 @@ void MultiLayerPerceptron::SaveWeights()
   for( i = 1; i < nNumLayers; i++ )
     for( j = 0; j < pLayers[i].nNumNeurons; j++ )
       for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
-	pLayers[i].pNeurons[j].wsave[k] = pLayers[i].pNeurons[j].w[k];
+	pLayers[i].pNeurons[j].save_weight[k] = pLayers[i].pNeurons[j].weight[k];
 }
 
 void MultiLayerPerceptron::RestoreWeights()
@@ -168,95 +141,86 @@ void MultiLayerPerceptron::RestoreWeights()
   for( i = 1; i < nNumLayers; i++ )
     for( j = 0; j < pLayers[i].nNumNeurons; j++ )
       for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
-	pLayers[i].pNeurons[j].w[k] = pLayers[i].pNeurons[j].wsave[k];
+	pLayers[i].pNeurons[j].weight[k] = pLayers[i].pNeurons[j].save_weight[k];
 }
 
-/***************************************************************************/
-/* calculate and feedforward outputs from the first layer to the last      */
+/* --- calculate and feedforward outputs from the first layer to the last ---*/
+
 void MultiLayerPerceptron::PropagateSignal()
 {
   int i,j,k;
 
-  /* --- la boucle commence avec la seconde couche */
+  /* --- the loop starts with the second layer --- */
   for( i = 1; i < nNumLayers; i++ )
     {
       for( j = 0; j < pLayers[i].nNumNeurons; j++ )
-	{
-	  /* --- calcul de la somme pond�r�e en entr�e */
-	  double sum = 0.0;
-	  for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
-	    {
-	      double out = pLayers[i-1].pNeurons[k].x;
-	      double w   = pLayers[i  ].pNeurons[j].w[k];
-	      sum += w * out;
-	    }
-	  /* --- application de la fonction d'activation (sigmoid) */
-	  pLayers[i].pNeurons[j].x = 1.0 / (1.0 + exp(-dGain * sum));
-	}
+	  {
+		  /* --- calculating the weighted sum in the input --- */
+		  double sum = 0.0;
+		  for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
+		    {
+		      double out = pLayers[i-1].pNeurons[k].m_out;
+		      double w   = pLayers[i  ].pNeurons[j].weight[k];
+		      sum += w * out;
+		    }
+		  /* --- application of the activation function (sigmoid) --- */
+		  pLayers[i].pNeurons[j].m_out = 1.0 / (1.0 + exp(-sum));
+	  }
     }
 }
 
 void MultiLayerPerceptron::ComputeOutputError(double* target)
 {
   int  i;
-  dMSE = 0.0;
-  dMAE = 0.0;
   for( i = 0; i < pLayers[nNumLayers-1].nNumNeurons; i++)
     {
-      double x = pLayers[nNumLayers-1].pNeurons[i].x;
+      double x = pLayers[nNumLayers-1].pNeurons[i].m_out;
       double d = target[i] - x;
-      pLayers[nNumLayers-1].pNeurons[i].e = dGain * x * (1.0 - x) * d;
-      dMSE += (d * d);
-      dMAE += fabs(d);
+	  pLayers[nNumLayers-1].pNeurons[i].error =  x * (1.0 - x) * d;
     }
-  /* --- erreur quadratique moyenne */
-  dMSE /= (double)pLayers[nNumLayers-1].nNumNeurons;
-  /* --- erreur absolue moyenne */
-  dMAE /= (double)pLayers[nNumLayers-1].nNumNeurons;
 }
 
-/***************************************************************************/
-/* backpropagate error from the output layer through to the first layer    */
+/* --- backpropagate error from the output layer through to the first layer --- */
 
 void MultiLayerPerceptron::BackPropagateError()
 {
   int i,j,k;
-  /* --- la boucle commence � l'avant derni�re couche */
+  /* --- the loop starts at the last layer --- */
   for( i = (nNumLayers-2); i >= 0; i-- )
     {
-      /* --- couche inf�rieure */
+      /* --- inferior layer --- */
       for( j = 0; j < pLayers[i].nNumNeurons; j++ )
 	{
-	  double x = pLayers[i].pNeurons[j].x;
+	  double x = pLayers[i].pNeurons[j].m_out;
 	  double E = 0.0;
-	  /* --- couche sup�rieure */
+	  /* --- upper layer --- */
 	  for ( k = 0; k < pLayers[i+1].nNumNeurons; k++ )
 	    {
-	      E += pLayers[i+1].pNeurons[k].w[j] * pLayers[i+1].pNeurons[k].e;
+	      E += pLayers[i+1].pNeurons[k].weight[j] * pLayers[i+1].pNeurons[k].error;
 	    }
-	  pLayers[i].pNeurons[j].e = dGain * x * (1.0 - x) * E;
+	 pLayers[i].pNeurons[j].error = x * (1.0 - x) * E;
 	}
     }
 }
 
-/***************************************************************************/
-/* update weights for all of the neurons from the first to the last layer  */
+/* --- update weights for all of the neurons from the first to the last layer --- */
 
 void MultiLayerPerceptron::AdjustWeights()
 {
   int i,j,k;
-  /* --- la boucle commence avec la seconde couche */
+  /* --- the loop starts with the second layer --- */
   for( i = 1; i < nNumLayers; i++ )
     {
       for( j = 0; j < pLayers[i].nNumNeurons; j++ )
 	{
 	  for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
 	    {
-	      double x  = pLayers[i-1].pNeurons[k].x;
-	      double e  = pLayers[i  ].pNeurons[j].e;
-	      double dw = pLayers[i  ].pNeurons[j].dw[k];
-	      pLayers[i].pNeurons[j].w [k] += dEta * x * e + dAlpha * dw;
-	      pLayers[i].pNeurons[j].dw[k]  = dEta * x * e;
+	      double x  = pLayers[i-1].pNeurons[k].m_out;
+	      double e  = pLayers[i  ].pNeurons[j].error;
+	      double dw = pLayers[i  ].pNeurons[j].last_weight[k];
+	      pLayers[i].pNeurons[j].weight [k] += dEta * x * e + dAlpha * dw;
+	      pLayers[i].pNeurons[j].last_weight[k]  = dEta * x * e;
+//		  pLayers[i].pNeurons[j].last_weight[k]	 = pLayers[i].pNeurons[j].weight [k];
 	    }
 	}
     }
@@ -268,22 +232,22 @@ void MultiLayerPerceptron::Simulate(double* input, double* output, double* targe
   if(!input)  return;
   if(!target) return;
 
-  /* --- on fait passer le signal dans le r�seau */
+  /* --- the signal is passed through the network --- */
   SetInputSignal(input);
   PropagateSignal();
   if(output) GetOutputSignal(output);
 
-  if(output && !training) printf("test: %.2f %.2f %.2f = %.2f\n", input[0],input[1],target[0],output[0]);
+  if(output && !training) printf("test: %.2f %.2f %.2f %.2f = %.2f\n", input[0],input[1],input[2],target[0],output[0]);
 
-  /* --- calcul de l'erreur en sortie par rapport � la cible */
-  /*     ce calcul sert de base pour la r�tropropagation     */
-  ComputeOutputError(target);
-
-  /* --- si c'est un apprentissage, on fait une r�tropropagation de l'erreur */
+  /* --- if it's an apprenticeship, we do a re-propagation of the error */
   if (training)
     {
+    	  /* --- calculation of the output error in relation to the target --- */
+        /*     this calculation serves as a basis for the retropulation     */
+  	  ComputeOutputError(target);
       BackPropagateError();
       AdjustWeights();
+//      SaveWeights();
     }
 }
 
@@ -298,7 +262,8 @@ bool read_number(FILE* fp, double* number)
   szWord[0] = '\0';
   while ( ((b=fgetc(fp))!=EOF) && (i<255) )
     {
-      if( (b=='.') ||
+      if( (b=='-') ||
+	  (b=='.') ||
 	  (b=='0') ||
 	  (b=='1') ||
 	  (b=='2') ||
@@ -351,13 +316,13 @@ int MultiLayerPerceptron::Train(const char* fname)
       double dNumber;
       if( read_number(fp,&dNumber) )
 	{
-	  /* --- on le transforme en input/target */
+	  /* --- we transform it into input / target --- */
 	  if( nbi < pLayers[0].nNumNeurons )
 	    input[nbi++] = dNumber;
 	  else if( nbt < pLayers[nNumLayers-1].nNumNeurons )
 	    target[nbt++] = dNumber;
 
-	  /* --- on fait un apprentisage du r�seau  avec cette ligne*/
+	  /* --- we make an apprenticeship of the king with this line --- */
 	  if( (nbi == pLayers[0].nNumNeurons) &&
 	      (nbt == pLayers[nNumLayers-1].nNumNeurons) )
 	    {
@@ -381,6 +346,17 @@ int MultiLayerPerceptron::Train(const char* fname)
 
   return count;
 }
+
+//void MultiLayerPerceptron::Test(double* input) 
+//{
+//  double* output = NULL;
+//  output = new double[pLayers[nNumLayers-1].nNumNeurons];
+//  SetInputSignal(input);
+//  PropagateSignal();
+//  GetOutputSignal(output);
+//  for ( int i=0; i< pLayers[nNumLayers-1].nNumNeurons ; i++)
+//  	printf(" %2f\n ",output[i]);
+//}
 
 int MultiLayerPerceptron::Test(const char* fname)
 {
@@ -416,7 +392,6 @@ int MultiLayerPerceptron::Test(const char* fname)
 	  else if( nbt < pLayers[nNumLayers-1].nNumNeurons )
 	    target[nbt++] = dNumber;
 
-	  /* --- on fait un apprentisage du r�seau  avec cette ligne*/
 	  if( (nbi == pLayers[0].nNumNeurons) &&
 	      (nbt == pLayers[nNumLayers-1].nNumNeurons) )
 	    {
@@ -444,59 +419,29 @@ int MultiLayerPerceptron::Test(const char* fname)
   return count;
 }
 
-int MultiLayerPerceptron::Evaluate()
+void MultiLayerPerceptron::Init()
 {
-  int count = 0;
-  return count;
+  /* --- initiator of the random number generator ---  */
+  /* --- and generation of random weights --- */
+  InitializeRandoms();
+  RandomWeights();	
 }
 
 void MultiLayerPerceptron::Run(const char* fname, const int& maxiter)
 {
   int    countTrain = 0;
   int    countLines = 0;
-  bool   Stop = false;
-  bool   firstIter = true;
-  double dMinTestError = 0.0;
-
-  /* --- init du g�n�rateur de nombres al�atoires  */
-  /* --- et g�n�ration des pond�rations al�atoires */
-  InitializeRandoms();
-  RandomWeights();
-
-  /* --- on lance l'apprentissage avec tests */
+  
+  /* --- we start learning with tests --- */
   do {
 
     countLines += Train(fname);
-    Test(fname);
+//    Test(fname);
     countTrain++;
 
-    if(firstIter)
-      {
-	dMinTestError = dAvgTestError;
-	firstIter = false;
-      }
-
-    printf( "%i \t TestError: %f", countTrain, dAvgTestError);
-
-    if ( dAvgTestError < dMinTestError)
-      {
-	printf(" -> saving weights\n");
-	dMinTestError = dAvgTestError;
-	SaveWeights();
-      }
-    else if (dAvgTestError > 1.2 * dMinTestError)
-      {
-	printf(" -> stopping training and restoring weights\n");
-	Stop = true;
-	RestoreWeights();
-      }
-    else
-      {
-	printf(" -> ok\n");
-      }
-
-  } while ( (!Stop) && (countTrain<maxiter) );
-
-  printf("bye\n");
+  } while ( (countTrain<maxiter) );
 
 }
+
+
+
