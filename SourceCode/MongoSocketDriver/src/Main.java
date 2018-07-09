@@ -29,8 +29,6 @@ public class Main {
 			super.run();
 
 			while (true) {
-				System.out.print(""); // IMPORTANT
-
 				synchronized (lock) {
 					counter = workloadListCounter;
 					if (counter > 0) {
@@ -45,13 +43,14 @@ public class Main {
 						Socket socket = workload.getSocketServer();
 						String request = workload.getRequest();
 						DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+						System.out.println("[REQUEST] ip: " + socket.getRemoteSocketAddress() + " request: " + request);
 						out.writeUTF(requestHandler.processRequest(request));
 
 						workload.getSocketServer().close();
 					} catch (SocketException e) {
-						System.out.println(id + " Connection reset");
+						System.out.println("[EXCEPTION] " + id + " Connection reset");
 					} catch (IOException e) {
-						System.out.println(id + " " + e.getMessage());
+						System.out.println("[EXCEPTION] " + id + " " + e.getMessage());
 					}
 				}
 			}
@@ -86,9 +85,9 @@ public class Main {
 					}
 
 				} catch (SocketTimeoutException e) {
-					System.out.println(e.getMessage());
+					System.out.println("[EXCEPTION] " + e.getMessage());
 				} catch (Exception e) {
-					System.out.println(e.getMessage());
+					System.out.println("[EXCEPTION] " + e.getMessage());
 					serverSocket.close();
 					break;
 				}
