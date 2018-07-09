@@ -36,7 +36,7 @@ public class Main {
 						workload = workloadQueue.remove();
 					}
 				}
-				
+
 				if ((counter > 0) && (workload != null)) {
 					try {
 						// Process request
@@ -44,7 +44,7 @@ public class Main {
 						String request = workload.getRequest();
 						DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 						System.out.println("[REQUEST] ip: " + socket.getRemoteSocketAddress() + " request: " + request);
-						out.writeUTF(requestHandler.processRequest(request));
+						out.write(requestHandler.processRequest(request).getBytes());
 
 						workload.getSocketServer().close();
 					} catch (SocketException e) {
@@ -76,7 +76,9 @@ public class Main {
 				try {
 					Socket socketServer = serverSocket.accept();
 					DataInputStream in = new DataInputStream(socketServer.getInputStream());
-					String request = in.readUTF();
+					byte[] bufferArray = new byte[255];
+					in.read(bufferArray);
+					String request = new String(bufferArray);
 					Workload newWorkload = new Workload(request, socketServer);
 
 					synchronized (lock) {

@@ -52,7 +52,7 @@ public class RequestHandler {
 				Date fromDate = formatter.parse(fromDateString);
 				String toDateString = d.getString("to");
 				Date toDate = formatter.parse(toDateString);
-				requestResult = readSensorData(fromDate, toDate);
+				requestResult = "{\"status\":\"OK\"}" + readSensorData(fromDate, toDate);
 				break;
 			case REQUEST_CODE_WRITE_SENSOR_DATA:
 				String dataString = d.getString("data");
