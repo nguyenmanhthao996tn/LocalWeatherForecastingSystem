@@ -1,5 +1,5 @@
 #include <SPI.h>
-#include <LoRa.h>
+#include "LoRa.h"
 
 #define LED 13
 
