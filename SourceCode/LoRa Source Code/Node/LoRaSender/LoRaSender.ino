@@ -1,43 +1,58 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-int counter = 0;
+String inputString = "";
+boolean stringComplete = false;
+
+void serialEvent()
+{
+  while (Serial.available())
+  {
+    char inChar = (char)Serial.read();
+    inputString += inChar;
+    if (inChar == '\n')
+    {
+      stringComplete = true;
+    }
+  }
+}
 
 void setup()
 {
-    Serial.begin(115200);
-    while (!Serial)
-        ;
+  inputString.reserve(128); // allocate 128 bytes buffer in memory for manipulating Strings
 
-    Serial.println("LoRa Sender");
+  Serial.begin(9600);
+  while (!Serial)
+    ;
 
-    if (!LoRa.begin(868000000))
-    {
-        Serial.println("Starting LoRa failed!");
-        while (1)
-            ;
-    }
+  LoRa.setPins(10, 8, 4);
+  if (!LoRa.begin(868000000))
+  {
+    while (1)
+      ;
+  }
 
-    LoRa.setPins(10, 8, 4);
-
-    LoRa.setSignalBandwidth(500000);
-    LoRa.setCodingRate4(5);
-    LoRa.setSpreadingFactor(12);
-    LoRa.setPreambleLength(8);
-    LoRa.setSyncWord(0x24);
+  LoRa.setSignalBandwidth(500000);
+  LoRa.setCodingRate4(5);
+  LoRa.setSpreadingFactor(12);
+  LoRa.setPreambleLength(8);
+  LoRa.setSyncWord(0x24);
 }
 
 void loop()
 {
-    Serial.print("Sending packet: ");
-    Serial.println(counter);
+  if (stringComplete)
+  {
+    if ((inputString.charAt(33) == '\r') && (inputString.charAt(34) == '\n'))
+    { // Check if string is correct
+      Serial.println(inputString);
 
-    // send packet
-    LoRa.beginPacket();
-    LoRa.print("hello ");
-    LoRa.print(counter);
-    LoRa.endPacket();
+      LoRa.beginPacket();
+      LoRa.print(inputString);
+      LoRa.endPacket();
+    }
 
-    counter++;
-    delay(2000);
+    inputString = "";
+    stringComplete = false;
+  }
 }
