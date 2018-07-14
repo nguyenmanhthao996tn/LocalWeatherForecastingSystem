@@ -1,0 +1,11 @@
+ENGLISH
+[1] Saktaya Suksri and Warangkhana Kimpan, "Neural Network training model for weather forecasting using Fireworks Algorithm", 2016 International Computer Science and Engineering Conference (ICSEC). [Online]. Available: https://ieeexplore.ieee.org/document/7859952/. [Accessed Jul. 14, 2018].
+[2] Andrew Culclasure, "Using Neural Networks to Provide Local Weather Forecasts", Electronic Theses & Dissertations Georgia Southern University Spring 2013. [Online]. Available: https://digitalcommons.georgiasouthern.edu/etd/32/. [Accessed Jul. 14, 2018].
+[3] Kumar Abhishek, "Weather Forecasting Model using Artificial Neural Network", Procedia Technology Volume 4, 2012, Pages 311-318. [Online]. Available: https://www.sciencedirect.com/science/article/pii/S221201731200326X. [Accessed Jul. 14, 2018].
+
+VIETNAMESE
+[1] Đoàn Văn Điếm, Giáo trình Khí tượng Nông nghiệp, Hà Nội: Trường đại học Nông nghiệp 1, 2008. 
+[2] Bộ văn hóa, thể thao và du lịch, Tổng cục du lịch, 2015. http://www.vietnamtourism.com/index.php/about/items/2532, 2015.
+[3] Tổng cục Thống kê, http://www.gso.gov.vn/SLTK/Chart.aspx?rxid=4227aeb8-dadb-4081-928c-0777afbce2b9&px_db=01.+%C4%90%C6%A1n+v%E1%BB%8B+h%C3%A0nh+ch%C3%ADnh%2c+%C4%91%E1%BA%A5t+%C4%91ai+v%C3%A0+kh%C3%AD+h%E1%BA%ADu&px_type=PX&px_language=vi&px_tableid=01.+%C4%90%C6%A1n+v%E1%BB%8B+h%C3%A0nh+ch%C3%ADnh%2c+%C4%91%E1%BA%A5t+%C4%91ai+v%C3%A0+kh%C3%AD+h%E1%BA%ADu%5cV01.09.px&layout=chartViewColumn, 2015
+[4] PGS TS. Đỗ Văn Nhơn. Nguyễn Khánh Ngọc, “Tìm Hiểu Logic Mờ và xây dựng ứng dụng điều khiển tự động tốc độ xe ôtô”, Hồ Chí Minh, 2012.
+[5] Trần Tân Tiến, Phương pháp số dự báo thời tiết, Hà Nội: Đại học Quốc gia Hà Nội, 2007. 
