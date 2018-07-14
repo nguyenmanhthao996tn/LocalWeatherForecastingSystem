@@ -1,0 +1,52 @@
+CẤU TRÚC FILE BÁO CÁO KHÓA LUẬN FINAL
+
+Acknowledgements (Lời cảm ơn)
+
+Abstract (Tóm tắt khóa luận)
+    Trình bày tóm tắt vấn đề nghiên cứu, các hướng tiếp cận, cách giải quyết vấn đề và một số kết quả đạt được (1 đoạn không chia mục nhỏ)
+     
+Chapter 1: Overview (Tổng quan)
+    Trình bày lí do chọn đề tài
+    Target, object and scope (mục tiêu, đối tượng và phạm vi nghiên cứu)
+    Phân tích đánh giá các hướng nghiên cứu đã có của các tác giả trong và ngoài nước liên quan đến đề tài;
+    nêu những vấn đề còn tồn tại;
+    chỉ ra những vấn đề mà đề tài cần tập trung, nghiên cứu giải quyết
+    
+    1.1 Background (Lý do chọn đề tài)
+    1.2 Related work (Tình hình nghiên cứu trong, ngoài nước)
+    1.3 Target, object and scope of thesis (Mục tiêu, đối tượng và phạm vi nghiên cứu)
+    1.4 Advantage and disadvantage (Thuận lợi, khó khăn)
+    
+Chapter 2: Theory and Experimental Study (Cơ sở lý thuyết)
+    Trình bày cơ sở lí thuyết, lí luận, giả thiết khoa học và phương pháp nghiên cứu đã được sử dụng trong khoá luận
+    
+    2.1 Theory
+        2.1.1 Weather forecasting (Cơ sở lý thuyết về dự báo thời tiết)
+        2.1.2 Machine Learning and Neural Network (Cơ sở lý thuyết về Machine Learning và Neural Network)
+    2.2 Experimental Study
+        Cơ sở lý thuyết về các thành phần khác trong hệ thống (Phần cứng/Phần mềm)
+            LoRa
+        Cơ sở lý thuyết về các phần mềm, công cụ hỗ trợ trong quá trình thực hiện khóa luận
+            - Git và GitHub
+                + Giới thiệu Git và GitHub
+                + Cách tổ chức các thư mục của đề trên trong Git
+                + Lợi ích của việc sử dụng Git và GitHub
+            - Slack
+            - Virtualbox (Ảo hóa)
+    
+Chapter 3: System Analysis and Design (Phân tích thiết kế hệ thống)
+    Mô tả ngắn gọn công việc nghiên cứu khoa học đã tiến hành, các kết quả nghiên cứu khoa học hoặc kết quả thực nghiệm. Đối với các đề tài ứng dụng có kết quả là sản phẩm phần mềm phải có hồ sơ thiết kế, cài đặt, ... theo các mô hình đã học (UML, ...). 
+    
+    3.1 System overview (Tổng quan hệ thống - Mô hình Client/Server): Tổng quan mô hình, sơ đồ hệ thống, ưu/nhược điểm của cách thiết kế
+    3.2 Hardware design (Thiết kế phần cứng): Node, gateway
+    3.3 Software design (Thiết kế phần mềm - Giải thuật): Mô tả hoạt động của hệ thống, lưu đồ giải thuật, chi tiết các mô đun phần mềm
+    
+Chapter 4: Result and Sumary (Kết quả thực tế và kết luận)
+    Trình bày những kết quả đạt được, những đóng góp mới và những đề xuất mới.
+    Phần kết luận cần ngắn gọn, không có lời bàn và bình luận thêm.
+    
+    4.1 Result (Kết quả đạt được)
+    4.2 Sumary (Kết luận)
+    
+Chapter 5: Future work (Hướng phát triển)
+    Kiến nghị về những hướng nghiên cứu tiếp theo

@@ -1,0 +1,60 @@
+20:38:48.126 Connected to CP210x device
+20:38:48.531 10 Received packet 'hello 1351' with RSSI -113
+20:38:53.030 10 Received packet 'hello 1353' with RSSI -113
+20:38:55.278 10 Received packet 'hello 1354' with RSSI -113
+20:38:59.776 10 Received packet 'hello 1356' with RSSI -113
+20:39:06.523 10 Received packet 'hello 13�9' with RSSI -109
+20:39:08.772 10 Received packet 'hello 1360' with RSSI -113
+20:39:13.269 10 Received packet 'hello 1362' with RSSI -113
+20:39:20.016 10 Received packet 'hello 1365' with RSSI -113
+20:39:22.265 10 Received packet 'heLnM13' with RSSI -113
+20:39:24.514 10 Received packet 'hello 1367' with RSSI -114
+20:39:26.762 10 Received packet 'hello 1368' with RSSI -113
+20:39:29.011 10 Received packet 'hello 1369' with RSSI -113
+20:39:31.260 10 Received packet 'hello 1370' with RSSI -113
+20:39:33.509 10 Received packet 'hello 1371' with RSSI -113
+20:39:35.758 10 Received packet 'hello 1372' with RSSI -113
+20:39:47.002 10 Received packet 'hello 1377' with RSSI -112
+20:39:49.251 10 Received packet 'hello 1378' with RSSI -113
+20:39:51.500 10 Received packet 'hello 1379' with RSSI -113
+20:39:53.749 10 Received packet 'hello 1380' with RSSI -113
+20:39:55.997 10 Received packet 'hello 1381' with RSSI -114
+20:39:58.246 10 Received packet 'hello 1382' with RSSI -112
+20:40:00.495 10 Received packet 'hello 1383' with RSSI -114
+20:40:04.993 10 Received packet 'hello 1385' with RSSI -113
+20:40:07.241 10 Received packet 'hello 1386' with RSSI -113
+20:40:09.490 10 Received packet 'hello 1387' with RSSI -113
+20:40:11.739 10 Received packet 'hello 1388' with RSSI -113
+20:40:13.988 10 Received packet 'hello 1389' with RSSI -113
+20:40:16.237 10 Received packet 'hello 1390' with RSSI -113
+20:40:18.486 10 Received packet 'hello 1391' with RSSI -113
+20:40:20.735 10 Received packet 'hello 1392' with RSSI -113
+20:40:22.984 10 Received packet 'heljD1U?3' with RSSI -113
+20:40:25.232 10 Received packet 'hello 1394' with RSSI -113
+20:40:27.481 10 Received packet 'hello 1395' with RSSI -113
+20:40:40.974 10 Received packet 'hello 1401' with RSSI -113
+20:40:43.223 10 Received packet 'hello 1402' with RSSI -113
+20:40:47.721 10 Received packet 'hello 1404' with RSSI -110
+20:40:49.970 10 Received packet 'hello 1405' with RSSI -113
+20:40:52.218 10 Received packet 'hello 1406' with RSSI -113
+20:40:54.467 10 Received packet 'hello 1407' with RSSI -113
+20:40:56.716 10 Received packet 'hello 1408' with RSSI -113
+20:40:58.965 10 Received packet 'hello 1409' with RSSI -113
+20:41:05.711 10 Received packet 'hello 1412' with RSSI -113
+20:41:07.960 10 Received packet 'hello 1413' with RSSI -113
+20:41:10.209 10 Received packet 'hello 1414' with RSSI -113
+20:41:14.707 10 Received packet 'hello 1416' with RSSI -113
+20:41:16.956 10 Received packet 'hello 1417' with RSSI -114
+20:41:19.205 10 Received packet 'hello 1418' with RSSI -114
+20:41:23.702 10 Received packet 'hello 1420' with RSSI -114
+20:41:34.947 10 Received packet 'hello 1425' with RSSI -113
+20:41:41.693 10 Received packet 'hello 1428' with RSSI -113
+20:41:46.191 10 Received packet 'hello 1430' with RSSI -113
+20:41:52.937 10 Received packet 'hello 1433' with RSSI -113
+20:41:55.186 10 Received packet 'hello 1434' with RSSI -113
+20:41:59.684 10 Received packet 'hello 1436' with RSSI -114
+20:42:04.182 10 Received packet 'hello 1438' with RSSI -113
+20:42:10.928 10 Received packet 'hello 1441' with RSSI -113
+20:42:17.675 10 Received packet '(a�x�ʅ3�' with RSSI -114
+20:42:22.172 10 Received packet 'hello 1446' with RSSI -113
+20:42:29.042 Disconnected from device
