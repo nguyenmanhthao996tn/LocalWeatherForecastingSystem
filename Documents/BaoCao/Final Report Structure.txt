@@ -1,11 +1,10 @@
 CẤU TRÚC FILE BÁO CÁO KHÓA LUẬN FINAL
 
+Acknowledgements (Lời cảm ơn)
+
 Abstract (Tóm tắt khóa luận)
     Trình bày tóm tắt vấn đề nghiên cứu, các hướng tiếp cận, cách giải quyết vấn đề và một số kết quả đạt được (1 đoạn không chia mục nhỏ)
-    
-Problem Statement (Mở đầu)
-    Trình bày lí do chọn đề tài, mục đích, đối tượng và phạm vi nghiên cứu (Nêu chung chung, nêu cụ thể ở chapter 1)
-    
+     
 Chapter 1: Overview (Tổng quan)
     Trình bày lí do chọn đề tài
     Target, object and scope (mục tiêu, đối tượng và phạm vi nghiên cứu)
