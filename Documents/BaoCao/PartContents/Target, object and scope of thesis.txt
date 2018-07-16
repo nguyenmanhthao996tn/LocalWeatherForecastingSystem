@@ -1,0 +1,40 @@
+1.3.1 Target and object of this thesis
+Our thesis focuses on researching and upgrading the previous thesis named "THIẾT BỊ QUAN TRẮC, DỰ BÁO THỜI TIẾT PHẠM VI NHỎ SỬ DỤNG CÔNG NGHỆ LORA" of Mr. NGUYEN TRAN TIEN ĐAT and Mr. HO QUI ĐAY. Build a system that is able to collect environmental data and forecast without using third-party data. Environmental monitoring devices can operate for long periods of time outside of the actual environment. Package the product so that the device can normally operate under the rain and wind.
+The thesis uses Machine Learning, specifically the Back-propagation Neural Network model to solve the problem of small-scale rain forecasting. Utilizing the advantages of the Back-propagation Neural Network model is to improve predictive accuracy over time.
+Applying data transfer technology - Lora in transmit and receive operations can increase the device installation distance. Besides, Lora technology can save more power than other transmit technologies. In addition, thanks to solar cells, the battery life of the monitoring devices is extended, so that the system can be installed in many different areas without other power supplies.
+Using Wifi module in Gateway can send weather data to Linux VPS in other to make a prediction with Machine Learning. Also, Linux VPS run a Web Server application, provides users with an easy-to-use managing website.
+Overall, the biggest problem we focus to solve is that accuracy and reliability of the system must be optimized.
+
+Detailed target:
+    Build a hardware system that collects weather data independently. The hardware must be packaged in other to able to work in windy weather environment. The hardware system includes:
+        Environmental monitoring devices: collect weather data such as temperature, humidity, atmosphere, wind direction, wind speed, and rainfall. Using a solar panel to maintain the battery life.
+        Gateway: Receive data from Environmental monitoring devices via Lora and push them to Linux VPS via Wifi. Receive weather forecasting results from the server on VPS and display them on the LCD.
+    Research weather forecasting theory and study papers about weather forecasting. Analyze data collected from the environment in a long time to obtain a theoretical basis for weather forecasting.
+    Research and develop a local weather forecasting application using Back-propagation Neural Network model. Compare it to the local weather forecasting application using Fuzzy Logic. Increase forecasting accuracy to 60%.
+    Develop a system managing sensor data, forecasting results and users data with MongoDB
+    Develop a Web Server on Linux VPS with an easy-to-use interface and stable operation.
+
+Object:
+    Weather Station with Anemometer/Wind vane/Rain bucket SKU:SEN0186
+    Solar panel, Li-ion battery and battery charger circuit.
+    Mesh-protected Weather-proof Temperature/Humidity Sensor
+    Barometric Pressure/Temperature/Altitude Sensor BMP180
+    Theoretical basis in weather forecasting field
+    Machine Learning Back-propagation Neural Network model
+    LoRa Transceiver RFM96
+    Wifi Module ESP8266
+    MQTT Protocol
+    Web Server with NodeJS programming language
+    MongoDB Database
+
+
+1.3.2 Scope
+Build an environmental monitoring and weather forecasting system with high accuracy in local areas. The system must be easy-to-install, the accuracy of forecasting results increase along with system use time. Detail:
+    Collect environmental data in 3 months at lease. Process data and use it to train the Back-propagation Neural Network model in the beginning.
+    Develop a local weather forecasting application using Back-propagation Neural Network model. The application has 7 inputs for forecasting include temperature, humidity, atmosphere, the hour in the day, month in the year, wind direction and wind speed. For training operation, the application will use rainfall.
+    Communicate and get data from sensors
+    Build a power supply system with Li-ion batteries and use a solar panel to maintain battery life
+    Communicate environmental monitoring devices and a gateway with LoRa technology
+    Develop a website with HTML, CSS, and NodeJS. The website must have an easy-to-use interface and stable operation.
+    Develop a system managing sensor data, forecasting results and users data with MongoDB
+    
