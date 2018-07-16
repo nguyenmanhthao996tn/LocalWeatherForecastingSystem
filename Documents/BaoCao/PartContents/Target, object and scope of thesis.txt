@@ -32,3 +32,12 @@ Hệ cơ sở dữ liệu MongoDB
 
 
 1.3.2 Scope
+Xây dựng một hệ thống quan trắc và dự báo thời tiết có độ chính xác cao trong phạm vi vừa nhỏ gọn tiện dụng dễ dàng lắp đặt, độ chính xác của kết quả dự đoán tăng theo thời gian sử dụng hệ thống, theo dõi và kéo dài thời gian được thời gian sử dụng của toàn hệ thống. Cụ thể:
+    Dữ liệu thu thập môi trường ít nhất trong khoảng 3 tháng, xử lý dữ liệu và để mô hình Back-propagation Neural Network học tập dữ liệu ban đầu này.
+    Xây dựng ứng dụng dự đoán thời thiết cục bộ sử dụng mô hình Back-propagation Neural Network để dự đoán thời tiết. Ứng dụng sử dụng 7 biến đầu vào bao gồm: nhiệt độ, độ ẩm, áp suất, giờ trong ngày, tháng trong năm, hướng gió và sức gió để dự đoán và thêm một biến đầu vào là lượng mưa để học.
+    Giao tiếp với các cảm biến. Thực hiện đọc dữ liệu từ các cảm biến.
+    Xây dựng nguồn nuôi cho hệ thống thu dữ liệu bằng pin li-ion, dùng pin năng lượng mặt trời để duy trì hoạt động của pin.
+    Thực hiện giao tiếp giữa trạm thu dữ liệu và board trung tâm bằng sóng LoRa.
+    Xây dựng một trang Web bằng ngôn ngữ HTML, Css và NodeJS, trang Web có giao diện đẹp, tính tương tác người dùng cao.
+    Tạo và đăng kí được một tên miền trên No-IP.
+    Xây dựng ứng dụng quản lý, truy xuất trên hệ cơ sở dụng liệu MongoDB.
