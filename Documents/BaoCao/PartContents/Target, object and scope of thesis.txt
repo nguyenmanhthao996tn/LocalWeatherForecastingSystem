@@ -1,43 +1,40 @@
 1.3.1 Target and object of this thesis
-Mục tiêu của đề tài là nghiên cứu cải thiện đề tài "THIẾT BỊ QUAN TRẮC, DỰ BÁO THỜI TIẾT PHẠM VI NHỎ SỬ DỤNG CÔNG NGHỆ LORA" của anh NGUYỄN TRẦN TIẾN ĐẠT và anh HỒ QUÍ ĐẦY. Xây dựng thành công Hệ thống có khả năng tự nó thu thập các giá trị môi trường và đưa ra dự báo mà không phụ thuộc vào các thông tin dữ liệu từ bên thứ ba. Có thể hoạt động trong thời gian dài ở ngoài môi trường thực tế, đóng gói sản phẩm để thiết bị có thể hoạt động được dưới trời mưa bão.
+Our thesis focuses on researching and upgrading the previous thesis named "THIẾT BỊ QUAN TRẮC, DỰ BÁO THỜI TIẾT PHẠM VI NHỎ SỬ DỤNG CÔNG NGHỆ LORA" of Mr. NGUYEN TRAN TIEN ĐAT and Mr. HO QUI ĐAY. Build a system that is able to collect environmental data and forecast without using third-party data. Environmental monitoring devices can operate for long periods of time outside of the actual environment. Package the product so that the device can normally operate under the rain and wind.
+The thesis uses Machine Learning, specifically the Back-propagation Neural Network model to solve the problem of small-scale rain forecasting. Utilizing the advantages of the Back-propagation Neural Network model is to improve predictive accuracy over time.
+Applying data transfer technology - Lora in transmit and receive operations can increase the device installation distance. Besides, Lora technology can save more power than other transmit technologies. In addition, thanks to solar cells, the battery life of the monitoring devices is extended, so that the system can be installed in many different areas without other power supplies.
+Using Wifi module in Gateway can send weather data to Linux VPS in other to make a prediction with Machine Learning. Also, Linux VPS run a Web Server application, provides users with an easy-to-use managing website.
+Overall, the biggest problem we focus to solve is that accuracy and reliability of the system must be optimized.
 
-Đề tài hướng đến sử dụng Machine Learning, cụ thể là mô hình Back-propagation Neural Network giải quyết bái toán dự đoán mưa phạm vi nhỏ. Sử dụng ưu điểm của mô hình Back-propagation Neural Network cải thiện độ chính xác của dự đoán theo thời gian sử dụng hệ thống.
+Detailed target:
+    Build a hardware system that collects weather data independently. The hardware must be packaged in other to able to work in windy weather environment. The hardware system includes:
+        Environmental monitoring devices: collect weather data such as temperature, humidity, atmosphere, wind direction, wind speed, and rainfall. Using a solar panel to maintain the battery life.
+        Gateway: Receive data from Environmental monitoring devices via Lora and push them to Linux VPS via Wifi. Receive weather forecasting results from the server on VPS and display them on the LCD.
+    Research weather forecasting theory and study papers about weather forecasting. Analyze data collected from the environment in a long time to obtain a theoretical basis for weather forecasting.
+    Research and develop a local weather forecasting application using Back-propagation Neural Network model. Compare it to the local weather forecasting application using Fuzzy Logic. Increase forecasting accuracy to 60%.
+    Develop a system managing sensor data, forecasting results and users data with MongoDB
+    Develop a Web Server on Linux VPS with an easy-to-use interface and stable operation.
 
-Sử dụng công nghệ truyền dữ liệu LoRa để áp dụng vào việc truyền nhận tín hiệu, giúp gia tăng khoảng cách lắp đặt hệ thống, theo dõi được tình hình tại khu vực có khoảng cách xa nơi lắp đặt server trung tâm. Không những tăng khoảng cách truyền nhận dữ liệu, công nghệ LoRa còn giúp tiết kiệm năng lượng sử dụng rất phù hợp với hệ thống. Bên cạnh đó, nhờ kết hợp với pin mặt trời, thời gian sử dụng của thiết bị quan trắc của hệ thống được kéo dài, qua đó giúp hệ thống có thể lắp đặt được ở nhiều khu vực khác nhau, tăng khả năng mở rộng hệ thống quan trắc.
-
-Bên cạnh đó nhóm cũng đưa hệ thống lên môi trường Internet bằng cách thiết kế Gateway có kết nối Wifi, đưa dữ liệu lên VPS để xử lý với thuật toán Machine Learning. Ngoài ra, VPS này cũng chạy một Web Server, cung cấp cho người một trang Web quản lý với giao diện thân thiện.
-
-Trên tất cả, vấn đề lớn nhất mà nhóm đang tập trung giải quyết chính là độ chính xác và độ tin cậy của hệ thống phải được tối ưu nhất có thể và phải đặt lên hàng đầu.
-
-Cụ thể:
-Xây dựng được một hệ thống phần cứng thu thập dữ liệu môi trường một cách độc lập, được đóng gói để hoạt động trong môi trường mưa gió khắc nghiệt. Bao gồm:
-    Trạm thu dữ liệu: Thu thập các giá trị như nhiệt độ, độ ẩm, áp suất khí quyển, hướng gió, sức gió và lượng mưa. Sử dụng pin năng lượng mặt trời để duy trì hoạt động.
-    Gateway: Thu thập dữ liệu từ trạm thu dữ liệu và đưa lên VPS thông qua Wifi. Nhận dữ liệu dự đoán thời tiết từ VPS và hiển thị lên LCD.
-Nghiên cứu về cơ sở lý thuyết dự báo thời tiết, tìm hiểu các bài báo về thời tiết. Kết hợp với việc xử lý, phân tích giá trị thực tế thu thập được trong thời gian dài. Từ đó đưa ra cơ sở lý luận tin cậy cho việc dự báo thời tiết.
-Nghiên cứu và xây dựng ứng dụng dự đoán thời thiết cục bộ sử dụng mô hình Back-propagation Neural Network. So sánh với hệ thống sử dụng Fuzy Logic trước đây. Tăng tỉ lệ chính xác lên 60%.
-Xây dựng hệ thống quản lý dữ liệu với MongoDB để quản lý dữ liệu cảm biến, kết quả dự đoán và dữ liệu người dùng.
-Xây dựng một Web Server trên VPS Linux với giao diện thân thiện và hoạt động ổn định.
-
-Đối tượng nghiên cứu:
-Hệ thống thu thập thông số môi trường SKU:SEN0186
-Pin năng lượng mặt trời mono, pin li-ion và mạch sạc
-Cảm nhiệt độ, độ ẩm SHT10, cảm biến áp suất BMP180
-Cơ sở lý luận về dự báo thời tiết và dữ liệu
-Mô hình Machine Learning Back-propagation Neural Network
-Module truyền nhận LoRa RFM96
-Module Wifi ESP8266
-Giao thức MQTT
-Web Server với ngồn ngữ NodeJS
-Hệ cơ sở dữ liệu MongoDB
+Object:
+    Weather Station with Anemometer/Wind vane/Rain bucket SKU:SEN0186
+    Solar panel, Li-ion battery and battery charger circuit.
+    Mesh-protected Weather-proof Temperature/Humidity Sensor
+    Barometric Pressure/Temperature/Altitude Sensor BMP180
+    Theoretical basis in weather forecasting field
+    Machine Learning Back-propagation Neural Network model
+    LoRa Transceiver RFM96
+    Wifi Module ESP8266
+    MQTT Protocol
+    Web Server with NodeJS programming language
+    MongoDB Database
 
 
 1.3.2 Scope
-Xây dựng một hệ thống quan trắc và dự báo thời tiết có độ chính xác cao trong phạm vi vừa nhỏ gọn tiện dụng dễ dàng lắp đặt, độ chính xác của kết quả dự đoán tăng theo thời gian sử dụng hệ thống, theo dõi và kéo dài thời gian được thời gian sử dụng của toàn hệ thống. Cụ thể:
-    Dữ liệu thu thập môi trường ít nhất trong khoảng 3 tháng, xử lý dữ liệu và để mô hình Back-propagation Neural Network học tập dữ liệu ban đầu này.
-    Xây dựng ứng dụng dự đoán thời thiết cục bộ sử dụng mô hình Back-propagation Neural Network để dự đoán thời tiết. Ứng dụng sử dụng 7 biến đầu vào bao gồm: nhiệt độ, độ ẩm, áp suất, giờ trong ngày, tháng trong năm, hướng gió và sức gió để dự đoán và thêm một biến đầu vào là lượng mưa để học.
-    Giao tiếp với các cảm biến. Thực hiện đọc dữ liệu từ các cảm biến.
-    Xây dựng nguồn nuôi cho hệ thống thu dữ liệu bằng pin li-ion, dùng pin năng lượng mặt trời để duy trì hoạt động của pin.
-    Thực hiện giao tiếp giữa trạm thu dữ liệu và board trung tâm bằng sóng LoRa.
-    Xây dựng một trang Web bằng ngôn ngữ HTML, Css và NodeJS, trang Web có giao diện đẹp, tính tương tác người dùng cao.
-    Tạo và đăng kí được một tên miền trên No-IP.
-    Xây dựng ứng dụng quản lý, truy xuất trên hệ cơ sở dụng liệu MongoDB.
+Build an environmental monitoring and weather forecasting system with high accuracy in local areas. The system must be easy-to-install, the accuracy of forecasting results increase along with system use time. Detail:
+    Collect environmental data in 3 months at lease. Process data and use it to train the Back-propagation Neural Network model in the beginning.
+    Develop a local weather forecasting application using Back-propagation Neural Network model. The application has 7 inputs for forecasting include temperature, humidity, atmosphere, the hour in the day, month in the year, wind direction and wind speed. For training operation, the application will use rainfall.
+    Communicate and get data from sensors
+    Build a power supply system with Li-ion batteries and use a solar panel to maintain battery life
+    Communicate environmental monitoring devices and a gateway with LoRa technology
+    Develop a website with HTML, CSS, and NodeJS. The website must have an easy-to-use interface and stable operation.
+    Develop a system managing sensor data, forecasting results and users data with MongoDB
+    
