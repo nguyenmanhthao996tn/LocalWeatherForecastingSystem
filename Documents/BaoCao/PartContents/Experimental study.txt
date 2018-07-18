@@ -1,0 +1,14 @@
+2.2 Experimental Study
+    Cơ sở lý thuyết về các thành phần khác trong hệ thống (Phần cứng/Phần mềm)
+        LoRa
+        LoRaWan
+        MQTT
+        Unix Socket
+        MongoDB
+    Cơ sở lý thuyết về các phần mềm, công cụ hỗ trợ trong quá trình thực hiện khóa luận
+        - Git và GitHub
+            + Giới thiệu Git và GitHub
+            + Cách tổ chức các thư mục của đề trên trong Git
+            + Lợi ích của việc sử dụng Git và GitHub
+        - Slack
+        - Virtualbox (Ảo hóa)
