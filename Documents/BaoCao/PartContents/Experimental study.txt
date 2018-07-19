@@ -1,6 +1,14 @@
 2.2 Experimental Study
     2.2.1 Components in the system
         2.2.1.1 LoRa and LoRaWan
+        Lora, stands for Long Range Radio, is a patented digital wireless data communication technology developed by Cycleo, and acquired by Semtech in 2012. Lora enables very-long-range transmissions (more than 10 km in rural areas) with low power consumption.
+        LoRa uses a modulation technique called Chirp Spread Spectrum. According to Semtech publication, this technique reduces the complication and accuracy requirement of receivers that need to achieve to decode data. In addition, LoRa does not require high transmit power to transmit to a receiver at a long distance cause the receiver can receive data even if received signal strength lower than ambient noise.  
+        Working bandwidths of LoRa for regions of the world:
+            868 MHz for Europe
+            915 MHz for North America
+            433 MHz band for Asia
+        The technology is presented in two parts — Lora, the physical layer and LoRaWAN, the upper layers.
+        
         2.2.1.2 MQTT
         2.2.1.3 Unix Socket
         2.2.1.4 MongoDB
