@@ -1,14 +1,15 @@
 2.2 Experimental Study
-    Cơ sở lý thuyết về các thành phần khác trong hệ thống (Phần cứng/Phần mềm)
-        LoRa
-        LoRaWan
-        MQTT
-        Unix Socket
-        MongoDB
-    Cơ sở lý thuyết về các phần mềm, công cụ hỗ trợ trong quá trình thực hiện khóa luận
-        - Git và GitHub
+    2.2.1 Components in the system
+        2.2.1.1 LoRa and LoRaWan
+        2.2.1.2 MQTT
+        2.2.1.3 Unix Socket
+        2.2.1.4 MongoDB
+        2.2.1.5 Sensors and modules: SKU0186, SHT11, BMP180, RFM96, ESP8266, TP4056
+    2.2.2 IDEs, software, and tools
+        2.2.2.1 Git and GitHub
             + Giới thiệu Git và GitHub
             + Cách tổ chức các thư mục của đề trên trong Git
             + Lợi ích của việc sử dụng Git và GitHub
-        - Slack
-        - Virtualbox (Ảo hóa)
+        2.2.2.2 Slack
+        2.2.2.3 Virtualbox
+        2.2.2.4 Visual Studio Code
