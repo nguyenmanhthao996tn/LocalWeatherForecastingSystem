@@ -3,7 +3,7 @@
 
 String inputString = "";
 boolean stringComplete = false;
-int counter = 0;
+unsigned long now, lastCounter;
 
 void serialEvent()
 {
@@ -42,22 +42,24 @@ void setup()
 
 void loop()
 {
+  now = millis();
+  
   if (stringComplete)
   {
-    if ((inputString.charAt(33) == '\r') && (inputString.charAt(34) == '\n') && (counter >= 5))
+    if ((inputString.charAt(33) == '\r') && (inputString.charAt(34) == '\n') && (now - lastCounter > 300000))
     { // Check if string is correct
+      lastCounter = now;
+      
       LoRa.beginPacket();
       LoRa.print(inputString.substring(0, 33));
       LoRa.endPacket();
 
       Serial.println(inputString.substring(0, 33));
-      counter = 0;
     }
 
     inputString = "";
     inputString.setCharAt(33, '\0');
     inputString.setCharAt(34, '\0');
-    counter++;
     stringComplete = false;
   }
 }
