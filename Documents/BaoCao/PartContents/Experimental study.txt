@@ -16,6 +16,14 @@
                 QoS 2 - Exactly once: The broker/client sends only one packet to the sender to confirm that the receiving process is successful
         
         2.2.1.3 Unix Socket
+            Sockets enable communication between two processes in the same computer or different computer. It's a method to communicate with other processes via standard Unix file descriptors. In the Unix environment, every I/O operation is done by reading or writing to a file descriptor. A file descriptor is an integer associated with an open file such as text files, network connections, etc.
+            Sockets were first introduced in 2.1BSD and edited to current form in 4.2BSD. Socket feature is available to most popular UNIX system.
+            A Unix Socket is usually used in a server-client framework. Most protocols like FTP, SMTP and POP3 use socket to establish a connection between server and client to transmit data.
+            There are four types of sockets available to the users.
+                Stream Sockets
+                Datagram Sockets
+                Raw Sockets
+                Sequenced Packet Sockets
         2.2.1.4 MongoDB
         2.2.1.5 Sensors and modules
             SKU0186
