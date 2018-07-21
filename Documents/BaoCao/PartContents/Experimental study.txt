@@ -25,6 +25,29 @@
                 Raw Sockets
                 Sequenced Packet Sockets
         2.2.1.4 MongoDB
+            MongoDB is a cross-platform document-oriented database. It is higher performance and easier to scale than RDBMS. Documents of MongoDB have the same structure as JSON. MongoDB is first introduced by MongoDB Inc in February 2009. After that, MongoDB quickly developed into one of the most popular NoSQL databases.
+            The current version of MongoDB is 4.1.1 published at Git Repository: github.com/mongodb/mongo.
+
+            Relational concepts in RDBMS
+                Database	Database
+                Table	Collection
+                Tuple/Row	Document
+                Column	Field
+                Table Join	Embedded Documents
+
+            Main feauture
+                Schema less
+                High avalability by cluster
+                Structure of a single object is clear
+                No complex joins
+                Deep query-ability
+                Tuning
+                Ease of scale-out
+                Uses internal memory for storing the (windowed) working set, enabling faster access of data
+
+            Use case
+                Big Data
+                Content Management
         2.2.1.5 Sensors and modules
             SKU0186
             SHT11
