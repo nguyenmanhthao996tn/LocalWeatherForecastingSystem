@@ -141,9 +141,40 @@
             
     2.2.2 IDEs, software, and tools
         2.2.2.1 Git and GitHub
-            + Giới thiệu Git và GitHub
-            + Cách tổ chức các thư mục của đề trên trong Git
-            + Lợi ích của việc sử dụng Git và GitHub
+            Git is a version control system developed by Linus Torvalds in 2005, with the purpose of developing Linux kernel at the beginning. Nowadays, Git becomes the most popular version control system. Git is an open source application with the GPL2 license.
+            Designed by Linus Torvalds
+            Developed by Junio Hamano and others
+            First publish in April 7th, 2005
+            Repository https://git.kernel.org/pub/scm/git/git.git/
+            Platform Linux, Windows, OS X
+            Homepage git-scm.com
+            
+            GitHub is a service that provides web-based Git source code repositories for software development projects. GitHub offers both paid and free versions for accounts. Open source projects will be offered free storage. As of June 2018, GitHub has more than 40.1 million users, making it the largest source code server in the world. Github has become a trend in the open source development community. Even many developers have begun to consider Git as a substitute for resumes and some employers require applicants to provide a link to the Github account to evaluate candidates. Formally acquired by Microsoft on June 4th, 2018 for $ 7.5 billion.
+            Founded in February 8th, 2008
+            Headquaters in San Francisco, California, U.S
+            Founders: Tom Preston-Werner, Chris Wanstrath, PJ Hyett
+            
+            Our Git repository is at https://github.com/nguyenmanhthao996tn/ktln
+            The repository has 3 main folders:
+                Documents: Contains documents like related papers that relate to this thesis, report, testing results, cost, etc.
+                PCBs: Contains all hardware designs.
+                SourceCode: Contains source code of server and firmware of other components
+            
         2.2.2.2 Slack
+            Slack is a chat platform or a set of proprietary team collaboration tools and services. First introduced in August 2013, Slack is developed by Slack Technologies and its original author is Stewart Butterfield. Slack's users can be able to join conversations on different channels. Moreover, Slack provides many features, integration tools, and plugins. Typically, Git notifications are integrated through Github's Hook feature. Besides, it's free for everyone.
+        
         2.2.2.3 Virtualbox
+            VirtualBox is a free, open-source powerful x86 and AMD64/Intel64 virtualization software. It supports on many platforms such as Windows, Linux, MacOS. VirtualBox is compatible with most 32-bit and 64-bit operating systems but not require additional virtualized hardware. In additional, VirtualBox provides a powerful Guest Additions mode that helps user can interact to the virtual machine much easier.
+
+            Original author(s)	Innotek GmbH
+            Developer(s)	Oracle Corporation
+            Initial release	17 January 2007
+            Repository	https://www.virtualbox.org/browser/vbox/trunk
+            Written in	C, C++, x86 Assembly
+            Operating system	Windows, macOS, Linux
+            License	Base Package: GNU General Public License version 2
+            
         2.2.2.4 Visual Studio Code
+            Visual Studio Code is a combination of a text editor and supporting tools that developers need such as an integrated terminal, Git client, plugins, code formatting feature, etc
+            Visual Studio Code is a free, open source, cross-platform. Developed by Microsoft and first published in April 29th, 2015. It's repository: github.com/Microsoft/vscode
+        
