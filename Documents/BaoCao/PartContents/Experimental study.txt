@@ -139,8 +139,6 @@
                     Operating Current: ~80 mA
                     Operating Temperature Range: –40°C ~ 125°C
             
-            Standalone Linear Li-lon Battery Charger TP4056
-            
     2.2.2 IDEs, software, and tools
         2.2.2.1 Git and GitHub
             + Giới thiệu Git và GitHub
