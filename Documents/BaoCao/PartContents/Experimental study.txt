@@ -161,5 +161,11 @@
                 SourceCode: Contains source code of server and firmware of other components
             
         2.2.2.2 Slack
+            Slack is a chat platform or a set of proprietary team collaboration tools and services. First introduced in August 2013, Slack is developed by Slack Technologies and its original author is Stewart Butterfield. Slack's users can be able to join conversations on different channels. Moreover, Slack provides many features, integration tools, and plugins. Typically, Git notifications are integrated through Github's Hook feature. Besides, it's free for everyone.
+        
         2.2.2.3 Virtualbox
+            
+            
         2.2.2.4 Visual Studio Code
+        
+        
