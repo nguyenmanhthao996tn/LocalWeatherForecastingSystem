@@ -24,6 +24,7 @@
                 Datagram Sockets
                 Raw Sockets
                 Sequenced Packet Sockets
+                
         2.2.1.4 MongoDB
             MongoDB is a cross-platform document-oriented database. It is higher performance and easier to scale than RDBMS. Documents of MongoDB have the same structure as JSON. MongoDB is first introduced by MongoDB Inc in February 2009. After that, MongoDB quickly developed into one of the most popular NoSQL databases.
             The current version of MongoDB is 4.1.1 published at Git Repository: github.com/mongodb/mongo.
@@ -45,8 +46,33 @@
             Use case
                 Big Data
                 Content Management
+                
         2.2.1.5 Sensors and modules
             Weather Station with Anemometer/Wind vane/Rain bucket SKU:SEN0186
+                Equipped with a rain bucket and wind accelerometer, the SKU:SEN0186 from dfrobot is a popular solution to many weather monitoring applications at a reasonable price.
+                Specification
+                    Operating voltage: 5V
+                    Temperature range: -40~80℃
+                    Humidity range: 0~99%
+                    Package Dimension: 20*18*30 CM
+                    Weight: 4480g
+                Application
+                    Weather station
+                    Weather monitor
+                Data interface
+                    Serial : 9600bps interval: 1s
+                Format of Data Output
+                    35 bytes per second, including the end CR/LF
+                    For example: c000s000g000t086r000p000h53b10020\r\n
+                        c000： Air direction, 0 degree
+                        s000： Air speed (1 minute), 0 miles per hour
+                        g000： Air speed (5 minutes), 0 miles per hour
+                        t086： Temperature, 86 Fahrenheit Degree
+                        r000： Rainfall (1 hour), 0 inches
+                        p000： Rainfall (24 hours), 0 inches
+                        h53： Humidity, 53%
+                        b10020： Atmosphere, 1002 hpa
+                        
             Temperature/Humidity Sensor SHT11
             Barometric Pressure Sensor BMP180
             Ultra-long Range Transceiver RFM95
