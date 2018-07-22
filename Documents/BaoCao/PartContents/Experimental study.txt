@@ -85,6 +85,19 @@
                 The version used in this thesis is modified with protective case protecting the sensor from physical environmental factors like water, dust, etc.
                 
             Barometric Pressure Sensor BMP180
+                BMP180 is alow-cost sensing solution for measuring barometric pressure and temperature produced by Bosch. Because of pressure changes with altitude, this sensor can also be used as an altimeter.
+                Specifications:
+                    Operating voltage: 1.8 ~ 3.6V
+                    Operating Current: 0.5uA tại 1Hz
+                    Interface: I2C
+                    Pull-up resistors integrated on the I2C pins
+                    Max interface speed: 3.5MHz
+                    Low error: 0.03hPa (25cm)
+                    Integrated calibrate module available
+                    Pressure Measuring band: 300hPa ~ 1100hPa (+9000m to -500m)
+                    Weight: 1.18g
+                    Package size: 21mm x 18mm
+            
             Ultra-long Range Transceiver RFM95
             Wifi Module ESP8266-V12
             Standalone Linear Li-lon Battery Charger TP4056
