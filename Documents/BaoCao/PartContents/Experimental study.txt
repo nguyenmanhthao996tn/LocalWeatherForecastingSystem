@@ -175,5 +175,6 @@
             License	Base Package: GNU General Public License version 2
             
         2.2.2.4 Visual Studio Code
-        
+            Visual Studio Code is a combination of a text editor and supporting tools that developers need such as an integrated terminal, Git client, plugins, code formatting feature, etc
+            Visual Studio Code is a free, open source, cross-platform. Developed by Microsoft and first published in April 29th, 2015. It's repository: github.com/Microsoft/vscode
         
