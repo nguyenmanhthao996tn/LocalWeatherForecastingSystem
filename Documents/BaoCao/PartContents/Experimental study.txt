@@ -94,7 +94,7 @@
                     Max interface speed: 3.5MHz
                     Low error: 0.03hPa (25cm)
                     Integrated calibrate module available
-                    Pressure Measuring band: 300hPa ~ 1100hPa (+9000m to -500m)
+                    Pressure Measuring range: 300hPa ~ 1100hPa (+9000m to -500m)
                     Weight: 1.18g
                     Package size: 21mm x 18mm
             
@@ -127,6 +127,18 @@
                     Long range Irrigation Systems
             
             Wifi Module ESP8266-V12
+                The ESP8266-V12 is a low-cost Wi-Fi module which is highly rated for Internet and Wifi applications as well as transmission applications. The ESP8266 is an integrated chip designed for the needs of the Internet of Things (IoT). It provides a complete and closed Wi-Fi network solution that allows it to host applications or to reduce the load on all Wi-Fi network connections from the controller. The ESP8266 has powerful processing and storage capabilities that allow it to be integrated with other sensors, microcontrollers and application devices via GPIOs.
+                Specifications
+                    Producer: Espressif
+                    Certification: Wi-Fi Alliance
+                    Protocols: 802.11 b/g/n
+                    Frequency Range: 2.4G ~ 2.5G
+                    CPU: Tensilica L106 32-bit processor
+                    Peripheral Interface: UART/SDIO/SPI/I2C
+                    Operating Voltage 2.5V ~ 3.6V
+                    Operating Current: ~80 mA
+                    Operating Temperature Range: –40°C ~ 125°C
+            
             Standalone Linear Li-lon Battery Charger TP4056
             
     2.2.2 IDEs, software, and tools
