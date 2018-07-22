@@ -1,0 +1,149 @@
+2.2 Experimental Study
+    2.2.1 Components in the system
+        2.2.1.1 LoRa and LoRaWan
+        LoRa, stands for Long Range Radio, is a wireless communication technology developed by Cycleo, and bought by Semtech in 2012. LoRa uses a modulation technique called Chirp Spread Spectrum. According to Semtech publication, this technique reduces the complication and accuracy requirement of receivers that need to achieve to decode data. In addition, LoRa does not require high transmit power to transmit to a receiver at a long distance cause the receiver can receive data even if received signal strength lower than ambient noise.  
+        Working bandwidths of LoRa for regions of the world:
+            868 MHz for Europe
+            915 MHz for North America
+            433 MHz band for Asia
+        The technology is presented in two parts — Lora, the physical layer and LoRaWAN, the upper layers. LoRaWan is a protocol based on LoRa developed by LoRa Alliance. It's used in the industrial, scientific and medical (ISM) radio bands. A LoRaWan network structure usually is a star-of-stars model. Gateways are bridges forwarding messages between end nodes and server at the backend. Gateways connect to the internet via normal IP connections. Meanwhile, end nodes wirelessly single-hop connect to one or many gateways. A single LoRaWAN Gateway can cover up to 10Km. With the benefits of LoRaWAN's distance, The Things Network covers Amsterdam with just 10 gateways and costs $1200.
+        
+        2.2.1.2 MQTT
+            MQTT was developed by IBM and Eurotech, the latest version is MQTT 3.1.1. MQTT (Message Queuing Telemetry Transport) is a publish / subscribe protocol commonly used for Internet of Things devices with low bandwidth, high reliability and the ability to be used in unstable networks. It is based on a Broker, and is designed to be open and non-specific to any application, very simple and easy to integrate. MQTT is suitable for M2M (Mobile to Mobile) applications, WSN (Wireless Sensor Networks) or IoT (Internet of Things).
+            There are 3 levels of QoS (Qualities of service) in MQTT:
+                QoS 0 – Almost once: The broker/client sends the data once, only TCP/IP protocol confirm the successful receiving
+                QoS 1 – At least once: The broker/client sends at least one successful receiving packet to the sender
+                QoS 2 - Exactly once: The broker/client sends only one packet to the sender to confirm that the receiving process is successful
+        
+        2.2.1.3 Unix Socket
+            Sockets enable communication between two processes in the same computer or different computer. It's a method to communicate with other processes via standard Unix file descriptors. In the Unix environment, every I/O operation is done by reading or writing to a file descriptor. A file descriptor is an integer associated with an open file such as text files, network connections, etc.
+            Sockets were first introduced in 2.1BSD and edited to current form in 4.2BSD. Socket feature is available to most popular UNIX system.
+            A Unix Socket is usually used in a server-client framework. Most protocols like FTP, SMTP and POP3 use socket to establish a connection between server and client to transmit data.
+            There are four types of sockets available to the users.
+                Stream Sockets
+                Datagram Sockets
+                Raw Sockets
+                Sequenced Packet Sockets
+                
+        2.2.1.4 MongoDB
+            MongoDB is a cross-platform document-oriented database. It is higher performance and easier to scale than RDBMS. Documents of MongoDB have the same structure as JSON. MongoDB is first introduced by MongoDB Inc in February 2009. After that, MongoDB quickly developed into one of the most popular NoSQL databases.
+            The current version of MongoDB is 4.1.1 published at Git Repository: github.com/mongodb/mongo.
+            Relational concepts in RDBMS
+                Database	Database
+                Table	Collection
+                Tuple/Row	Document
+                Column	Field
+                Table Join	Embedded Documents
+            Main feauture
+                Schema less
+                High avalability by cluster
+                Structure of a single object is clear
+                No complex joins
+                Deep query-ability
+                Tuning
+                Ease of scale-out
+                Uses internal memory for storing the (windowed) working set, enabling faster access of data
+            Use case
+                Big Data
+                Content Management
+                
+        2.2.1.5 Sensors and modules
+            Weather Station with Anemometer/Wind vane/Rain bucket SKU:SEN0186
+                Equipped with a rain bucket and wind accelerometer, the SKU:SEN0186 from dfrobot is a popular solution to many weather monitoring applications at a reasonable price.
+                Specification
+                    Operating voltage: 5V
+                    Temperature range: -40~80℃
+                    Humidity range: 0~99%
+                    Package Dimension: 20*18*30 CM
+                    Weight: 4480g
+                Application
+                    Weather station
+                    Weather monitor
+                Data interface
+                    Serial : 9600bps interval: 1s
+                Format of Data Output
+                    35 bytes per second, including the end CR/LF
+                    For example: c000s000g000t086r000p000h53b10020\r\n
+                        c000： Air direction, 0 degree
+                        s000： Air speed (1 minute), 0 miles per hour
+                        g000： Air speed (5 minutes), 0 miles per hour
+                        t086： Temperature, 86 Fahrenheit Degree
+                        r000： Rainfall (1 hour), 0 inches
+                        p000： Rainfall (24 hours), 0 inches
+                        h53： Humidity, 53%
+                        b10020： Atmosphere, 1002 hpa
+                        
+            Temperature/Humidity Sensor SHT10
+                SHT10 is designed by Sensirion The Sensor Company with a 14-bit-analog-to-digital converter and a serial interface circuit. It is a low-cost series sensor comparing to other SHT1x series. 
+                Specification
+                    Series: SHT10
+                    Type Humidity Accuracy %: ±3
+                    Type Temperature Accuracy °C: ±0.4
+                    Supply Voltage Range V: 2.4 to 5.5
+                    Interface: Digital Sbus
+                    Package Size: 7.5mm x 4.9mm x 2.6mm
+                The version used in this thesis is modified with protective case protecting the sensor from physical environmental factors like water, dust, etc.
+                
+            Barometric Pressure Sensor BMP180
+                BMP180 is alow-cost sensing solution for measuring barometric pressure and temperature produced by Bosch. Because of pressure changes with altitude, this sensor can also be used as an altimeter.
+                Specifications:
+                    Operating voltage: 1.8 ~ 3.6V
+                    Operating Current: 0.5uA tại 1Hz
+                    Interface: I2C
+                    Pull-up resistors integrated on the I2C pins
+                    Max interface speed: 3.5MHz
+                    Low error: 0.03hPa (25cm)
+                    Integrated calibrate module available
+                    Pressure Measuring range: 300hPa ~ 1100hPa (+9000m to -500m)
+                    Weight: 1.18g
+                    Package size: 21mm x 18mm
+            
+            Ultra-long Range Transceiver RFM95
+                The LoRa transceiver module RFM95 produced by HopeRF provides ultra-long range communication with minimizing current consumption. Using the Chirp Spread Spectrum modulation technique, the RFM95 can reduce the sensitivity to ~ -148dBm, roughly equal to the ambient noise level. Combined with the 20dBm Power Amplifier, the communication distance can reach up to 15km.
+                Specifications
+                    LoRa™ Modem
+                    168 dB maximum link budget
+                    +20 dBm - 100 mW constant RF output vs V supply
+                    +14 dBm high efficiency PA
+                    Programmable bit rate up to 300 kbps
+                    High sensitivity: down to -148 dBm
+                    Bullet-proof front end: IIP3 = -125 dBm
+                    Excellent blocking immunity
+                    Low RX current of 103 mA, 200 mA register retention
+                    Fully integrated synthesizer with a resolution of 61 Hz
+                    FSK, GFSK, MSK, GMSK, LoRa™ and OOK modulation
+                    Built-in bit synchronizer for clock recovery
+                    Preamble detection
+                    127 dB Dynamic Range RSSI
+                    Automatic RF Sense and CAD with ultra-fast AFC
+                    Packet engine up to 256 bytes with CRC
+                    Built-in temperature sensor and low battery indicator
+                    Package Size： 16*16mm   
+                Applications
+                    Automated Meter Reading 
+                    Home and Building Automation 
+                    Wireless Alarm and Security Systems 
+                    Industrial Monitoring and Control 
+                    Long range Irrigation Systems
+            
+            Wifi Module ESP8266-V12
+                The ESP8266-V12 is a low-cost Wi-Fi module which is highly rated for Internet and Wifi applications as well as transmission applications. The ESP8266 is an integrated chip designed for the needs of the Internet of Things (IoT). It provides a complete and closed Wi-Fi network solution that allows it to host applications or to reduce the load on all Wi-Fi network connections from the controller. The ESP8266 has powerful processing and storage capabilities that allow it to be integrated with other sensors, microcontrollers and application devices via GPIOs.
+                Specifications
+                    Producer: Espressif
+                    Certification: Wi-Fi Alliance
+                    Protocols: 802.11 b/g/n
+                    Frequency Range: 2.4G ~ 2.5G
+                    CPU: Tensilica L106 32-bit processor
+                    Peripheral Interface: UART/SDIO/SPI/I2C
+                    Operating Voltage 2.5V ~ 3.6V
+                    Operating Current: ~80 mA
+                    Operating Temperature Range: –40°C ~ 125°C
+            
+    2.2.2 IDEs, software, and tools
+        2.2.2.1 Git and GitHub
+            + Giới thiệu Git và GitHub
+            + Cách tổ chức các thư mục của đề trên trong Git
+            + Lợi ích của việc sử dụng Git và GitHub
+        2.2.2.2 Slack
+        2.2.2.3 Virtualbox
+        2.2.2.4 Visual Studio Code
