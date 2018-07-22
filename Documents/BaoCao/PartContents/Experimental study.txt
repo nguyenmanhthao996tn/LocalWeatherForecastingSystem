@@ -73,7 +73,17 @@
                         h53： Humidity, 53%
                         b10020： Atmosphere, 1002 hpa
                         
-            Temperature/Humidity Sensor SHT11
+            Temperature/Humidity Sensor SHT10
+                SHT10 is designed by Sensirion The Sensor Company with a 14-bit-analog-to-digital converter and a serial interface circuit. It is a low-cost series sensor comparing to other SHT1x series. 
+                Specification
+                    Series: SHT10
+                    Type Humidity Accuracy %: ±3
+                    Type Temperature Accuracy °C: ±0.4
+                    Supply Voltage Range V: 2.4 to 5.5
+                    Interface: Digital Sbus
+                    Package Size: 7.5mm x 4.9mm x 2.6mm
+                The version used in this thesis is modified with protective case protecting the sensor from physical environmental factors like water, dust, etc.
+                
             Barometric Pressure Sensor BMP180
             Ultra-long Range Transceiver RFM95
             Wifi Module ESP8266-V12
