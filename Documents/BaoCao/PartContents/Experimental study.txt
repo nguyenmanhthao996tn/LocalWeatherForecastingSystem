@@ -164,7 +164,15 @@
             Slack is a chat platform or a set of proprietary team collaboration tools and services. First introduced in August 2013, Slack is developed by Slack Technologies and its original author is Stewart Butterfield. Slack's users can be able to join conversations on different channels. Moreover, Slack provides many features, integration tools, and plugins. Typically, Git notifications are integrated through Github's Hook feature. Besides, it's free for everyone.
         
         2.2.2.3 Virtualbox
-            
+            VirtualBox is a free, open-source powerful x86 and AMD64/Intel64 virtualization software. It supports on many platforms such as Windows, Linux, MacOS. VirtualBox is compatible with most 32-bit and 64-bit operating systems but not require additional virtualized hardware. In additional, VirtualBox provides a powerful Guest Additions mode that helps user can interact to the virtual machine much easier.
+
+            Original author(s)	Innotek GmbH
+            Developer(s)	Oracle Corporation
+            Initial release	17 January 2007
+            Repository	https://www.virtualbox.org/browser/vbox/trunk
+            Written in	C, C++, x86 Assembly
+            Operating system	Windows, macOS, Linux
+            License	Base Package: GNU General Public License version 2
             
         2.2.2.4 Visual Studio Code
         
