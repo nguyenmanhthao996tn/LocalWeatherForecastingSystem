@@ -46,7 +46,7 @@ void loop()
   
   if (stringComplete)
   {
-    if ((inputString.charAt(33) == '\r') && (inputString.charAt(34) == '\n') && (now - lastCounter > 300000))
+    if ((inputString.charAt(33) == '\r') && (inputString.charAt(34) == '\n') && (now - lastCounter > 5000))
     { // Check if string is correct
       lastCounter = now;
       
