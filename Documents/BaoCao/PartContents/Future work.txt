@@ -1,0 +1,16 @@
+FUTURE WORK
+
+Thiết kế Node nhỏ gọn, có tính thẩm mỹ hơn, tiết kiệm năng lượng.
+
+Hiện tại, thuật toán logic mờ chỉ căn cứ vào cơ sở lý thuyết do thực nghiệm cho thấy áp suất giảm đột ngột (kèm theo các cơ sở lý thuyết khác như nhiệt độ, độ ẩm…) thì khoảng 4 giờ tiếp theo thì sẽ xảy ra hiện tượng mưa. Trong đề mục hướng phát triển, để có thể dự đoán được trong khoảng thời gian xa hơn, có thể phát triển thêm camera để chụp ảnh và phân tích mây, kết hợp với các trạm đặt cách nhau khoảng 10-15 km thì có thể dự đoán thời gian xa hơn nữa.
+
+Tăng thêm số lượng Node đo thời tiết, đảm bảo dữ liệu thu thập chính xác và đầy đủ nhất.
+
+Phát triển hệ thống thành một mạng lưới quan trắc có thể theo dõi ở một vùng rộng lớn.
+
+Thêm chức năng update firmware OTA cho Node và Gateway, cải thiện tính tiện dụng và giảm chi phí phát sinh khi cần update firmware
+
+Thiết kế mạch Gateway có thêm nhiều kết nối Internet, ví dụ như Ethernet, đảm bảo tính tiện dụng khi lắp đặt
+
+Phát triển hệ thống và giải thuật Self Hardware Failure Diagnostic, cải thiện tính ổn định của phần cứng đặc biệt là node quan trắc thời tiết khi hoạt động liên tục ngoài trời và sẽ thông báo khi phần cứng có vấn đề
+
