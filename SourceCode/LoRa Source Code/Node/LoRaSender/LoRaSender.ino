@@ -52,12 +52,13 @@ void loop()
     if ((inputString.charAt(33) == '\r') && (inputString.charAt(34) == '\n') && (now - lastCounter > 5000))
     { // Check if string is correct
       lastCounter = now;
+      inputString.setCharAt(35, '\0');
 
       LoRa.beginPacket();
-      LoRa.print(inputString.substring(0, 33));
+      LoRa.print(inputString.substring(0, 35));
       LoRa.endPacket();
 
-      Serial.println(inputString.substring(0, 33));
+      Serial.println(inputString.substring(0, 35));
     }
 
     inputString = "";
