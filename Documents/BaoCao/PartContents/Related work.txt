@@ -1,0 +1,18 @@
+RELATED WORK
+
+Nghiên cứu ở nước ngoài (International research)
+Tác giả Saktaya Suksri and Warangkhana Kimpan, bài báo "Neural Network training model for weather forecasting using Fireworks Algorithm". Công bố tại International Computer Science and Engineering Conference (ICSEC) ngày 14-17 Dec. 2016
+
+Trường đại học, bằng Master. Tác giả Andrew Culclasure, đề tài "Using Neural Networks to Provide Local Weather Forecasts", Công bố tại Electronic Theses & Dissertations Georgia Southern University Spring 2013.
+
+Tác giả Kumar Abhishek, bài báo "Weather Forecasting Model using Artificial Neural Network", được đăng trên tạp chí Procedia Technology Volume 4, 2012, Pages 311-318. 
+
+Nghiên cứu trong nước (Domestic research)
+Việt Nam là một nước nằm trong khu vực có thời tiết thay đổi phức tạp, biến hóa khôn lường, thường xuyên xảy ra thiên tai lũ lụt, đặc biệt là các tỉnh thành miền Trung và miền Bắc nước ta, nên việc xây dựng các trạm quan trắc dự báo thời tiết đang rất được chú trọng ở Việt Nam.
+
+Các trạm quan trắc thời tiết ở Việt Nam, hầu như có qui mô lớn trên diện rộng, chưa áp dụng phát triển ở từng địa phương khu vực. Các trang thiết bị đều được nhập từ nước ngoài với chi phí đắt đỏ và độ chính xác không cao do phạm vi quan trắc còn lớn và số lượng trạm quan trắc chưa nhiều
+
+Trong cuộc thi Nhà sáng tạo Việt Nam với Intel Galileo năm 2015 (VMIG 2015), nhóm sinh viên Trường Đại học Khoa học Tự nhiên đã giành giải Ba với đề tài "Trạm quan trắc môi trường và cảnh báo sớm thiên tai". Hệ thống gồm 3 thành phần chính: hệ thống cảm biến xử lý dữ liệu, board xử lý trung tâm là Intel Galileo và cuối cùng là một Web hiển thị thông tin và đưa ra cảnh báo khi vượt mức. Đề tài nghiên cứu của nhóm bạn có ứng dụng rất cao và được hội đồng đánh giá cao, nhưng hệ thống vẫn còn một số bất cập đó là, hệ thống chỉ mang tính cảnh báo tại vị trí và thời điểm hiện tại chưa có tính dự đoán thời tiết xảy ra tương lai.
+
+Công ty Mimosatek - Giải Nhất Nhóm Khởi Nghiệp Cuộc Thi Venture Cup 2015 với sản phẩm “Hệ thống quản lý tưới chính xác”, một thiết bị dùng để đo các giá trị thời tiết, tính toán phân tích thông tin để biết được lượng nước cần tưới cho từng loại cây trồng, tất cả những việc này được quản lý và điều khiển thông qua điện thoại thông minh. Hệ thống này chỉ đo giá trị thời tiết tại thời điểm hiện tại, để thực hiện tưới nước hợp lý và cảnh báo khi môi trường bất lợi chưa có mang tính dự báo thời tiết tiếp sắp tới.
+
