@@ -2,10 +2,13 @@ RELATED WORK
 
 Nghiên cứu ở nước ngoài (International research)
 Tác giả Saktaya Suksri and Warangkhana Kimpan, bài báo "Neural Network training model for weather forecasting using Fireworks Algorithm". Công bố tại International Computer Science and Engineering Conference (ICSEC) ngày 14-17 Dec. 2016
+Bài báo trình bày phương pháp sử dụng mô hình Artificial Neural Networks with supervised learning paradigm để dự đoán giá trị nhiệt độ trung bình trong ngày với dữ liệu đầu vào lấy dự trạm khí tượng thủy văn đặt ở Bangkok. Mô hình Artificial Neural Network được train bởi thuật toán Fireworks - thuật toán tối ưu hóa việc train ANN được phát triển bởi Swarm Intelligence Algorithm. Tuy nhiên, bài báo chỉ tập trung phát triển thuật toán và nghiên cứu chứ không phát triển thành sản phẩm.
 
 Trường đại học, bằng Master. Tác giả Andrew Culclasure, đề tài "Using Neural Networks to Provide Local Weather Forecasts", Công bố tại Electronic Theses & Dissertations Georgia Southern University Spring 2013.
+Đề tài tập trung vào việc thực hiện khảo sát trên các mô hình dự đoán thời tiết sử dụng ANN đã có tại thời điểm thực hiện. Ngoài ra, đề tài cũng giới thiệu một thí nghiệm của tác giả về việc sử dụng ANN để dự đoán nhiệt độ.
 
 Tác giả Kumar Abhishek, bài báo "Weather Forecasting Model using Artificial Neural Network", được đăng trên tạp chí Procedia Technology Volume 4, 2012, Pages 311-318. 
+Bài báo xem xét độ khả thi của phương pháp sử dụng ANN với các thông số hàm truyền, số lượng lớp ẩn và neural khác nhau trong việc dự đoán thời tiết, cụ thể hơn là dự đoán nhiệt độ tối đa trong một năm.
 
 Nghiên cứu trong nước (Domestic research)
 Việt Nam là một nước nằm trong khu vực có thời tiết thay đổi phức tạp, biến hóa khôn lường, thường xuyên xảy ra thiên tai lũ lụt, đặc biệt là các tỉnh thành miền Trung và miền Bắc nước ta, nên việc xây dựng các trạm quan trắc dự báo thời tiết đang rất được chú trọng ở Việt Nam.
