@@ -10,7 +10,6 @@ int stcOutputData_Create(stcOutputData_t **stcOutputDataStructure)
 
   if ((*stcOutputDataStructure) != NULL)
   {
-    (*stcOutputDataStructure)->dataString = NULL;
     (*stcOutputDataStructure)->airDirection = 0;
     (*stcOutputDataStructure)->airSpeed1Min = 0;
     (*stcOutputDataStructure)->airSpeed5Min = 0;
@@ -71,9 +70,6 @@ int stcOutputData_Parse(char *inputString, stcOutputData_t **stcOutputDataStruct
       (*stcOutputDataStructure)->rainfall24Hour = (uint16_t)atoi(rainfall24HourStr);
       (*stcOutputDataStructure)->humidity = (uint8_t)atoi(humidityStr);
       (*stcOutputDataStructure)->atmosphere = (uint32_t)atoi(atmosphereStr);
-
-      (*stcOutputDataStructure)->dataString = (char *)malloc(strlen(inputString));
-      strcpy(((*stcOutputDataStructure)->dataString), inputString);
     }
     else
     {
@@ -90,7 +86,7 @@ int stcOutputData_Parse(char *inputString, stcOutputData_t **stcOutputDataStruct
 
 void stcOutputData_ToString(stcOutputData_t *stcOutputDataStructure, char *buffer)
 {
-  sprintf(buffer, "DataString: %s\r\nAirDirection: %d\r\nAirSpeed1Min: %d\r\nAirSpeed5Min: %d\r\nTemperature: %d\r\nRainfall1Hour: %d\r\nRainfall24Hour: %d\r\nHumidity: %d\r\nAtmosphere: %d", stcOutputDataStructure->dataString,
+  sprintf(buffer, "AirDirection: %d\r\nAirSpeed1Min: %d\r\nAirSpeed5Min: %d\r\nTemperature: %d\r\nRainfall1Hour: %d\r\nRainfall24Hour: %d\r\nHumidity: %d\r\nAtmosphere: %d",
           stcOutputDataStructure->airDirection,
           stcOutputDataStructure->airSpeed1Min,
           stcOutputDataStructure->airSpeed5Min,
@@ -118,11 +114,6 @@ void stcOutputData_Delete(stcOutputData_t *stcOutputDataStructure)
 {
   if (stcOutputDataStructure != NULL)
   {
-    if (stcOutputDataStructure->dataString != NULL)
-    {
-      free(stcOutputDataStructure->dataString);
-    }
-
     free(stcOutputDataStructure);
   }
 }

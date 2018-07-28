@@ -2,8 +2,13 @@
 #include <LoRa.h>
 #include "OutputData.h"
 
+struct
+{
+  char str[128];
+  int currentIndex;
+} inputString;
+
 char sendingDataStringBuffer[255];
-String inputString = "";
 boolean stringComplete = false;
 unsigned long now, lastSenderCounter, lastGetDataCounter;
 
@@ -12,12 +17,18 @@ uint16_t windDirectionCounterArray[] = {0, 0, 0, 0, 0, 0, 0, 0};
 stcOutputData_t *averageDataObject, *newDataObject;
 uint16_t objectCounter;
 
+void clearInputString(void)
+{
+  memset(inputString.str, 0, 128);
+  inputString.currentIndex = 0;
+}
+
 void serialEvent()
 {
   while (Serial.available())
   {
     char inChar = (char)Serial.read();
-    inputString += inChar;
+    inputString.str[inputString.currentIndex++] = inChar;
     if (inChar == '\n')
     {
       stringComplete = true;
@@ -82,7 +93,7 @@ void setup()
   lastSenderCounter = 0;
   stcOutputData_Create(&averageDataObject);
 
-  inputString.reserve(128); // allocate 128 bytes buffer in memory for manipulating Strings
+  clearInputString();
 
   Serial.begin(9600);
   while (!Serial)
@@ -109,13 +120,13 @@ void loop()
   if (stringComplete)
   {
     // Check counter to get data every 5 seconds
-    if ((inputString.charAt(33) == '\r') && (inputString.charAt(34) == '\n') && (now - lastGetDataCounter > 5000))
+    if ((inputString.str[33] == '\r') && (inputString.str[34] == '\n') && (now - lastGetDataCounter > 5000))
     { // Check if string is correct
       lastGetDataCounter = now;
-      inputString.setCharAt(35, '\0');
+      inputString.str[35] = '\0';
 
       // Create and parse new object
-      stcOutputData_Parse(inputString.c_str(), &newDataObject);
+      stcOutputData_Parse(inputString.str, &newDataObject);
 
       // Add values from new object to average object
       addNewObjectToAverageObject(averageDataObject, newDataObject);
@@ -150,37 +161,36 @@ void loop()
       }
 
       // Delete new object
-      stcOutputData_Delete(newDataObject);
+      // stcOutputData_Delete(newDataObject); // No need to delete because there is no malloc new memory if the point is not equal to NULL
 
       Serial.print("Get: ");
-      Serial.println(inputString.substring(0, 35));
+      Serial.println(inputString.str);
     }
 
-    // Check counter to send on LoRa every 5 mins
-    if ((now - lastSenderCounter > 300000) && (objectCounter > 15))
-    {
-      lastSenderCounter = now;
+       // Check counter to send on LoRa every 5 mins
+       if ((now - lastSenderCounter > 300000) && (objectCounter > 15))
+       {
+         lastSenderCounter = now;
+    
+         // Get air direction value and set to average object
+         averageDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
+    
+         stcOutputData_ToDataString(averageDataObject, sendingDataStringBuffer);
+    
+        //  LoRa.beginPacket();
+        //  LoRa.print(sendingDataStringBuffer);
+        //  LoRa.endPacket();
+    
+         // Reset all object buffer
+         memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
+         objectCounter = 0;                                                               // objectCounter
+         stcOutputData_Create(&averageDataObject);                                        // averageDataObject
+    
+         Serial.print("Sent: ");
+         Serial.println(sendingDataStringBuffer);
+       }
 
-      // Get air direction value and set to average object
-      averageDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
-
-      stcOutputData_ToDataString(averageDataObject, sendingDataStringBuffer);
-
-      LoRa.beginPacket();
-      LoRa.print(sendingDataStringBuffer);
-      LoRa.endPacket();
-
-      // Reset all object buffer
-      memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
-      objectCounter = 0;                                                               // objectCounter
-      stcOutputData_Create(&averageDataObject);                                        // averageDataObject
-
-      Serial.println("Sent");
-    }
-
-    inputString = "";
-    inputString.setCharAt(33, '\0');
-    inputString.setCharAt(34, '\0');
+    clearInputString();
     stringComplete = false;
   }
 }

@@ -17,7 +17,6 @@
 /**************** DATA STRUCTURE ****************/
 typedef struct
 {
-  char *dataString;
   uint16_t airDirection;
   uint16_t airSpeed1Min;
   uint16_t airSpeed5Min;
