@@ -157,7 +157,7 @@ void loop()
     }
 
     // Check counter to send on LoRa every 5 mins
-    if (now - lastSenderCounter > 300000)
+    if ((now - lastSenderCounter > 300000) && (objectCounter > 15))
     {
       lastSenderCounter = now;
 
