@@ -24,25 +24,29 @@ server.on('clientConnected', function (client) {
 
 // fired when a message is received
 server.on('published', function (packet, client) {
-  console.log('Publish ', packet.payload.toString());
-  var client = new net.Socket();
+  var str = packet.payload.toString();
+  console.log('Publish ' + str + ' | Length: ' + str.length);
 
-  client.on('data', function (data) {
-    console.log('Received: ' + data);
-    client.destroy(); // kill client after server's response
-  });
+  if ((str.length == 35) && (str[33] == '\r') && (str[34] == '\n')) { 
+    var client = new net.Socket();
 
-  client.on('close', function () {
-    console.log('Connection closed');
-  });
+    client.on('data', function (data) {
+      console.log('Received: ' + data);
+      client.destroy(); // kill client after server's response
+    });
 
-  client.connect(5001, SERVER_NAME, function () {
-    console.log('Connected');
+    client.on('close', function () {
+      console.log('Connection closed');
+    });
 
-    var weatherDataWriteRequestObject = { code: 1 };
-    weatherDataWriteRequestObject.data = packet.payload.toString();
-    client.write(JSON.stringify(weatherDataWriteRequestObject));
-  });
+    client.connect(5001, SERVER_NAME, function () {
+      console.log('Connected');
+
+      var weatherDataWriteRequestObject = { code: 1 };
+      weatherDataWriteRequestObject.data = packet.payload.toString();
+      client.write(JSON.stringify(weatherDataWriteRequestObject));
+    });
+  }
 });
 
 server.on('ready', setup);
