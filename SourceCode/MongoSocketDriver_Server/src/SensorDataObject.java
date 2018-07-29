@@ -21,7 +21,7 @@ public class SensorDataObject {
 
 		time = new Date(); // get current time
 
-		String[] arr = input.split("c|s|g|t|r|p|h|b");
+		String[] arr = input.split("c|s|g|t|r|p|h|b|\r\n");
 
 		try {
 			this.airDirection = Integer.parseInt(arr[1]);
