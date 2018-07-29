@@ -38,8 +38,8 @@ void serialEvent()
 
 uint16_t addToAverage(uint16_t averageValue, uint16_t counter, uint16_t newValue)
 {
-  uint32_t tempValue = averageValue * counter + newValue;
-  return (averageValue / (counter + 1));
+  uint32_t tempValue = (averageValue * counter) + newValue;
+  return (tempValue / (counter + 1));
 }
 
 uint16_t getMostAppearValue(const uint16_t valueArray[], uint16_t counterArray[], uint16_t size)
