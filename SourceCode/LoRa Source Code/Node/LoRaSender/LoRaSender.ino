@@ -44,17 +44,17 @@ uint16_t addToAverage(uint16_t averageValue, uint16_t counter, uint16_t newValue
 
 uint16_t getMostAppearValue(const uint16_t valueArray[], uint16_t counterArray[], uint16_t size)
 {
-  uint16_t maxCounter = counterArray[0];
+  uint16_t maxCounterIndex = 0;
   uint16_t i;
   for (i = 1; i < size; i++)
   {
-    if (maxCounter < counterArray[i])
+    if (valueArray[maxCounterIndex] < counterArray[i])
     {
-      maxCounter = counterArray[i];
+      maxCounterIndex = i;
     }
   }
 
-  return valueArray[maxCounter];
+  return valueArray[maxCounterIndex];
 }
 
 void addNewObjectToAverageObject(stcOutputData_t *averageDataObject, stcOutputData_t *newDataObject)
@@ -100,7 +100,7 @@ void setup()
     ;
 
   LoRa.setPins(10, 8, 2);
-  if (!LoRa.begin(868000000))
+  if (!LoRa.begin(868100000))
   {
     while (1)
       ;
@@ -111,6 +111,12 @@ void setup()
   LoRa.setSpreadingFactor(12);
   LoRa.setPreambleLength(8);
   LoRa.setSyncWord(0x24);
+
+  delay(500);
+
+  LoRa.beginPacket();
+  LoRa.print("Node 1");
+  LoRa.endPacket();
 }
 
 void loop()
@@ -132,32 +138,32 @@ void loop()
       addNewObjectToAverageObject(averageDataObject, newDataObject);
       switch (newDataObject->airDirection)
       {
-      case 0:
-        windDirectionCounterArray[0]++;
-        break;
-      case 45:
-        windDirectionCounterArray[1]++;
-        break;
-      case 90:
-        windDirectionCounterArray[2]++;
-        break;
-      case 135:
-        windDirectionCounterArray[3]++;
-        break;
-      case 180:
-        windDirectionCounterArray[4]++;
-        break;
-      case 225:
-        windDirectionCounterArray[5]++;
-        break;
-      case 270:
-        windDirectionCounterArray[6]++;
-        break;
-      case 315:
-        windDirectionCounterArray[7]++;
-        break;
-      default:
-        break;
+        case 0:
+          windDirectionCounterArray[0]++;
+          break;
+        case 45:
+          windDirectionCounterArray[1]++;
+          break;
+        case 90:
+          windDirectionCounterArray[2]++;
+          break;
+        case 135:
+          windDirectionCounterArray[3]++;
+          break;
+        case 180:
+          windDirectionCounterArray[4]++;
+          break;
+        case 225:
+          windDirectionCounterArray[5]++;
+          break;
+        case 270:
+          windDirectionCounterArray[6]++;
+          break;
+        case 315:
+          windDirectionCounterArray[7]++;
+          break;
+        default:
+          break;
       }
 
       // Delete new object
@@ -167,28 +173,28 @@ void loop()
       Serial.println(inputString.str);
     }
 
-       // Check counter to send on LoRa every 5 mins
-       if ((now - lastSenderCounter > 300000) && (objectCounter > 15))
-       {
-         lastSenderCounter = now;
-    
-         // Get air direction value and set to average object
-         averageDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
-    
-         stcOutputData_ToDataString(averageDataObject, sendingDataStringBuffer);
-    
-        //  LoRa.beginPacket();
-        //  LoRa.print(sendingDataStringBuffer);
-        //  LoRa.endPacket();
-    
-         // Reset all object buffer
-         memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
-         objectCounter = 0;                                                               // objectCounter
-         stcOutputData_Create(&averageDataObject);                                        // averageDataObject
-    
-         Serial.print("Sent: ");
-         Serial.println(sendingDataStringBuffer);
-       }
+    // Check counter to send on LoRa every 5 mins
+    if ((now - lastSenderCounter > 300000) && (objectCounter > 15))
+    {
+      lastSenderCounter = now;
+
+      // Get air direction value and set to average object
+      averageDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
+
+      stcOutputData_ToDataString(averageDataObject, sendingDataStringBuffer);
+
+      LoRa.beginPacket();
+      LoRa.print(sendingDataStringBuffer);
+      LoRa.endPacket();
+
+      // Reset all object buffer
+      memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
+      objectCounter = 0;                                                               // objectCounter
+      stcOutputData_Create(&averageDataObject);                                        // averageDataObject
+
+      Serial.print("Sent: ");
+      Serial.println(sendingDataStringBuffer);
+    }
 
     clearInputString();
     stringComplete = false;
