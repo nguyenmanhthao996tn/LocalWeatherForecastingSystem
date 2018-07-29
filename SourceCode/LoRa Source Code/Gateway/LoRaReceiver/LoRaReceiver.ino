@@ -5,11 +5,13 @@
 #include "PubSubClient.h"
 
 /*********** Constants ***********/
-#define ssid "ThaoNguyen-PC"
-#define password "a123456789"
+#define ssid "UIT Public"
+#define password ""
+//#define ssid "ThaoNguyen-PC"
+//#define password "a123456789"
 
 #define client_id "Node_1"
-#define mqtt_server "192.168.137.1"
+#define mqtt_server "10.71.8.10"
 #define mqtt_topic_pub "topic/SensorData"
 #define mqtt_topic_sub "topic/ControlData"
 const uint16_t mqtt_port = 5002;
@@ -77,7 +79,7 @@ void loop()
 void setupLoRa(void)
 {
   LoRa.setPins(15, 16, 5);
-  if (!LoRa.begin(868000000))
+  if (!LoRa.begin(868100000))
   {
     Serial.println("Starting LoRa failed!");
     while (1)
