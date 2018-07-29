@@ -8,13 +8,25 @@ struct
   int currentIndex;
 } inputString;
 
+struct
+{
+  float airSpeed1Min;
+  float airSpeed5Min;
+  float temperature;
+  float rainfall1Hour;
+  float rainfall24Hour;
+  float humidity;
+  float atmosphere;
+} averageDataObject;
+
 char sendingDataStringBuffer[255];
 boolean stringComplete = false;
 unsigned long now, lastSenderCounter, lastGetDataCounter;
 
 const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
 uint16_t windDirectionCounterArray[] = {0, 0, 0, 0, 0, 0, 0, 0};
-stcOutputData_t *averageDataObject, *newDataObject;
+stcOutputData_t *newDataObject;
+stcOutputData_t *sendingDataObject;
 uint16_t objectCounter;
 
 void clearInputString(void)
@@ -36,9 +48,9 @@ void serialEvent()
   }
 }
 
-uint16_t addToAverage(uint16_t averageValue, uint16_t counter, uint16_t newValue)
+float addToAverage(float averageValue, uint16_t counter, uint16_t newValue)
 {
-  uint32_t tempValue = (averageValue * counter) + newValue;
+  float tempValue = (averageValue * counter) + newValue;
   return (tempValue / (counter + 1));
 }
 
@@ -57,30 +69,41 @@ uint16_t getMostAppearValue(const uint16_t valueArray[], uint16_t counterArray[]
   return valueArray[maxCounterIndex];
 }
 
-void addNewObjectToAverageObject(stcOutputData_t *averageDataObject, stcOutputData_t *newDataObject)
+void addNewObjectToAverageObject(stcOutputData_t *newDataObject)
 {
   // airSpeed1Min
-  averageDataObject->airSpeed1Min = addToAverage(averageDataObject->airSpeed1Min, objectCounter, (newDataObject->airSpeed1Min));
+  averageDataObject.airSpeed1Min = addToAverage(averageDataObject.airSpeed1Min, objectCounter, (newDataObject->airSpeed1Min));
 
   // airSpeed5Min
-  averageDataObject->airSpeed5Min = addToAverage(averageDataObject->airSpeed5Min, objectCounter, (newDataObject->airSpeed5Min));
+  averageDataObject.airSpeed5Min = addToAverage(averageDataObject.airSpeed5Min, objectCounter, (newDataObject->airSpeed5Min));
 
   // temperature
-  averageDataObject->temperature = addToAverage(averageDataObject->temperature, objectCounter, (newDataObject->temperature));
+  averageDataObject.temperature = addToAverage(averageDataObject.temperature, objectCounter, (newDataObject->temperature));
 
   // rainfall1Hour
-  averageDataObject->rainfall1Hour = addToAverage(averageDataObject->rainfall1Hour, objectCounter, (newDataObject->rainfall1Hour));
+  averageDataObject.rainfall1Hour = addToAverage(averageDataObject.rainfall1Hour, objectCounter, (newDataObject->rainfall1Hour));
 
   // rainfall24Hour
-  averageDataObject->rainfall24Hour = addToAverage(averageDataObject->rainfall24Hour, objectCounter, (newDataObject->rainfall24Hour));
+  averageDataObject.rainfall24Hour = addToAverage(averageDataObject.rainfall24Hour, objectCounter, (newDataObject->rainfall24Hour));
 
   // humidity
-  averageDataObject->humidity = addToAverage(averageDataObject->humidity, objectCounter, (newDataObject->humidity));
+  averageDataObject.humidity = addToAverage(averageDataObject.humidity, objectCounter, (newDataObject->humidity));
 
   // atmosphere
-  averageDataObject->atmosphere = addToAverage(averageDataObject->atmosphere, objectCounter, (newDataObject->atmosphere));
+  averageDataObject.atmosphere = addToAverage(averageDataObject.atmosphere, objectCounter, (newDataObject->atmosphere));
 
   objectCounter++;
+}
+
+void clearAverageDataObject(void)
+{
+  averageDataObject.airSpeed1Min = 0;
+  averageDataObject.airSpeed5Min = 0;
+  averageDataObject.temperature = 0;
+  averageDataObject.rainfall1Hour = 0;
+  averageDataObject.rainfall24Hour = 0;
+  averageDataObject.humidity = 0;
+  averageDataObject.atmosphere = 0;
 }
 
 void setup()
@@ -91,7 +114,10 @@ void setup()
   objectCounter = 0;
   lastGetDataCounter = 0;
   lastSenderCounter = 0;
-  stcOutputData_Create(&averageDataObject);
+
+  clearAverageDataObject();
+
+  stcOutputData_Create(&sendingDataObject);
 
   clearInputString();
 
@@ -135,35 +161,35 @@ void loop()
       stcOutputData_Parse(inputString.str, &newDataObject);
 
       // Add values from new object to average object
-      addNewObjectToAverageObject(averageDataObject, newDataObject);
+      addNewObjectToAverageObject(newDataObject);
       switch (newDataObject->airDirection)
       {
-        case 0:
-          windDirectionCounterArray[0]++;
-          break;
-        case 45:
-          windDirectionCounterArray[1]++;
-          break;
-        case 90:
-          windDirectionCounterArray[2]++;
-          break;
-        case 135:
-          windDirectionCounterArray[3]++;
-          break;
-        case 180:
-          windDirectionCounterArray[4]++;
-          break;
-        case 225:
-          windDirectionCounterArray[5]++;
-          break;
-        case 270:
-          windDirectionCounterArray[6]++;
-          break;
-        case 315:
-          windDirectionCounterArray[7]++;
-          break;
-        default:
-          break;
+      case 0:
+        windDirectionCounterArray[0]++;
+        break;
+      case 45:
+        windDirectionCounterArray[1]++;
+        break;
+      case 90:
+        windDirectionCounterArray[2]++;
+        break;
+      case 135:
+        windDirectionCounterArray[3]++;
+        break;
+      case 180:
+        windDirectionCounterArray[4]++;
+        break;
+      case 225:
+        windDirectionCounterArray[5]++;
+        break;
+      case 270:
+        windDirectionCounterArray[6]++;
+        break;
+      case 315:
+        windDirectionCounterArray[7]++;
+        break;
+      default:
+        break;
       }
 
       // Delete new object
@@ -173,30 +199,39 @@ void loop()
       Serial.println(inputString.str);
     }
 
-    // Check counter to send on LoRa every 5 mins
-    if ((now - lastSenderCounter > 300000) && (objectCounter > 15))
-    {
-      lastSenderCounter = now;
-
-      // Get air direction value and set to average object
-      averageDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
-
-      stcOutputData_ToDataString(averageDataObject, sendingDataStringBuffer);
-
-      LoRa.beginPacket();
-      LoRa.print(sendingDataStringBuffer);
-      LoRa.endPacket();
-
-      // Reset all object buffer
-      memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
-      objectCounter = 0;                                                               // objectCounter
-      stcOutputData_Create(&averageDataObject);                                        // averageDataObject
-
-      Serial.print("Sent: ");
-      Serial.println(sendingDataStringBuffer);
-    }
-
     clearInputString();
     stringComplete = false;
+  }
+
+  // Check counter to send on LoRa every 5 mins
+  if ((now - lastSenderCounter > 300000) && (objectCounter > 45))
+  {
+    lastSenderCounter = now;
+
+    // Get air direction value and set to average object
+    stcOutputData_Create(&sendingDataObject);
+    sendingDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
+    sendingDataObject->airSpeed1Min = (uint16_t)averageDataObject.airSpeed1Min;
+    sendingDataObject->airSpeed5Min = (uint16_t)averageDataObject.airSpeed5Min;
+    sendingDataObject->temperature = (uint16_t)averageDataObject.temperature;
+    sendingDataObject->rainfall1Hour = (uint16_t)averageDataObject.rainfall1Hour;
+    sendingDataObject->rainfall24Hour = (uint16_t)averageDataObject.rainfall24Hour;
+    sendingDataObject->humidity = (uint8_t)averageDataObject.humidity;
+    sendingDataObject->atmosphere = (uint32_t)averageDataObject.atmosphere;
+
+    // Send to Gateway
+    stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer);
+
+    LoRa.beginPacket();
+    LoRa.print(sendingDataStringBuffer);
+    LoRa.endPacket();
+
+    // Reset all object buffer
+    memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
+    objectCounter = 0;                                                               // objectCounter
+    clearAverageDataObject();
+
+    Serial.print("Sent: ");
+    Serial.println(sendingDataStringBuffer);
   }
 }
