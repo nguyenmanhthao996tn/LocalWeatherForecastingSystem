@@ -225,6 +225,7 @@ void loop()
     LoRa.beginPacket();
     LoRa.print(sendingDataStringBuffer);
     LoRa.endPacket();
+    LoRa.sleep();
 
     // Reset all object buffer
     memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
