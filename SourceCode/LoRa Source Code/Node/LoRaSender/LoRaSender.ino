@@ -132,7 +132,7 @@ void setup()
       ;
   }
 
-  LoRa.setSignalBandwidth(500000);
+  LoRa.setSignalBandwidth(125000);
   LoRa.setCodingRate4(5);
   LoRa.setSpreadingFactor(12);
   LoRa.setPreambleLength(8);
@@ -225,6 +225,7 @@ void loop()
     LoRa.beginPacket();
     LoRa.print(sendingDataStringBuffer);
     LoRa.endPacket();
+    LoRa.sleep();
 
     // Reset all object buffer
     memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
