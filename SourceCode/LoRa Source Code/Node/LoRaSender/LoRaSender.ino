@@ -7,13 +7,13 @@
 #include "OutputData.h"
 
 /*********** DATA TYPE ***********/
-struct
+typedef struct
 {
   char str[128];
   int currentIndex;
-} inputString;
+} inputString_t;
 
-struct
+typedef struct
 {
   float airSpeed1Min;
   float airSpeed5Min;
@@ -22,15 +22,17 @@ struct
   float rainfall24Hour;
   float humidity;
   float atmosphere;
-} averageDataObject;
+} averageDataObject_t;
 
 /*********** CONSTANT ***********/
 const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
 
 /*********** GLOBAL VARIABLE ***********/
+inputString_t inputString;
+averageDataObject_t averageDataObject;
 char sendingDataStringBuffer[255];
-boolean stringComplete = false;
-unsigned long now, lastSenderCounter, lastGetDataCounter;
+volatile boolean stringComplete = false, getObjectFlag = false, sendObjectFlag = false;
+volatile unsigned long timerOneCounter;
 
 uint16_t windDirectionCounterArray[] = {0, 0, 0, 0, 0, 0, 0, 0};
 stcOutputData_t *newDataObject;
@@ -46,6 +48,9 @@ void clearAverageDataObject(void);
 void disableUnusedPeripheral(void);
 void sleepNow(void);
 void wakeNow(void);
+void timerOneInterruptHandler(void);
+void getMessageFromStc(void);
+void sendMessageToGateway(void);
 
 /*********** MAIN ***********/
 void setup()
@@ -54,18 +59,18 @@ void setup()
   pinMode(5, INPUT);
 
   objectCounter = 0;
-  lastGetDataCounter = 0;
-  lastSenderCounter = 0;
+  timerOneCounter = 0;
 
   clearAverageDataObject();
-
   stcOutputData_Create(&sendingDataObject);
-
   clearInputString();
 
   Serial.begin(9600);
   while (!Serial)
     ;
+
+  Timer1.initialize(1000000); // 1s
+  Timer1.attachInterrupt(timerOneInterruptHandler);
 
   LoRa.setPins(10, 8, 2);
   if (!LoRa.begin(868100000))
@@ -85,98 +90,30 @@ void setup()
   LoRa.beginPacket();
   LoRa.print("Node 1");
   LoRa.endPacket();
+
+  sleepNow();
 }
 
 void loop()
 {
-  now = millis();
-
-  if (stringComplete)
+  if (getObjectFlag)
   {
-    // Check counter to get data every 5 seconds
-    if ((inputString.str[33] == '\r') && (inputString.str[34] == '\n') && (now - lastGetDataCounter > 5000))
-    { // Check if string is correct
-      lastGetDataCounter = now;
-      inputString.str[35] = '\0';
+    if ((inputString.str[33] == '\r') && (inputString.str[34] == '\n'))
+    {
+      getObjectFlag = false;
 
-      // Create and parse new object
-      stcOutputData_Parse(inputString.str, &newDataObject);
-
-      // Add values from new object to average object
-      addNewObjectToAverageObject(newDataObject);
-      switch (newDataObject->airDirection)
-      {
-      case 0:
-        windDirectionCounterArray[0]++;
-        break;
-      case 45:
-        windDirectionCounterArray[1]++;
-        break;
-      case 90:
-        windDirectionCounterArray[2]++;
-        break;
-      case 135:
-        windDirectionCounterArray[3]++;
-        break;
-      case 180:
-        windDirectionCounterArray[4]++;
-        break;
-      case 225:
-        windDirectionCounterArray[5]++;
-        break;
-      case 270:
-        windDirectionCounterArray[6]++;
-        break;
-      case 315:
-        windDirectionCounterArray[7]++;
-        break;
-      default:
-        break;
-      }
-
-      // Delete new object
-      // stcOutputData_Delete(newDataObject); // No need to delete because there is no malloc new memory if the point is not equal to NULL
-
-      Serial.print("Get: ");
-      Serial.println(inputString.str);
+      getMessageFromStc();
     }
-
-    clearInputString();
-    stringComplete = false;
   }
 
-  // Check counter to send on LoRa every 5 mins
-  if ((now - lastSenderCounter > 300000) && (objectCounter > 45))
+  if (sendObjectFlag)
   {
-    lastSenderCounter = now;
+    sendObjectFlag = false;
 
-    // Get air direction value and set to average object
-    stcOutputData_Create(&sendingDataObject);
-    sendingDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
-    sendingDataObject->airSpeed1Min = (uint16_t)averageDataObject.airSpeed1Min;
-    sendingDataObject->airSpeed5Min = (uint16_t)averageDataObject.airSpeed5Min;
-    sendingDataObject->temperature = (uint16_t)averageDataObject.temperature;
-    sendingDataObject->rainfall1Hour = (uint16_t)averageDataObject.rainfall1Hour;
-    sendingDataObject->rainfall24Hour = (uint16_t)averageDataObject.rainfall24Hour;
-    sendingDataObject->humidity = (uint8_t)averageDataObject.humidity;
-    sendingDataObject->atmosphere = (uint32_t)averageDataObject.atmosphere;
-
-    // Send to Gateway
-    stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer);
-
-    LoRa.beginPacket();
-    LoRa.print(sendingDataStringBuffer);
-    LoRa.endPacket();
-    LoRa.sleep();
-
-    // Reset all object buffer
-    memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray)); // windDirectionCounterArray
-    objectCounter = 0;                                                               // objectCounter
-    clearAverageDataObject();
-
-    Serial.print("Sent: ");
-    Serial.println(sendingDataStringBuffer);
+    sendMessageToGateway();
   }
+
+  sleepNow();
 }
 
 /*********** METHOD DEFINE ***********/
@@ -188,8 +125,33 @@ void serialEvent()
     inputString.str[inputString.currentIndex++] = inChar;
     if (inChar == '\n')
     {
-      stringComplete = true;
+      if (getObjectFlag)
+      {
+        wakeNow();
+      }
+      else
+      {
+        clearInputString();
+      }
     }
+  }
+}
+
+void timerOneInterruptHandler(void)
+{
+  timerOneCounter++;
+
+  if (timerOneCounter > 5) // 5 sec
+  {
+    getObjectFlag = true;
+  }
+
+  if (timerOneCounter > 300) // 5 min
+  {
+    timerOneCounter = 0;
+
+    sendObjectFlag = true;
+    wakeNow();
   }
 }
 
@@ -279,4 +241,82 @@ void wakeNow(void)
 {
   sleep_disable();
   power_all_enable();
+}
+
+void getMessageFromStc(void)
+{
+  inputString.str[35] = '\0';
+
+  // Create and parse new object
+  stcOutputData_Parse(inputString.str, &newDataObject);
+
+  // Add values from new object to average object
+  addNewObjectToAverageObject(newDataObject);
+  switch (newDataObject->airDirection)
+  {
+  case 0:
+    windDirectionCounterArray[0]++;
+    break;
+  case 45:
+    windDirectionCounterArray[1]++;
+    break;
+  case 90:
+    windDirectionCounterArray[2]++;
+    break;
+  case 135:
+    windDirectionCounterArray[3]++;
+    break;
+  case 180:
+    windDirectionCounterArray[4]++;
+    break;
+  case 225:
+    windDirectionCounterArray[5]++;
+    break;
+  case 270:
+    windDirectionCounterArray[6]++;
+    break;
+  case 315:
+    windDirectionCounterArray[7]++;
+    break;
+  default:
+    break;
+  }
+
+  // Delete new object
+  // stcOutputData_Delete(newDataObject); // No need to delete because there is no malloc new memory if the point is not equal to NULL
+
+  Serial.print("Get: ");
+  Serial.println(inputString.str);
+
+  clearInputString();
+}
+
+void sendMessageToGateway(void)
+{
+  // Get air direction value and set to average object
+  stcOutputData_Create(&sendingDataObject);
+  sendingDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
+  sendingDataObject->airSpeed1Min = (uint16_t)averageDataObject.airSpeed1Min;
+  sendingDataObject->airSpeed5Min = (uint16_t)averageDataObject.airSpeed5Min;
+  sendingDataObject->temperature = (uint16_t)averageDataObject.temperature;
+  sendingDataObject->rainfall1Hour = (uint16_t)averageDataObject.rainfall1Hour;
+  sendingDataObject->rainfall24Hour = (uint16_t)averageDataObject.rainfall24Hour;
+  sendingDataObject->humidity = (uint8_t)averageDataObject.humidity;
+  sendingDataObject->atmosphere = (uint32_t)averageDataObject.atmosphere;
+
+  // Send to Gateway
+  stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer);
+
+  LoRa.beginPacket();
+  LoRa.print(sendingDataStringBuffer);
+  LoRa.endPacket();
+  LoRa.sleep();
+
+  // Reset all object buffer
+  memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray));
+  objectCounter = 0;
+  clearAverageDataObject();
+
+  Serial.print("Sent: ");
+  Serial.println(sendingDataStringBuffer);
 }
