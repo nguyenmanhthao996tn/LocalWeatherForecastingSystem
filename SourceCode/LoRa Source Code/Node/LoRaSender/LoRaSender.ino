@@ -1,3 +1,4 @@
+/*********** LIBRARY ***********/
 #include <SPI.h>
 #include <LoRa.h>
 #include <avr/power.h>
@@ -5,6 +6,7 @@
 #include "TimerOne.h"
 #include "OutputData.h"
 
+/*********** DATA TYPE ***********/
 struct
 {
   char str[128];
@@ -22,93 +24,30 @@ struct
   float atmosphere;
 } averageDataObject;
 
+/*********** CONSTANT ***********/
+const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
+
+/*********** GLOBAL VARIABLE ***********/
 char sendingDataStringBuffer[255];
 boolean stringComplete = false;
 unsigned long now, lastSenderCounter, lastGetDataCounter;
 
-const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
 uint16_t windDirectionCounterArray[] = {0, 0, 0, 0, 0, 0, 0, 0};
 stcOutputData_t *newDataObject;
 stcOutputData_t *sendingDataObject;
 uint16_t objectCounter;
 
-void clearInputString(void)
-{
-  memset(inputString.str, 0, 128);
-  inputString.currentIndex = 0;
-}
+/*********** METHOD HEADING ***********/
+void clearInputString(void);
+float addToAverage(float averageValue, uint16_t counter, uint16_t newValue);
+uint16_t getMostAppearValue(const uint16_t valueArray[], uint16_t counterArray[], uint16_t size);
+void addNewObjectToAverageObject(stcOutputData_t *newDataObject);
+void clearAverageDataObject(void);
+void disableUnusedPeripheral(void);
+void sleepNow(void);
+void wakeNow(void);
 
-void serialEvent()
-{
-  while (Serial.available())
-  {
-    char inChar = (char)Serial.read();
-    inputString.str[inputString.currentIndex++] = inChar;
-    if (inChar == '\n')
-    {
-      stringComplete = true;
-    }
-  }
-}
-
-float addToAverage(float averageValue, uint16_t counter, uint16_t newValue)
-{
-  float tempValue = (averageValue * counter) + newValue;
-  return (tempValue / (counter + 1));
-}
-
-uint16_t getMostAppearValue(const uint16_t valueArray[], uint16_t counterArray[], uint16_t size)
-{
-  uint16_t maxCounterIndex = 0;
-  uint16_t i;
-  for (i = 1; i < size; i++)
-  {
-    if (valueArray[maxCounterIndex] < counterArray[i])
-    {
-      maxCounterIndex = i;
-    }
-  }
-
-  return valueArray[maxCounterIndex];
-}
-
-void addNewObjectToAverageObject(stcOutputData_t *newDataObject)
-{
-  // airSpeed1Min
-  averageDataObject.airSpeed1Min = addToAverage(averageDataObject.airSpeed1Min, objectCounter, (newDataObject->airSpeed1Min));
-
-  // airSpeed5Min
-  averageDataObject.airSpeed5Min = addToAverage(averageDataObject.airSpeed5Min, objectCounter, (newDataObject->airSpeed5Min));
-
-  // temperature
-  averageDataObject.temperature = addToAverage(averageDataObject.temperature, objectCounter, (newDataObject->temperature));
-
-  // rainfall1Hour
-  averageDataObject.rainfall1Hour = addToAverage(averageDataObject.rainfall1Hour, objectCounter, (newDataObject->rainfall1Hour));
-
-  // rainfall24Hour
-  averageDataObject.rainfall24Hour = addToAverage(averageDataObject.rainfall24Hour, objectCounter, (newDataObject->rainfall24Hour));
-
-  // humidity
-  averageDataObject.humidity = addToAverage(averageDataObject.humidity, objectCounter, (newDataObject->humidity));
-
-  // atmosphere
-  averageDataObject.atmosphere = addToAverage(averageDataObject.atmosphere, objectCounter, (newDataObject->atmosphere));
-
-  objectCounter++;
-}
-
-void clearAverageDataObject(void)
-{
-  averageDataObject.airSpeed1Min = 0;
-  averageDataObject.airSpeed5Min = 0;
-  averageDataObject.temperature = 0;
-  averageDataObject.rainfall1Hour = 0;
-  averageDataObject.rainfall24Hour = 0;
-  averageDataObject.humidity = 0;
-  averageDataObject.atmosphere = 0;
-}
-
+/*********** MAIN ***********/
 void setup()
 {
   pinMode(4, INPUT);
@@ -238,4 +177,106 @@ void loop()
     Serial.print("Sent: ");
     Serial.println(sendingDataStringBuffer);
   }
+}
+
+/*********** METHOD DEFINE ***********/
+void serialEvent()
+{
+  while (Serial.available())
+  {
+    char inChar = (char)Serial.read();
+    inputString.str[inputString.currentIndex++] = inChar;
+    if (inChar == '\n')
+    {
+      stringComplete = true;
+    }
+  }
+}
+
+void clearInputString(void)
+{
+  memset(inputString.str, 0, 128);
+  inputString.currentIndex = 0;
+}
+
+float addToAverage(float averageValue, uint16_t counter, uint16_t newValue)
+{
+  float tempValue = (averageValue * counter) + newValue;
+  return (tempValue / (counter + 1));
+}
+
+uint16_t getMostAppearValue(const uint16_t valueArray[], uint16_t counterArray[], uint16_t size)
+{
+  uint16_t maxCounterIndex = 0;
+  uint16_t i;
+  for (i = 1; i < size; i++)
+  {
+    if (valueArray[maxCounterIndex] < counterArray[i])
+    {
+      maxCounterIndex = i;
+    }
+  }
+
+  return valueArray[maxCounterIndex];
+}
+
+void addNewObjectToAverageObject(stcOutputData_t *newDataObject)
+{
+  // airSpeed1Min
+  averageDataObject.airSpeed1Min = addToAverage(averageDataObject.airSpeed1Min, objectCounter, (newDataObject->airSpeed1Min));
+
+  // airSpeed5Min
+  averageDataObject.airSpeed5Min = addToAverage(averageDataObject.airSpeed5Min, objectCounter, (newDataObject->airSpeed5Min));
+
+  // temperature
+  averageDataObject.temperature = addToAverage(averageDataObject.temperature, objectCounter, (newDataObject->temperature));
+
+  // rainfall1Hour
+  averageDataObject.rainfall1Hour = addToAverage(averageDataObject.rainfall1Hour, objectCounter, (newDataObject->rainfall1Hour));
+
+  // rainfall24Hour
+  averageDataObject.rainfall24Hour = addToAverage(averageDataObject.rainfall24Hour, objectCounter, (newDataObject->rainfall24Hour));
+
+  // humidity
+  averageDataObject.humidity = addToAverage(averageDataObject.humidity, objectCounter, (newDataObject->humidity));
+
+  // atmosphere
+  averageDataObject.atmosphere = addToAverage(averageDataObject.atmosphere, objectCounter, (newDataObject->atmosphere));
+
+  objectCounter++;
+}
+
+void clearAverageDataObject(void)
+{
+  averageDataObject.airSpeed1Min = 0;
+  averageDataObject.airSpeed5Min = 0;
+  averageDataObject.temperature = 0;
+  averageDataObject.rainfall1Hour = 0;
+  averageDataObject.rainfall24Hour = 0;
+  averageDataObject.humidity = 0;
+  averageDataObject.atmosphere = 0;
+}
+
+void disableUnusedPeripheral(void)
+{
+  power_adc_disable();
+  power_spi_disable();
+  power_timer0_disable();
+  // power_timer1_disable();
+  power_timer2_disable();
+  power_twi_disable();
+}
+
+void sleepNow(void)
+{
+  set_sleep_mode(SLEEP_MODE_IDLE);
+  sleep_enable();
+  disableUnusedPeripheral();
+  sleep_mode();
+}
+
+void wakeNow(void)
+{
+  sleep_disable();
+  power_all_enable();
 }
