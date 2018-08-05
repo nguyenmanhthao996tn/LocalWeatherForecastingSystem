@@ -1,5 +1,8 @@
 #include <SPI.h>
 #include <LoRa.h>
+#include <avr/power.h>
+#include <avr/sleep.h>
+#include "TimerOne.h"
 #include "OutputData.h"
 
 struct
