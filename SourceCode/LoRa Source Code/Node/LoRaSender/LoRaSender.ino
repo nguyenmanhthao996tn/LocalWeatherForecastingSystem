@@ -13,23 +13,11 @@ typedef struct
   int currentIndex;
 } inputString_t;
 
-typedef struct
-{
-  float airSpeed1Min;
-  float airSpeed5Min;
-  float temperature;
-  float rainfall1Hour;
-  float rainfall24Hour;
-  float humidity;
-  float atmosphere;
-} averageDataObject_t;
-
 /*********** CONSTANT ***********/
 const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
 
 /*********** GLOBAL VARIABLE ***********/
 inputString_t inputString;
-averageDataObject_t averageDataObject;
 char sendingDataStringBuffer[255];
 volatile boolean stringComplete = false, getObjectFlag = false, sendObjectFlag = false;
 volatile unsigned long timerOneCounter;
@@ -37,14 +25,13 @@ volatile unsigned long timerOneCounter;
 uint16_t windDirectionCounterArray[] = {0, 0, 0, 0, 0, 0, 0, 0};
 stcOutputData_t *newDataObject;
 stcOutputData_t *sendingDataObject;
-uint16_t objectCounter;
 
 /*********** METHOD HEADING ***********/
 void clearInputString(void);
 float addToAverage(float averageValue, uint16_t counter, uint16_t newValue);
 uint16_t getMostAppearValue(const uint16_t valueArray[], uint16_t counterArray[], uint16_t size);
-void addNewObjectToAverageObject(stcOutputData_t *newDataObject);
-void clearAverageDataObject(void);
+void saveNewObjectToSendingObject(stcOutputData_t *newDataObject);
+void clearSendingObject(void);
 void disableUnusedPeripheral(void);
 void sleepNow(void);
 void wakeNow(void);
@@ -58,11 +45,10 @@ void setup()
   pinMode(4, INPUT);
   pinMode(5, INPUT);
 
-  objectCounter = 0;
   timerOneCounter = 0;
 
-  clearAverageDataObject();
   stcOutputData_Create(&sendingDataObject);
+  clearSendingObject();
   clearInputString();
 
   Serial.begin(9600);
@@ -141,7 +127,7 @@ void timerOneInterruptHandler(void)
 {
   timerOneCounter++;
 
-  if (timerOneCounter > 5) // 5 sec
+  if ((timerOneCounter % 5) == 0) // 5 sec
   {
     getObjectFlag = true;
   }
@@ -182,41 +168,39 @@ uint16_t getMostAppearValue(const uint16_t valueArray[], uint16_t counterArray[]
   return valueArray[maxCounterIndex];
 }
 
-void addNewObjectToAverageObject(stcOutputData_t *newDataObject)
+void saveNewObjectToSendingObject(stcOutputData_t *newDataObject)
 {
   // airSpeed1Min
-  averageDataObject.airSpeed1Min = addToAverage(averageDataObject.airSpeed1Min, objectCounter, (newDataObject->airSpeed1Min));
+  sendingDataObject->airSpeed1Min = newDataObject->airSpeed1Min;
 
   // airSpeed5Min
-  averageDataObject.airSpeed5Min = addToAverage(averageDataObject.airSpeed5Min, objectCounter, (newDataObject->airSpeed5Min));
+  sendingDataObject->airSpeed5Min = newDataObject->airSpeed5Min;
 
   // temperature
-  averageDataObject.temperature = addToAverage(averageDataObject.temperature, objectCounter, (newDataObject->temperature));
+  sendingDataObject->temperature = newDataObject->temperature;
 
   // rainfall1Hour
-  averageDataObject.rainfall1Hour = addToAverage(averageDataObject.rainfall1Hour, objectCounter, (newDataObject->rainfall1Hour));
+  sendingDataObject->rainfall1Hour = newDataObject->rainfall1Hour;
 
   // rainfall24Hour
-  averageDataObject.rainfall24Hour = addToAverage(averageDataObject.rainfall24Hour, objectCounter, (newDataObject->rainfall24Hour));
+  sendingDataObject->rainfall24Hour = newDataObject->rainfall24Hour;
 
   // humidity
-  averageDataObject.humidity = addToAverage(averageDataObject.humidity, objectCounter, (newDataObject->humidity));
+  sendingDataObject->humidity = newDataObject->humidity;
 
   // atmosphere
-  averageDataObject.atmosphere = addToAverage(averageDataObject.atmosphere, objectCounter, (newDataObject->atmosphere));
-
-  objectCounter++;
+  sendingDataObject->atmosphere = newDataObject->atmosphere;
 }
 
-void clearAverageDataObject(void)
+void clearSendingObject(void)
 {
-  averageDataObject.airSpeed1Min = 0;
-  averageDataObject.airSpeed5Min = 0;
-  averageDataObject.temperature = 0;
-  averageDataObject.rainfall1Hour = 0;
-  averageDataObject.rainfall24Hour = 0;
-  averageDataObject.humidity = 0;
-  averageDataObject.atmosphere = 0;
+  sendingDataObject->airSpeed1Min = 0;
+  sendingDataObject->airSpeed5Min = 0;
+  sendingDataObject->temperature = 0;
+  sendingDataObject->rainfall1Hour = 0;
+  sendingDataObject->rainfall24Hour = 0;
+  sendingDataObject->humidity = 0;
+  sendingDataObject->atmosphere = 0;
 }
 
 void disableUnusedPeripheral(void)
@@ -251,35 +235,35 @@ void getMessageFromStc(void)
   stcOutputData_Parse(inputString.str, &newDataObject);
 
   // Add values from new object to average object
-  addNewObjectToAverageObject(newDataObject);
+  saveNewObjectToSendingObject(newDataObject);
   switch (newDataObject->airDirection)
   {
-  case 0:
-    windDirectionCounterArray[0]++;
-    break;
-  case 45:
-    windDirectionCounterArray[1]++;
-    break;
-  case 90:
-    windDirectionCounterArray[2]++;
-    break;
-  case 135:
-    windDirectionCounterArray[3]++;
-    break;
-  case 180:
-    windDirectionCounterArray[4]++;
-    break;
-  case 225:
-    windDirectionCounterArray[5]++;
-    break;
-  case 270:
-    windDirectionCounterArray[6]++;
-    break;
-  case 315:
-    windDirectionCounterArray[7]++;
-    break;
-  default:
-    break;
+    case 0:
+      windDirectionCounterArray[0]++;
+      break;
+    case 45:
+      windDirectionCounterArray[1]++;
+      break;
+    case 90:
+      windDirectionCounterArray[2]++;
+      break;
+    case 135:
+      windDirectionCounterArray[3]++;
+      break;
+    case 180:
+      windDirectionCounterArray[4]++;
+      break;
+    case 225:
+      windDirectionCounterArray[5]++;
+      break;
+    case 270:
+      windDirectionCounterArray[6]++;
+      break;
+    case 315:
+      windDirectionCounterArray[7]++;
+      break;
+    default:
+      break;
   }
 
   // Delete new object
@@ -294,15 +278,7 @@ void getMessageFromStc(void)
 void sendMessageToGateway(void)
 {
   // Get air direction value and set to average object
-  stcOutputData_Create(&sendingDataObject);
   sendingDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
-  sendingDataObject->airSpeed1Min = (uint16_t)averageDataObject.airSpeed1Min;
-  sendingDataObject->airSpeed5Min = (uint16_t)averageDataObject.airSpeed5Min;
-  sendingDataObject->temperature = (uint16_t)averageDataObject.temperature;
-  sendingDataObject->rainfall1Hour = (uint16_t)averageDataObject.rainfall1Hour;
-  sendingDataObject->rainfall24Hour = (uint16_t)averageDataObject.rainfall24Hour;
-  sendingDataObject->humidity = (uint8_t)averageDataObject.humidity;
-  sendingDataObject->atmosphere = (uint32_t)averageDataObject.atmosphere;
 
   // Send to Gateway
   stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer);
@@ -314,8 +290,7 @@ void sendMessageToGateway(void)
 
   // Reset all object buffer
   memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray));
-  objectCounter = 0;
-  clearAverageDataObject();
+  clearSendingObject();
 
   Serial.print("Sent: ");
   Serial.println(sendingDataStringBuffer);
