@@ -5,11 +5,14 @@ extern DatabaseHandler_t DatabaseHandler;
 
 int main(int argc, char *argv[])
 {
-    int i, j, k;
-    char buffer[35];
+    FILE *fp;
+    char buff[255];
+
+    int i, j;
+    char buffer[50];
     MyTime_t time = {
         2018,
-        7,
+        10,
         9,
         20,
         30};
@@ -19,6 +22,8 @@ int main(int argc, char *argv[])
         9,
         20,
         30};
+
+    fp = fopen("out.txt", "w");
 
     DatabaseHandler.init();
     // DatabaseHandler.writeForecastResult(time, 1, 100);
@@ -30,6 +35,7 @@ int main(int argc, char *argv[])
         {
             // Process here
             printf("%s", buffer);
+            fputs(buffer, fp);
             j = DatabaseHandler.readSensorData(buffer);
         }
     }
@@ -38,6 +44,8 @@ int main(int argc, char *argv[])
         printf("Send read request fail\n");
     }
     DatabaseHandler.close();
-
+    
+    fclose(fp);
+    
     return 0;
 }

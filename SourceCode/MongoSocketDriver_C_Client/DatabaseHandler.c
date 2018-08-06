@@ -87,8 +87,8 @@ int __sendReadSensorData(MyTime_t begin, MyTime_t end)
 int __readSensorData(char *buffer)
 {
     int n;
-    bzero(buffer, 35);
-    n = read(__sockfd, buffer, 35);
+    bzero(buffer, 50);
+    n = read(__sockfd, buffer, 50);
 
     if (n > 0)
     {
