@@ -43,14 +43,14 @@ public class Main {
 						Socket socket = workload.getSocketServer();
 						String request = workload.getRequest();
 						DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-						System.out.println("[REQUEST] ip: " + socket.getRemoteSocketAddress() + " request: " + request);
+						Print.println("[REQUEST] ip: " + socket.getRemoteSocketAddress() + " request: " + request);
 						out.write(requestHandler.processRequest(request).getBytes());
 
 						workload.getSocketServer().close();
 					} catch (SocketException e) {
-						System.out.println("[EXCEPTION] " + id + " Connection reset");
+						Print.println("[EXCEPTION] " + id + " Connection reset");
 					} catch (IOException e) {
-						System.out.println("[EXCEPTION] " + id + " " + e.getMessage());
+						Print.println("[EXCEPTION] " + id + " " + e.getMessage());
 					}
 				}
 			}
@@ -87,9 +87,9 @@ public class Main {
 					}
 
 				} catch (SocketTimeoutException e) {
-					System.out.println("[EXCEPTION] " + e.getMessage());
+					Print.println("[EXCEPTION] " + e.getMessage());
 				} catch (Exception e) {
-					System.out.println("[EXCEPTION] " + e.getMessage());
+					Print.println("[EXCEPTION] " + e.getMessage());
 					serverSocket.close();
 					break;
 				}

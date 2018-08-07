@@ -72,13 +72,13 @@ public class RequestHandler {
 				break;
 			}
 		} catch (ParseException e) {
-			System.out.println("[ParseException] " + e.getMessage());
+			Print.println("[ParseException] " + e.getMessage());
 			requestResult = "{\"code\":\"FAIL\"}";
 		} catch (JsonParseException e) {
-			System.out.println("[JsonParseException] " + e.getMessage());
+			Print.println("[JsonParseException] " + e.getMessage());
 			requestResult = "{\"code\":\"FAIL\"}";
 		} catch (Exception e) {
-			System.out.println("[EXCEPTION] " + e.getMessage());
+			Print.println("[EXCEPTION] " + e.getMessage());
 			requestResult = "{\"code\":\"FAIL\"}";
 		}
 
