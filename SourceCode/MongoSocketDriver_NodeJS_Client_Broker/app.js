@@ -19,28 +19,28 @@ var settings = {
 var server = new mosca.Server(settings);
 
 server.on('clientConnected', function (client) {
-  console.log('client connected', client.id);
+  consoleLogWithISODate('client connected', client.id);
 });
 
 // fired when a message is received
 server.on('published', function (packet, client) {
   var str = packet.payload.toString();
-  console.log('Publish ' + str + ' | Length: ' + str.length);
+  consoleLogWithISODate('Publish ' + str + ' | Length: ' + str.length);
 
   if ((str.length == 35) && (str[33] == '\r') && (str[34] == '\n')) { 
     var client = new net.Socket();
 
     client.on('data', function (data) {
-      console.log('Received: ' + data);
+      consoleLogWithISODate('Received: ' + data);
       client.destroy(); // kill client after server's response
     });
 
     client.on('close', function () {
-      console.log('Connection closed');
+      consoleLogWithISODate('Connection closed');
     });
 
     client.connect(5001, SERVER_NAME, function () {
-      console.log('Connected');
+      consoleLogWithISODate('Connected');
 
       var weatherDataWriteRequestObject = { code: 1 };
       weatherDataWriteRequestObject.data = packet.payload.toString();
@@ -53,5 +53,12 @@ server.on('ready', setup);
 
 // fired when the mqtt server is ready
 function setup() {
-  console.log('Mosca server is up and running');
+  consoleLogWithISODate('Mosca server is up and running');
+}
+
+function consoleLogWithISODate(str) {
+  var d = new Date();
+  var n = d.toISOString();
+
+  console.log(n + ': ' + str);
 }
