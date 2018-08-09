@@ -63,12 +63,12 @@ enum sf_t { SF7=7, SF8, SF9, SF10, SF11, SF12 };
  *******************************************************************************/
 
 // SX1272 - Raspberry connections
-int ssPin = 6;
+int ssPin = 2;
 int dio0  = 7;
 int RST   = 0;
 
 // Set spreading factor (SF7 - SF12)
-sf_t sf = SF7;
+sf_t sf = SF12;
 
 // Set center frequency
 uint32_t  freq = 868100000; // in Mhz! (868.1)
@@ -79,13 +79,13 @@ float lon=0.0;
 int   alt=0;
 
 /* Informal status fields */
-static char platform[24]    = "Single Channel Gateway";  /* platform definition */
-static char email[40]       = "";                        /* used for contact email */
+static char platform[24]    = "Single Channel RPi Gateway";  /* platform definition */
+static char email[40]       = "manhthao.spm@gmail.com";                        /* used for contact email */
 static char description[64] = "";                        /* used for free form description */
 
 // define servers
 // TODO: use host names and dns
-#define SERVER1 "54.72.145.119"    // The Things Network: croft.thethings.girovito.nl
+#define SERVER1 "52.169.76.203"    // The Things Network: eu.thethings.network
 //#define SERVER2 "192.168.1.10"      // local
 #define PORT 1700                   // The port on which to send data
 
