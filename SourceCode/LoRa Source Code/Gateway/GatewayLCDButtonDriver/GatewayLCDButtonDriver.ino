@@ -12,10 +12,20 @@ void setup()
   delay(2000);
 
   clearDisplay(WHITE);
-  // setBitmap(Untitled);
   updateDisplay();
 }
 
 void loop()
 {
+  setBitmap(Update);
+  updateDisplay();
+  delay(2000);
+
+  setBitmap(Sun);
+  updateDisplay();
+  delay(2000);
+
+  setBitmap(Rain);
+  updateDisplay();
+  delay(2000);
 }
