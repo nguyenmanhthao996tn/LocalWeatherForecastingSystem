@@ -490,6 +490,16 @@ void invertDisplay()
   updateDisplay();
 }
 
+void lightOn(void)
+{
+  digitalWrite(blPin, LOW); // Off
+}
+
+void lightOff(void)
+{
+  digitalWrite(blPin, HIGH); // Off
+}
+
 //This sends the magical commands to the PCD8544
 void lcdBegin(void)
 {
@@ -500,7 +510,7 @@ void lcdBegin(void)
   pinMode(sdinPin, OUTPUT);
   pinMode(sclkPin, OUTPUT);
   pinMode(blPin, OUTPUT);
-  analogWrite(blPin, 255);
+  lightOff();
 
   // SPI.begin();
   // SPI.setDataMode(SPI_MODE0);
@@ -518,5 +528,4 @@ void lcdBegin(void)
   LCDWrite(LCD_COMMAND, 0x20);
   LCDWrite(LCD_COMMAND, 0x0C); //Set display control, normal mode.
 }
-
 

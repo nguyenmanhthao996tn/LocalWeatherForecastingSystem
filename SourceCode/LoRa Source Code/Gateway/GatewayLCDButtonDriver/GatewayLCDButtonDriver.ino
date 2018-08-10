@@ -17,10 +17,12 @@ void setup()
 
 void loop()
 {
+  lightOff();
   setBitmap(Update);
   updateDisplay();
   delay(2000);
 
+  lightOn();
   setBitmap(Sun);
   updateDisplay();
   delay(2000);
