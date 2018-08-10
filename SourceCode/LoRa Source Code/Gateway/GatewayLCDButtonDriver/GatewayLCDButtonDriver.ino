@@ -2,8 +2,15 @@
 #include "Bitmaps.h"
 #include "LCD_Functions.h"
 
+const int led = 13;
+
+void showTimeScreen(void);
+void showResultScreen(void);
+
 void setup()
 {
+  pinMode(led, OUTPUT);
+
   Serial.begin(9600);
 
   lcdBegin();      // This will setup our pins, and initialize the LCD
@@ -17,11 +24,13 @@ void setup()
 
 void loop()
 {
+  digitalWrite(led, HIGH);
   lightOff();
   setBitmap(Update);
   updateDisplay();
   delay(2000);
 
+  digitalWrite(led, LOW);
   lightOn();
   setBitmap(Sun);
   updateDisplay();
@@ -31,3 +40,23 @@ void loop()
   updateDisplay();
   delay(2000);
 }
+
+void showTimeScreen(int hour, int min, int temp, int humi)
+{
+
+}
+
+void showResultScreen(int rain)
+{
+  if (rain > 0)
+  {
+    setBitmap(Rain);
+    updateDisplay();
+  }
+  else
+  {
+    setBitmap(Sun);
+    updateDisplay();
+  }
+}
+
