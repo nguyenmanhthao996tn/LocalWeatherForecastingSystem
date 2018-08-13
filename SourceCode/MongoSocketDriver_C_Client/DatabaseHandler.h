@@ -26,7 +26,7 @@ typedef struct
 {
     int (*init)(void);
     int (*sendReadSensorDataRequest)(MyTime_t begin, MyTime_t end);
-    int (*readSensorData)(char *buffer);
+    int (*readSensorData)(char *buffer, int size);
     int (*writeForecastResultRequest)(MyTime_t date, int isRain, int amountOfRain);
     void (*close)(void);
 } DatabaseHandler_t;
@@ -34,7 +34,7 @@ typedef struct
 /* Methods */
 int __init(void);
 int __sendReadSensorData(MyTime_t begin, MyTime_t end);
-int __readSensorData(char *buffer);
+int __readSensorData(char *buffer, int size);
 int __writeForecastResult(MyTime_t date, int isRain, int amountOfRain);
 void __close(void);
 

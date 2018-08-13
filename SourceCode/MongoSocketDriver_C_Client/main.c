@@ -6,8 +6,6 @@ extern DatabaseHandler_t DatabaseHandler;
 int main(int argc, char *argv[])
 {
     FILE *fp;
-    char buff[255];
-
     int i, j;
     char buffer[50];
     MyTime_t time = {
@@ -30,13 +28,13 @@ int main(int argc, char *argv[])
     i = DatabaseHandler.sendReadSensorDataRequest(time2, time);
     if (i)
     {
-        j = DatabaseHandler.readSensorData(buffer);
+        j = DatabaseHandler.readSensorData(buffer, 50);
         while (j > 0)
         {
             // Process here
             printf("%s", buffer);
             fputs(buffer, fp);
-            j = DatabaseHandler.readSensorData(buffer);
+            j = DatabaseHandler.readSensorData(buffer, 50);
         }
     }
     else
