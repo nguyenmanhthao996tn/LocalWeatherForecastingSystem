@@ -14,6 +14,7 @@ typedef struct
 } inputString_t;
 
 /*********** CONSTANT ***********/
+const int led = 9;
 const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
 
 /*********** GLOBAL VARIABLE ***********/
@@ -22,9 +23,13 @@ char sendingDataStringBuffer[255];
 volatile boolean stringComplete = false, getObjectFlag = false, sendObjectFlag = false;
 volatile unsigned long timerOneCounter;
 
+int ledState = LOW;
+
 uint16_t windDirectionCounterArray[] = {0, 0, 0, 0, 0, 0, 0, 0};
 stcOutputData_t *newDataObject;
 stcOutputData_t *sendingDataObject;
+
+void (*resetFunction)(void) = 0;
 
 /*********** METHOD HEADING ***********/
 void clearInputString(void);
@@ -42,6 +47,9 @@ void sendMessageToGateway(void);
 /*********** MAIN ***********/
 void setup()
 {
+  pinMode(led, OUTPUT);
+  digitalWrite(led, ledState);
+  
   pinMode(4, INPUT);
   pinMode(5, INPUT);
 
@@ -74,8 +82,9 @@ void setup()
   delay(500);
 
   LoRa.beginPacket();
-  LoRa.print("Node 1");
+  LoRa.print("Weather Monitoring Node 1");
   LoRa.endPacket();
+  Serial.println("Weather Monitoring Node 1");
 
   sleepNow();
 }
@@ -97,6 +106,8 @@ void loop()
     sendObjectFlag = false;
 
     sendMessageToGateway();
+
+    resetFunction();
   }
 
   sleepNow();
@@ -109,6 +120,8 @@ void serialEvent()
   {
     char inChar = (char)Serial.read();
     inputString.str[inputString.currentIndex++] = inChar;
+    digitalWrite(led, ledState);
+    ledState ^= HIGH;
     if (inChar == '\n')
     {
       if (getObjectFlag)
