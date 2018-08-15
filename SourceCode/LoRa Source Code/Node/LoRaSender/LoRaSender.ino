@@ -16,6 +16,7 @@ typedef struct
 /*********** CONSTANT ***********/
 const int led = 9;
 const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
+const int hardResetPin = A5;
 
 /*********** GLOBAL VARIABLE ***********/
 inputString_t inputString;
@@ -29,8 +30,6 @@ uint16_t windDirectionCounterArray[] = {0, 0, 0, 0, 0, 0, 0, 0};
 stcOutputData_t *newDataObject;
 stcOutputData_t *sendingDataObject;
 
-void (*resetFunction)(void) = 0;
-
 /*********** METHOD HEADING ***********/
 void clearInputString(void);
 float addToAverage(float averageValue, uint16_t counter, uint16_t newValue);
@@ -43,10 +42,13 @@ void wakeNow(void);
 void timerOneInterruptHandler(void);
 void getMessageFromStc(void);
 void sendMessageToGateway(void);
+void resetFunction(void);
 
 /*********** MAIN ***********/
 void setup()
 {
+  pinMode(hardResetPin, INPUT);
+  
   pinMode(led, OUTPUT);
   digitalWrite(led, ledState);
   
@@ -308,3 +310,10 @@ void sendMessageToGateway(void)
   Serial.print("Sent: ");
   Serial.println(sendingDataStringBuffer);
 }
+
+void resetFunction(void)
+{
+  pinMode(hardResetPin, OUTPUT);
+  digitalWrite(hardResetPin, LOW);
+}
+
