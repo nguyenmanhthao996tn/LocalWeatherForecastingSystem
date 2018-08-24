@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login to Weather Forecast console</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        /* Set black background color, white text and some padding */
+
+        footer {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #555;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        @import url('http://getbootstrap.com/dist/css/bootstrap.css');
+        html,
+        body,
+        .container-table {
+            height: 100%;
+        }
+
+        .container-table {
+            display: table;
+        }
+
+        .vertical-center-row {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<script>
+    var socket = io();
+
+    socket.on('connect', () => {
+        socket.emit('type', 'LOGIN');
+
+        socket.on('login-request', (object) => {
+            if (object.accountAvailability) {
+                // Write username & seasionKey to cookies
+                document.cookie = 'username=' + document.getElementById("username").value + ';';
+                document.cookie = 'seasion=' + object.seasionKey + ';';
+
+                // Navigate to index page
+                window.location.href += 'static/weather_index.html';
+            } else {
+                // Display message
+                var message = document.getElementById("message");
+                message.textContent = "Account unavailable";
+                message.style.visibility = "visible";
+            }
+        });
+    })
+
+    function loginFunction() {
+        var usernameValue = document.getElementById("username").value;
+        var passwordValue = document.getElementById("password").value;
+        var message = document.getElementById("message");
+
+        // Check username and password validation
+        if ((usernameValue.indexOf(' ') >= 0) || (passwordValue.indexOf(' ') >= 0)) {
+            message.textContent = "Username & password must not contain space characters";
+            message.style.visibility = "visible";
+
+            return;
+        }
+
+        if (usernameValue.length < 4) {
+            message.textContent = "Username must be longer than 4 characters";
+            message.style.visibility = "visible";
+
+            return;
+        }
+
+        if (passwordValue.length < 4) {
+            message.textContent = "Password must be longer than 4 characters";
+            message.style.visibility = "visible";
+
+            return;
+        }
+
+        // Emit to server
+        socket.emit("login-info", { 'username': usernameValue, 'password': passwordValue });
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        //alert(document.cookie);
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(nameEQ) != -1) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+</script>
+
+<body>
+    <div class="container container-table">
+        <div class="row vertical-center-row">
+            <div class="text-center col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Please Sign In</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form">
+                            <fieldset>
+                                <div class="form-group">
+                                    <input class="form-control" id="username" placeholder="Username" name="username" type="username" autofocus>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" id="password" placeholder="Password" name="password" type="password" value="">
+                                </div>
+                                <!-- Change this to a button or input when using this as a form -->
+
+                                <button type="button" onclick="loginFunction()" class="btn btn-lg btn-success btn-block">Sign
+                                    In
+                                </button>
+                            </fieldset>
+                        </form>
+                        <p id="message" style="color: red; visibility: hidden;">Message</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="container-fluid">
+        <p>Computer Engineering - Graduate Project</p>
+    </footer>
+</body>
+
+</html>

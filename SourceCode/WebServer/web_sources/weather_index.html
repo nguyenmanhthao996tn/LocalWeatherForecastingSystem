@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Weather Forecast Console</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+
+        .row.content {
+            height: 1500px
+        }
+
+        /* Set gray background color and 100% height */
+
+        .sidenav {
+            background-color: #f1f1f1;
+            height: 100%;
+            padding: 15px;
+        }
+
+        hr {
+            height: 2px;
+            border-width: 0;
+            background-color: gray;
+        }
+
+        /* Set black background color, white text and some padding */
+
+        footer {
+            background-color: #555;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        /* On small screens, set height to 'auto' for sidenav and grid */
+
+        @media screen and (max-width: 767px) {
+            .sidenav {
+                height: auto;
+                padding: 15px;
+            }
+            .row.content {
+                height: auto;
+            }
+        }
+
+        th,
+        tr {
+            text-align: center;
+        }
+
+        th {
+            background-color: #899ab5;
+        }
+    </style>
+</head>
+
+<script>
+    var socket = io();
+    var ctx, myLineChart;
+
+    $(document).ready(function () {
+        ctx = document.getElementById('rainfallChart').getContext('2d');
+        chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"],
+                datasets: [
+                    {
+                        label: "Environment",
+                        borderColor: 'rgb(60, 100, 255)',
+                        backgroundColor: 'rgba(60, 100, 255, 0.33)',
+                        data: [15.58562839, 27.86918031, 77.7246544, 37.91899641, 83.30240537, 26.91901492, 54.94677043, 7.925599751, 96.18630626, 11.89718707, 29.02231688, 85.31338849, 81.62495486, 26.86955956, 96.58495612, 36.1245659, 92.24221361, 15.04001185, 10.87765943, 61.11046584, 90.26339717, 97.92502719, 83.59791713, 82.58146141],
+                    },
+                    {
+                        label: "Forecast",
+                        borderColor: 'rgb(56, 224, 70)',
+                        backgroundColor: 'rgba(56, 224, 70, 0.33)',
+                        data: [39.2084386, 6.832124696, 80.14597288, 51.06185733, 87.98872182, 70.48698439, 72.96734045, 1.114067945, 51.43671702, 66.5693415, 47.57792524, 39.10164871, 80.67080918, 63.77837269, 44.1015553, 43.74944747, 72.70051251, 15.22150147, 15.69062023, 64.46750393, 69.17757993, 14.84328483, 33.48403935, 70.41971438],
+                    }]
+            },
+
+            // Configuration options go here
+            options: {
+            }
+        });
+    });
+
+    socket.on('connect', () => {
+        socket.emit('type', 'INDEX');
+
+        socket.on('seasion-info', (msg) => {
+            var username = getCookie('username');
+            var seasionKey = getCookie('seasion');
+
+            // Emit username and seasion key in cookies
+            socket.emit('seasion-info', {
+                'username': username,
+                'seasion': seasionKey
+            });
+        });
+
+        socket.on('index_data', (msg) => {
+            // Update UI with received data
+            if (msg.seasionKeyStatus == 'OK') {
+                console.log(JSON.stringify(msg));
+            } else { // Expired
+                window.location.href += 'static/weather_login.html';
+            }
+        });
+    });
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        //alert(document.cookie);
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(nameEQ) != -1) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+</script>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-3 sidenav">
+                <h4>
+                    <b>Node List</b>
+                </h4>
+                <hr>
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="active">
+                        <a href="#section1">Node1</a>
+                    </li>
+                    <li>
+                        <a href="#section2">Node2</a>
+                    </li>
+                    <li>
+                        <a href="#section3">Node3</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-sm-9">
+                <h2> Node Details </h2>
+                <hr>
+                <p>
+                    <b>NodeID:</b> WeatherNode1</p>
+                <p>
+                    <b>Owner:</b> ThaoNguyen</p>
+                <p>
+                    <b>Location:</b>
+                </p>
+                <p>
+                    <b>Last seen:</b> never </p>
+                <br>
+                <h2> Forecast Results </h2>
+                <hr>
+                <table id="forecast_result_table" style="width:100%" class="table table-bordered">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Rainfall</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2018/08/19 18:58</td>
+                        <td>25</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>2018/08/19 19:03</td>
+                        <td>15</td>
+                    </tr>
+                </table>
+                <br>
+                <h2> Environmental Values </h2>
+                <hr>
+                <table id="sensor_data_table" style="width:100%" class="table table-bordered">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Wind Direction</th>
+                        <th scope="col">Wind Speed</th>
+                        <th scope="col">Temperature</th>
+                        <th scope="col">Humidity</th>
+                        <th scope="col">Atmosphere</th>
+                        <th scope="col">Rainfall</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2018/08/19 18:58</td>
+                        <td>45</td>
+                        <td>15 Miles/h</td>
+                        <td>85</td>
+                        <td>90</td>
+                        <td>10000</td>
+                        <td>25</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>2018/08/19 19:03</td>
+                        <td>45</td>
+                        <td>17 Miles/h</td>
+                        <td>80</td>
+                        <td>92</td>
+                        <td>9998</td>
+                        <td>15</td>
+                    </tr>
+                </table>
+                <br>
+                <h2> Rainfall in last 24H </h2>
+                <hr>
+                <div class="container">
+                    <canvas id="rainfallChart" width="400" height="250"></canvas>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+
+    <footer class="container-fluid">
+        <p>Computer Engineering - Graduate Project</p>
+    </footer>
+
+</body>
+
+</html>
