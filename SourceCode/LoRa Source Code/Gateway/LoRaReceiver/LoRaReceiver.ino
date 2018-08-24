@@ -3,6 +3,7 @@
 #include <LoRa.h>
 #include <ESP8266WiFi.h>
 #include "PubSubClient.h"
+#include "LcdController.h"
 
 /*********** Constants ***********/
 #define ssid "UIT Public"
@@ -138,4 +139,7 @@ void reconnectToWifi(void)
 void mqttClientOnMessagecallback(char *topic, byte *payload, unsigned int length)
 {
   // Handle control message received from server
+  char buffer[25];
+  
+  LcdController.getResultScreenString(buffer, 25, 0);
 }
