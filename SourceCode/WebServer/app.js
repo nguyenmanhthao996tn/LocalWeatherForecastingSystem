@@ -61,19 +61,36 @@ io.on('connection', function (socket) {
                 dataObject.seasionKeyStatus = 'OK';
 
                 // Get data of user
-                dataObject.userData = result;
+                dataObject.userInfo = result;
 
                 // First node data
-                var firstNodeId = result.userData.owningNode[0];
+                var firstNodeId = result.owningNode[0];
                 if (firstNodeId) {
-                  
+                  var querryObject = { "nodeId": firstNodeId };
+                  db.collection("Nodes").findOne(querryObject, function (err, result) {
+                    assert.equal(null, err);
+
+                    dataObject.firstNode = {};
+                    dataObject.firstNode.info = result;
+
+                    var querryObject = { "nodeId": firstNodeId };
+                    var filterObject = { '_id': 0 };
+                    db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                      assert.equal(null, err);
+
+                      dataObject.firstNode.data = result;
+
+                      // Send data
+                      socket.emit('index_data', dataObject);
+                    });
+                  });
                 }
               } else {
                 dataObject.seasionKeyStatus = 'Expired';
-              }
 
-              // Send data
-              socket.emit('index_data', dataObject);
+                // Send data
+                socket.emit('index_data', dataObject);
+              }
             });
           });
         });
