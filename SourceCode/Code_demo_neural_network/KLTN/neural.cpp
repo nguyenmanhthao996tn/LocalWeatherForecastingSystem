@@ -94,30 +94,17 @@ MultiLayerPerceptron::~MultiLayerPerceptron() {
 void MultiLayerPerceptron::RandomWeights()
 {
   int i,j,k;
-  for( i = 1; i < (nNumLayers-1); i++ )
+  for( i = 1; i < nNumLayers; i++ )
     {
       for( j = 0; j < pLayers[i].nNumNeurons; j++ )
-	  {
-	    for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
+	{
+	  for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
 	    {
 	      pLayers[i].pNeurons[j].weight [k]    = RandomEqualREAL(0, 1);
 	      pLayers[i].pNeurons[j].last_weight[k]    = 0.0;
 	      pLayers[i].pNeurons[j].save_weight [k] = 0.0;
 	    }
-	  }
-    }
- 
-   for( i = nNumLayers-1 ; i < nNumLayers; i++ )
-    {
-      for( j = 0; j < pLayers[i].nNumNeurons; j++ )
-	  {
-	    for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
-	    {
-	      pLayers[i].pNeurons[j].weight [k]    =  RandomEqualREAL(-1, 1);
-	      pLayers[i].pNeurons[j].last_weight[k]    = 0.0;
-	      pLayers[i].pNeurons[j].save_weight [k] = 0.0;
-	    }
-	  }
+	}
     }
 }
 
@@ -164,7 +151,7 @@ void MultiLayerPerceptron::PropagateSignal()
   int i,j,k;
 
   /* --- the loop starts with the second layer --- */
-  for( i = 1; i < (nNumLayers-1); i++ )
+  for( i = 1; i < nNumLayers; i++ )
     {
       for( j = 0; j < pLayers[i].nNumNeurons; j++ )
 	  {
@@ -180,22 +167,6 @@ void MultiLayerPerceptron::PropagateSignal()
 		  pLayers[i].pNeurons[j].m_out = 1.0 / (1.0 + exp(-sum));
 	  }
     }
-  for( i = (nNumLayers-1); i < nNumLayers; i++ )
-    {
-      for( j = 0; j < pLayers[i].nNumNeurons; j++ )
-	  {
-		  /* --- calculating the weighted sum in the input --- */
-		  double sum = 0.0;
-		  for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
-		    {
-		      double out = pLayers[i-1].pNeurons[k].m_out;
-		      double w   = pLayers[i  ].pNeurons[j].weight[k];
-		      sum += w * out;
-		    }
-		  /* --- application of the activation function (sigmoid) --- */
-		  pLayers[i].pNeurons[j].m_out = sum;
-	  }
-    }
 }
 
 void MultiLayerPerceptron::ComputeOutputError(double* target)
@@ -205,7 +176,7 @@ void MultiLayerPerceptron::ComputeOutputError(double* target)
     {
       double x = pLayers[nNumLayers-1].pNeurons[i].m_out;
       double d = target[i] - x;
-	  pLayers[nNumLayers-1].pNeurons[i].error = d;
+	  pLayers[nNumLayers-1].pNeurons[i].error =  x * (1.0 - x) * d;
     }
 }
 
@@ -238,34 +209,20 @@ void MultiLayerPerceptron::AdjustWeights()
 {
   int i,j,k;
   /* --- the loop starts with the second layer --- */
-  for( i = 1; i < (nNumLayers -1); i++ )
+  for( i = 1; i < nNumLayers; i++ )
     {
       for( j = 0; j < pLayers[i].nNumNeurons; j++ )
-	  {
-	    for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
+	{
+	  for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
 	    {
 	      double x  = pLayers[i-1].pNeurons[k].m_out;
 	      double e  = pLayers[i  ].pNeurons[j].error;
 	      double dw = pLayers[i  ].pNeurons[j].last_weight[k];
 	      pLayers[i].pNeurons[j].weight [k] += dEta * x * e + dAlpha * dw;
 	      pLayers[i].pNeurons[j].last_weight[k]  = dEta * x * e;
+//		  pLayers[i].pNeurons[j].last_weight[k]	 = pLayers[i].pNeurons[j].weight [k];
 	    }
-	  }
-    }
-    
-  for( i = nNumLayers -1; i < nNumLayers; i++ )
-    {
-      for( j = 0; j < pLayers[i].nNumNeurons; j++ )
-	  {
-	    for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ )
-	    {
-	      double x  = pLayers[i-1].pNeurons[k].m_out;
-	      double e  = pLayers[i  ].pNeurons[j].error;
-	      double dw = pLayers[i  ].pNeurons[j].last_weight[k];
-	      pLayers[i].pNeurons[j].weight [k] += dEta * x * e + dAlpha * dw;
-	      pLayers[i].pNeurons[j].last_weight[k]  = dEta * x * e;
-	    }
-	  }	
+	}
     }
 }
 
@@ -280,7 +237,7 @@ void MultiLayerPerceptron::Simulate(double* input, double* output, double* targe
   PropagateSignal();
   if(output) GetOutputSignal(output);
 
-  if(output && !training) printf("test: %.2f %.2f %.2f %.2f = %.2f\n", input[0],input[1],input[2],target[0],output[0]);
+  if(output && !training) printf("test: %.2f   %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f= %.2f\n",target[0]-output[0], input[0],input[1],input[2],input[3],input[4],input[5],input[6],input[7],target[0],output[0]);
 
   /* --- if it's an apprenticeship, we do a re-propagation of the error */
   if (training)
@@ -481,7 +438,7 @@ void MultiLayerPerceptron::Run(const char* fname, const int& maxiter)
     countLines += Train(fname);
 //    Test(fname);
     countTrain++;
-
+	printf("tranin: %d count\n",countTrain);
   } while ( (countTrain<maxiter) );
 
 }

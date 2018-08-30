@@ -1,0 +1,13 @@
+2018-06-28T00:00:00Z 45(ð?) 0 m/h   0 m/h    86 F   0 inches    1 inches   72%  10074
+                    c000   s000    g000     t086    r000        p000      h53  b10020
+
+	c000: Air Direction, Degree (Hý?ng gió)
+	s000: Air Speed (1 minute), 0.1 miles per hour (t?c ð? gió)
+	g000: Air Speed (5 minutes), 0.1 miles per hour (t?c ð? gió)
+	t086: Temperature, Fahrenheit (ð? F)
+	r000: Rainfall (1 hour), 0.01 inches (lý?ng mýa)
+	p000: Rainfall (24 hours), 0.01 inches (lý?ng mýa)
+	h53: Humidity, % (00%= 100) (ð? ?m)
+	b10020: Atmosphere, 0.1 hpa (áp su?t)
+
+month hours minute c000 s000 g000 t086 h53 b10020 r000 p000
