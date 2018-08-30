@@ -67,7 +67,7 @@ io.on('connection', function (socket) {
                 var firstNodeId = result.owningNode[0];
                 if (firstNodeId) {
                   var querryObject = { "nodeId": firstNodeId };
-                  db.collection("Nodes").findOne(querryObject, function (err, result) {
+                  db.collection("Nodes").findOne(querryObject, { '_id': 0 }, function (err, result) {
                     assert.equal(null, err);
 
                     dataObject.firstNode = {};
@@ -78,10 +78,19 @@ io.on('connection', function (socket) {
                     db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
                       assert.equal(null, err);
 
-                      dataObject.firstNode.data = result;
+                      dataObject.firstNode.data = {};
+                      dataObject.firstNode.data.sensorData = formatSensorDataForWebTable(result);
 
-                      // Send data
-                      socket.emit('index_data', dataObject);
+                      var querryObject = { "nodeId": firstNodeId };
+                      var filterObject = { '_id': 0 };
+                      db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                        assert.equal(null, err);
+
+                        dataObject.firstNode.data.forecastResult = formatForecastResultForWebTable(result);
+
+                        // Send data
+                        socket.emit('index_data', dataObject);
+                      });
                     });
                   });
                 }
@@ -153,4 +162,45 @@ function checkAccountAvailable(username, password, callback) {
       callback(resultObject);
     });
   });
+}
+
+function formatSensorDataForWebTable(data) {
+  var resultObject = [];
+
+  for (var i = 0; i < data.length; i++) {
+    var row = [];
+    var object = data[i];
+
+    row.push((i + 1).toString());
+    row.push((new Date(object.Time)).toLocaleString());
+    row.push(object.AirDirection);
+    row.push(object.AirSpeed1Min);
+    row.push(object.AirSpeed5Min);
+    row.push(object.Temperature);
+    row.push(object.Humidity);
+    row.push(object.Atmosphere);
+    row.push(object.Rainfall1Hour);
+    row.push(object.Rainfall24Hour);
+
+    resultObject.push(row);
+  }
+
+  return resultObject;
+}
+
+function formatForecastResultForWebTable(data) {
+  var resultObject = [];
+
+  for (var i = 0; i < data.length; i++) {
+    var row = [];
+    var object = data[i];
+
+    row.push((i + 1).toString());
+    row.push((new Date(object.Date)).toLocaleString());
+    row.push(object.AmountOfRain);
+
+    resultObject.push(row);
+  }
+
+  return resultObject;
 }
