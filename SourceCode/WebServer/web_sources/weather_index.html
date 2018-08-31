@@ -133,7 +133,7 @@
                 updateForecastResultsData(msg.firstNode.data.forecastResult);
                 updateLastSeen(msg.firstNode.data.sensorData);
             } else { // Seasion key expired, navigate to login page
-                window.location.href += 'static/weather_login.html';
+                window.location.href = window.location.protocol + '//' + window.location.host;
             }
         });
     });
