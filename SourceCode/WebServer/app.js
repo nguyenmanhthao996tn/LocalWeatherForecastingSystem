@@ -52,12 +52,12 @@ io.on('connection', function (socket) {
 
             // Check account
             var querryObject = { "username": username };
-            var fieldSelect = { _id: 0, 'password': 0, 'role': 0, 'seasionKey': 0 };
+            var fieldSelect = { _id: 0, 'password': 0, 'role': 0 };
             db.collection("Users").findOne(querryObject, fieldSelect, function (err, result) {
               assert.equal(null, err);
 
               var dataObject = {};
-              if (result != null) {
+              if ((result != null) && (result.seasionKey.key == seasionKey)) {
                 dataObject.seasionKeyStatus = 'OK';
 
                 // Get data of user
