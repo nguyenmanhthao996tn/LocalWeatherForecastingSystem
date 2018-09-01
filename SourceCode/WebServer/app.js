@@ -41,6 +41,23 @@ io.on('connection', function (socket) {
       case 'INDEX':
         console.log('IO: Index ');
 
+        var g_username = '';
+
+        socket.on('sign-out', () => {
+          var querryObject = { "username": g_username };
+          var updateObject = { '$set': { "seasionKey": {} } };
+
+          MongoClient.connect(url, function (err, db) {
+            assert.equal(null, err);
+
+            db.collection("Users").updateOne(querryObject, updateObject, function (err, result) {
+              assert.equal(null, err);
+              console.log(g_username + " loged out");
+              db.close();
+            });
+          });
+        });
+
         socket.on('seasion-info', function (info) {
           var username = info.username;
           var seasionKey = info.seasion;
@@ -59,6 +76,7 @@ io.on('connection', function (socket) {
               var dataObject = {};
               if ((result != null) && (result.seasionKey.key == seasionKey)) {
                 dataObject.seasionKeyStatus = 'OK';
+                g_username = username;
 
                 // Get data of user
                 dataObject.userInfo = result;
@@ -103,6 +121,54 @@ io.on('connection', function (socket) {
             });
           });
         });
+
+        socket.on('request-node-data', (dataObject) => {
+          // console.log(JSON.stringify(dataObject));
+
+          var username = dataObject.username;
+          var seasionKey = dataObject.seasion;
+          var nodeId = dataObject.node_id;
+
+          // Check username & seasion key
+          MongoClient.connect(url, function (err, db) {
+            assert.equal(null, err);
+
+            // Check account
+            var querryObject = { "username": username };
+            var fieldSelect = { _id: 0, 'seasionKey': 1 };
+            db.collection("Users").findOne(querryObject, fieldSelect, function (err, result) {
+              assert.equal(null, err);
+
+              if ((result != null) && (result.seasionKey.key == seasionKey)) {
+                var querryObject = { "nodeId": nodeId };
+                var filterObject = { '_id': 0 };
+
+                var responseObject = { info: {}, sensorData: [], forecastResult: [] };
+
+                db.collection("Nodes").findOne(querryObject, { '_id': 0 }, function (err, result) {
+                  assert.equal(null, err);
+
+                  responseObject.info = result;
+
+                  db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                    assert.equal(null, err);
+
+                    responseObject.sensorData = formatSensorDataForWebTable(result);
+
+                    db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                      assert.equal(null, err);
+
+                      responseObject.forecastResult = formatForecastResultForWebTable(result);
+
+                      socket.emit('response-node-data', responseObject);
+                    });
+                  });
+                });
+              }
+            });
+          });
+        });
+
         socket.emit('seasion-info', 'request');
         break;
       default:

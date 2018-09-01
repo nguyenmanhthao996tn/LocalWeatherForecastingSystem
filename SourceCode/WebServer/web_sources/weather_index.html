@@ -121,7 +121,7 @@
         socket.on('index_data', (msg) => {
             // Update UI with received data
             if (msg.seasionKeyStatus == 'OK') {
-                updateNodeList(msg.userInfo.owningNode);
+                updateNodeList(msg.userInfo.owningNode, 0);
                 updateNodeDetails(msg.firstNode.info);
                 updateEnvironmentalValuesData(msg.firstNode.data.sensorData);
                 updateForecastResultsData(msg.firstNode.data.forecastResult);
@@ -178,7 +178,7 @@
         lastSeen.innerHTML = "<b>Last seen:</b> " + str;
     }
 
-    function updateNodeList(list) {
+    function updateNodeList(list, active) {
         var nodeList = document.getElementById('node-list');
         nodeList.innerHTML = '';
 
@@ -186,8 +186,9 @@
             var node = document.createElement('li');
             var a = document.createElement('a');
 
-            a.setAttribute("href", "#" + list[i])
-            if (i == 0) { node.setAttribute("class", "active") }
+            // a.setAttribute("href", "#" + list[i])
+            a.setAttribute("onclick", "return nodeListOnClick('" + list[i] + "'," + i + ")");
+            if (i == active) { node.setAttribute("class", "active") }
             a.innerText = list[i];
             node.appendChild(a);
             nodeList.appendChild(node);
@@ -253,6 +254,45 @@
         addData(label, rainfall);
     }
 
+    function nodeListOnClick(nodeId, index) {
+        var username = getCookie('username');
+        var seasionKey = getCookie('seasion');
+
+        socket.emit('request-node-data', {
+            'username': username,
+            'seasion': seasionKey,
+            'node_id': nodeId
+        });
+
+        socket.on('response-node-data', (objectData) => {
+            console.log(JSON.stringify(objectData))
+
+            $('#sensor_data_table').dataTable().fnClearTable();
+            $('#sensor_data_table').dataTable().fnAddData(objectData.sensorData);
+
+            $('#forecast_result_table').dataTable().fnClearTable();
+            $('#forecast_result_table').dataTable().fnAddData(objectData.forecastResult);
+
+            updateNodeDetails(objectData.info);
+            updateLastSeen(objectData.sensorData);
+            updateChart(objectData.sensorData);
+        });
+
+        var nodeList = document.getElementById('node-list');
+        for (var i = 0; i < nodeList.childElementCount; i++) {
+            nodeList.children.item(i).removeAttribute("class");
+        }
+        nodeList.children.item(index).setAttribute("class", "active");
+
+        return false;
+    }
+
+    function signOutFunction() {
+        socket.emit('sign-out');
+        window.location.href = window.location.protocol + '//' + window.location.host;
+        return false;
+    }
+
 </script>
 
 <body>
@@ -260,6 +300,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
+
                 <h4>
                     <b>Node List</b>
                 </h4>
@@ -275,6 +316,8 @@
                         <a href="#section3">Node3</a>
                     </li>
                 </ul>
+                <hr>
+                <button type="button" class="btn btn-danger" onclick="return signOutFunction()">Sign out</button>
             </div>
 
             <div class="col-sm-9">
