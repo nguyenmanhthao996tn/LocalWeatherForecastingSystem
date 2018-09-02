@@ -14,6 +14,7 @@ typedef struct
 } inputString_t;
 
 /*********** CONSTANT ***********/
+#define NodeID "Weather_Node_01"
 const int led = 9;
 const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
 const int hardResetPin = A5;
@@ -83,9 +84,6 @@ void setup()
 
   delay(500);
 
-  LoRa.beginPacket();
-  LoRa.print("Weather Monitoring Node 1");
-  LoRa.endPacket();
   Serial.println("Weather Monitoring Node 1");
 
   sleepNow();
@@ -299,6 +297,7 @@ void sendMessageToGateway(void)
   stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer);
 
   LoRa.beginPacket();
+  LoRa.print(NodeID);
   LoRa.print(sendingDataStringBuffer);
   LoRa.endPacket();
   LoRa.sleep();
