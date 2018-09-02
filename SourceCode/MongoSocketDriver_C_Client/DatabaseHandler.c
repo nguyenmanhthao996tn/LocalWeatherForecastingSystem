@@ -45,7 +45,7 @@ int __init(void)
     return 1; // Success
 }
 
-int __sendReadSensorData(MyTime_t begin, MyTime_t end)
+int __sendReadSensorData(char* nodeId, MyTime_t begin, MyTime_t end)
 {
     int n;
     char buffer[255];
@@ -100,7 +100,7 @@ int __readSensorData(char *buffer, int size)
     }
 }
 
-int __writeForecastResult(MyTime_t date, int isRain, int amountOfRain)
+int __writeForecastResult(char* nodeId, MyTime_t date, int isRain, int amountOfRain)
 {
     int n;
     const char *requestTemplate = "{\"code\":2, \"date\":\"%.4d-%.2d-%.2d %.2d:%.2d\", \"rain\":%s, \"AmountOfRain\":%d}";

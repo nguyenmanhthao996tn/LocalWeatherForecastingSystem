@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "DatabaseHandler.h"
 
+#define nodeId "Weather_Node_01"
+
 extern DatabaseHandler_t DatabaseHandler;
 
 int main(int argc, char *argv[])
@@ -24,8 +26,8 @@ int main(int argc, char *argv[])
     fp = fopen("out.txt", "w");
 
     DatabaseHandler.init();
-    // DatabaseHandler.writeForecastResult(time, 1, 100);
-    i = DatabaseHandler.sendReadSensorDataRequest(time2, time);
+    // DatabaseHandler.writeForecastResult(nodeId, time, 1, 100);
+    i = DatabaseHandler.sendReadSensorDataRequest(nodeId, time2, time);
     if (i)
     {
         j = DatabaseHandler.readSensorData(buffer, 50);
