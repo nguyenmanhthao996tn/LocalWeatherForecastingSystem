@@ -6,7 +6,7 @@ var net = require('net');
 var ascoltatore = {
   //using ascoltatore
   type: 'mongo',
-  url: 'mongodb://'+ SERVER_NAME +':27017/mqtt',
+  url: 'mongodb://' + SERVER_NAME + ':27017/mqtt',
   pubsubCollection: 'ascoltatori',
   mongo: {}
 };
@@ -27,7 +27,7 @@ server.on('published', function (packet, client) {
   var str = packet.payload.toString();
   consoleLogWithISODate('Publish ' + str + ' | Length: ' + str.length);
 
-  if ((str.length == 35) && (str[33] == '\r') && (str[34] == '\n')) { 
+  if ((str.length == 50) && (str[48] == '\r') && (str[49] == '\n')) {
     var client = new net.Socket();
 
     client.on('data', function (data) {
@@ -42,8 +42,9 @@ server.on('published', function (packet, client) {
     client.connect(5001, SERVER_NAME, function () {
       consoleLogWithISODate('Connected');
 
-      var weatherDataWriteRequestObject = { code: 1 };
-      weatherDataWriteRequestObject.data = packet.payload.toString();
+      var weatherDataWriteRequestObject = { code: 1, nodeId: '', data: '' };
+      weatherDataWriteRequestObject.nodeId = packet.payload.toString().subString(0, 15);
+      weatherDataWriteRequestObject.data = packet.payload.toString().subString(15);;
       client.write(JSON.stringify(weatherDataWriteRequestObject));
     });
   }
