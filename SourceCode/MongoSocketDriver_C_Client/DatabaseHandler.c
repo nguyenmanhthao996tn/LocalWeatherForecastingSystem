@@ -49,11 +49,11 @@ int __sendReadSensorData(char* nodeId, MyTime_t begin, MyTime_t end)
 {
     int n;
     char buffer[255];
-    const char *requestTemplate = "{\"code\":0, \"from\":\"%.4d-%.2d-%.2d %.2d:%.2d\", \"to\":\"%.4d-%.2d-%.2d %.2d:%.2d\"}";
+    const char *requestTemplate = "{\"code\":0, \"nodeId\":\"%s\", \"from\":\"%.4d-%.2d-%.2d %.2d:%.2d\", \"to\":\"%.4d-%.2d-%.2d %.2d:%.2d\"}";
 
     // Parse template
     bzero(buffer, 255);
-    snprintf(buffer, 255, requestTemplate, begin.year, begin.month, begin.day, begin.hour, begin.minute, end.year, end.month, end.day, end.hour, end.minute);
+    snprintf(buffer, 255, requestTemplate, nodeId, begin.year, begin.month, begin.day, begin.hour, begin.minute, end.year, end.month, end.day, end.hour, end.minute);
 
     /* Send request to the server */
     n = write(__sockfd, buffer, strlen(buffer));
@@ -103,12 +103,12 @@ int __readSensorData(char *buffer, int size)
 int __writeForecastResult(char* nodeId, MyTime_t date, int isRain, int amountOfRain)
 {
     int n;
-    const char *requestTemplate = "{\"code\":2, \"date\":\"%.4d-%.2d-%.2d %.2d:%.2d\", \"rain\":%s, \"AmountOfRain\":%d}";
+    const char *requestTemplate = "{\"code\":2, \"nodeId\":\"%s\", \"date\":\"%.4d-%.2d-%.2d %.2d:%.2d\", \"rain\":%s, \"AmountOfRain\":%d}";
     char buffer[255];
 
     // Parse template
     bzero(buffer, 255);
-    snprintf(buffer, 255, requestTemplate, date.year, date.month, date.day, date.hour, date.minute, ((isRain == 0) ? "false" : "true"), amountOfRain);
+    snprintf(buffer, 255, requestTemplate, nodeId, date.year, date.month, date.day, date.hour, date.minute, ((isRain == 0) ? "false" : "true"), amountOfRain);
 
     /* Send request to the server */
     n = write(__sockfd, buffer, strlen(buffer));
