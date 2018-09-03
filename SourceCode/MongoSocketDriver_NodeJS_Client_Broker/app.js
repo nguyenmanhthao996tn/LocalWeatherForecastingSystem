@@ -1,4 +1,5 @@
-const SERVER_NAME = "127.0.0.1";
+const MONGO_SERVER_NAME = "127.0.0.1";
+const MOSCA_PORT = 5002;
 
 var mosca = require('mosca');
 var net = require('net');
@@ -6,13 +7,13 @@ var net = require('net');
 var ascoltatore = {
   //using ascoltatore
   type: 'mongo',
-  url: 'mongodb://' + SERVER_NAME + ':27017/mqtt',
+  url: 'mongodb://' + MONGO_SERVER_NAME + ':27017/mqtt',
   pubsubCollection: 'ascoltatori',
   mongo: {}
 };
 
 var settings = {
-  port: 5002,
+  port: MOSCA_PORT,
   backend: ascoltatore
 };
 
@@ -39,12 +40,12 @@ server.on('published', function (packet, client) {
       consoleLogWithISODate('Connection closed');
     });
 
-    client.connect(5001, SERVER_NAME, function () {
+    client.connect(5001, MONGO_SERVER_NAME, function () {
       consoleLogWithISODate('Connected');
 
       var weatherDataWriteRequestObject = { code: 1, nodeId: '', data: '' };
-      weatherDataWriteRequestObject.nodeId = packet.payload.toString().subString(0, 15);
-      weatherDataWriteRequestObject.data = packet.payload.toString().subString(15);;
+      weatherDataWriteRequestObject.nodeId = packet.payload.toString().substring(0, 15);
+      weatherDataWriteRequestObject.data = packet.payload.toString().substring(15);;
       client.write(JSON.stringify(weatherDataWriteRequestObject));
     });
   }
@@ -54,7 +55,7 @@ server.on('ready', setup);
 
 // fired when the mqtt server is ready
 function setup() {
-  consoleLogWithISODate('Mosca server is up and running');
+  consoleLogWithISODate('Mosca server is up and running on port: ' + MOSCA_PORT);
 }
 
 function consoleLogWithISODate(str) {
