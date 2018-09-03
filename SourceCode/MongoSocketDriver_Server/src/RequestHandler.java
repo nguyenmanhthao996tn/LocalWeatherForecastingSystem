@@ -48,28 +48,34 @@ public class RequestHandler {
 			int code = d.getInteger("code");
 			switch (code) {
 			case REQUEST_CODE_READ_SENSOR_DATA:
-				String nodeId = d.getString("nodeId"); 
-				String fromDateString = d.getString("from");
-				Date fromDate = formatter.parse(fromDateString);
-				String toDateString = d.getString("to");
-				Date toDate = formatter.parse(toDateString);
-				requestResult = "{\"status\":\"OK\"}" + readSensorData(nodeId, fromDate, toDate);
+				{
+					String nodeId = d.getString("nodeId"); 
+					String fromDateString = d.getString("from");
+					Date fromDate = formatter.parse(fromDateString);
+					String toDateString = d.getString("to");
+					Date toDate = formatter.parse(toDateString);
+					requestResult = "{\"status\":\"OK\"}" + readSensorData(nodeId, fromDate, toDate);
+				}
 				break;
 			case REQUEST_CODE_WRITE_SENSOR_DATA:
-				String nodeId = d.getString("nodeId");
-				String dataString = d.getString("data");
-				SensorDataObject dataObject = new SensorDataObject(dataString);
-				insertSensorData(dataObject.toDocument().append('nodeId', nodeId));
-				requestResult = "{\"status\":\"OK\"}";
+				{
+					String nodeId = d.getString("nodeId");
+					String dataString = d.getString("data");
+					SensorDataObject dataObject = new SensorDataObject(dataString);
+					insertSensorData(dataObject.toDocument().append("nodeId", nodeId));
+					requestResult = "{\"status\":\"OK\"}";
+				}
 				break;
 			case REQUEST_CODE_WRITE_FORECAST_RESULT:
-				String nodeId = d.getString("nodeId");
-				String forecastDateString = d.getString("date");
-				Date forecastDate = formatter.parse(forecastDateString);
-				boolean isRain = d.getBoolean("rain");
-				int amountOfRain = d.getInteger("AmountOfRain");
-				insertForecastResult(new Document("Date", forecastDate).append("IsRain", isRain).append("AmountOfRain", amountOfRain).append("nodeId", nodeId));
-				requestResult = "{\"status\":\"OK\"}";
+				{
+					String nodeId = d.getString("nodeId");
+					String forecastDateString = d.getString("date");
+					Date forecastDate = formatter.parse(forecastDateString);
+					boolean isRain = d.getBoolean("rain");
+					int amountOfRain = d.getInteger("AmountOfRain");
+					insertForecastResult(new Document("Date", forecastDate).append("IsRain", isRain).append("AmountOfRain", amountOfRain).append("nodeId", nodeId));
+					requestResult = "{\"status\":\"OK\"}";
+				}
 				break;
 			default:
 				break;
@@ -102,7 +108,7 @@ public class RequestHandler {
 	private String readSensorData(String nodeId, Date from, Date to) {
 		String result = "";
 
-		Document querryObject = new Document("Time", new Document().append("$gte", from).append("$lte", to)).append('nodeId', nodeId);
+		Document querryObject = new Document("Time", new Document().append("$gte", from).append("$lte", to)).append("nodeId", nodeId);
 		MongoCursor<Document> cursor = sensorDataCollection.find(querryObject).iterator();
 		try {
 			while (cursor.hasNext()) {
