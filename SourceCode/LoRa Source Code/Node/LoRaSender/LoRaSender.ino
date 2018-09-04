@@ -80,11 +80,12 @@ void setup()
   LoRa.setCodingRate4(5);
   LoRa.setSpreadingFactor(12);
   LoRa.setPreambleLength(8);
+  LoRa.enableCrc();
   LoRa.setSyncWord(0x24);
 
   delay(500);
 
-  Serial.println("Weather Monitoring Node 1");
+  Serial.println(NodeID);
 
   sleepNow();
 }
@@ -315,4 +316,3 @@ void resetFunction(void)
   pinMode(hardResetPin, OUTPUT);
   digitalWrite(hardResetPin, LOW);
 }
-

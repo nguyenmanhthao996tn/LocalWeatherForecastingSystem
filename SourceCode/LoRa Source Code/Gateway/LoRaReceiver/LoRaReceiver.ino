@@ -55,7 +55,7 @@ void loop()
   client.loop();
 
   int packetSize = LoRa.parsePacket();
-  if (packetSize)
+  if (packetSize > 0)
   {
     Serial.print(packetSize);
     Serial.print(" Received packet '");
@@ -74,6 +74,9 @@ void loop()
 
     Serial.print("' with RSSI ");
     Serial.println(LoRa.packetRssi());
+  } else if (packetSize == -1) {
+    // Publish to MQTT
+    client.publish(mqtt_topic_pub, "CRC ERROR");
   }
 }
 
@@ -91,6 +94,7 @@ void setupLoRa(void)
   LoRa.setCodingRate4(5);
   LoRa.setSpreadingFactor(12);
   LoRa.setPreambleLength(8);
+  LoRa.enableCrc();
   LoRa.setSyncWord(0x24);
 }
 
