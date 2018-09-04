@@ -100,6 +100,15 @@
 
             // Configuration options go here
             options: {
+                scales: {
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                            // beginAtZero: true   // minimum value will be 0.
+                        }
+                    }]
+                }
             }
         });
     });
