@@ -70,18 +70,18 @@ void setup()
   Timer1.attachInterrupt(timerOneInterruptHandler);
 
   LoRa.setPins(10, 8, 2);
-  if (!LoRa.begin(868100000))
+  if (!LoRa.begin(868300000))
   {
     while (1)
       ;
   }
 
-  LoRa.setSignalBandwidth(125000);
-  LoRa.setCodingRate4(5);
+  LoRa.setSignalBandwidth(10400);
+  LoRa.setCodingRate4(8);
   LoRa.setSpreadingFactor(12);
   LoRa.setPreambleLength(8);
+  LoRa.setSyncWord(0x52);
   LoRa.enableCrc();
-  LoRa.setSyncWord(0x24);
 
   delay(500);
 

@@ -83,19 +83,19 @@ void loop()
 void setupLoRa(void)
 {
   LoRa.setPins(15, 16, 5);
-  if (!LoRa.begin(868100000))
+  if (!LoRa.begin(868300000))
   {
     Serial.println("Starting LoRa failed!");
     while (1)
       ;
   }
 
-  LoRa.setSignalBandwidth(125000);
-  LoRa.setCodingRate4(5);
+  LoRa.setSignalBandwidth(10400);
+  LoRa.setCodingRate4(8);
   LoRa.setSpreadingFactor(12);
   LoRa.setPreambleLength(8);
+  LoRa.setSyncWord(0x52);
   LoRa.enableCrc();
-  LoRa.setSyncWord(0x24);
 }
 
 void setupWifi(void)
