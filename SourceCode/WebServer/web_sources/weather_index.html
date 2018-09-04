@@ -274,13 +274,15 @@
         });
 
         socket.on('response-node-data', (objectData) => {
-            console.log(JSON.stringify(objectData))
-
             $('#sensor_data_table').dataTable().fnClearTable();
-            $('#sensor_data_table').dataTable().fnAddData(objectData.sensorData);
+            if (objectData.sensorData.length > 0) {
+                $('#sensor_data_table').dataTable().fnAddData(objectData.sensorData);
+            }
 
             $('#forecast_result_table').dataTable().fnClearTable();
-            $('#forecast_result_table').dataTable().fnAddData(objectData.forecastResult);
+            if (objectData.forecastResult.length > 0) {
+                $('#forecast_result_table').dataTable().fnAddData(objectData.forecastResult);
+            }
 
             updateNodeDetails(objectData.info);
             updateLastSeen(objectData.sensorData);
