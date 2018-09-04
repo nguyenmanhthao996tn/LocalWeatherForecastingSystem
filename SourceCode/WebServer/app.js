@@ -1,3 +1,5 @@
+const WEB_PORT = 5003;
+
 var path = require('path');
 var express = require('express');
 var app = express();
@@ -7,7 +9,7 @@ var io = require('socket.io')(http);
 var assert = require('assert');
 var ObjectID = require('mongodb').ObjectID;
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://127.0.1.1:27017/WeatherForecast";
+var url = "mongodb://127.0.0.1:27017/WeatherForecast";
 
 app.use('/static', express.static(path.join(__dirname, 'web_sources/')));
 
@@ -177,8 +179,8 @@ io.on('connection', function (socket) {
   });
 });
 
-http.listen(8080, () => {
-  console.log('listening on *:8080');
+http.listen(WEB_PORT, () => {
+  console.log('listening on *:' + WEB_PORT);
 });
 
 function checkAccountAvailable(username, password, callback) {
