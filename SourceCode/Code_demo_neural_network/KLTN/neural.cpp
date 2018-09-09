@@ -5,6 +5,7 @@
 #include <string.h>
 #include "neural.h"
 
+
 void InitializeRandoms()
 {
   //  srand( (unsigned)time( NULL ) );
@@ -30,7 +31,8 @@ MultiLayerPerceptron::MultiLayerPerceptron(int nl, int npl[]) :
   dEta(0.9),
   dAlpha(0.25),
   dGain(1.0),
-  dAvgTestError(0.0)
+  dAvgTestError(0.0), 
+  nRight(0)
 {
 	int i,j;
 
@@ -228,7 +230,6 @@ void MultiLayerPerceptron::AdjustWeights()
 
 void MultiLayerPerceptron::Simulate(double* input, double* output, double* target, bool training)
 {
-
   if(!input)  return;
   if(!target) return;
 
@@ -237,8 +238,10 @@ void MultiLayerPerceptron::Simulate(double* input, double* output, double* targe
   PropagateSignal();
   if(output) GetOutputSignal(output);
 
-  if(output && !training) printf("test: %.2f   %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f= %.2f\n",target[0]-output[0], input[0],input[1],input[2],input[3],input[4],input[5],input[6],input[7],target[0],output[0]);
-
+  if(output && !training) {
+  	  if(fabs(target[0]-output[0]) > 0.01) nRight++;
+	  printf("test: %.2f   %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f= %.2f\n",fabs(target[0]-output[0]), input[0],input[1],input[2],input[3],input[4],input[5],input[6],input[7],target[0],output[0]);
+  }
   /* --- if it's an apprenticeship, we do a re-propagation of the error */
   if (training)
     {
@@ -347,17 +350,6 @@ int MultiLayerPerceptron::Train(const char* fname)
   return count;
 }
 
-//void MultiLayerPerceptron::Test(double* input) 
-//{
-//  double* output = NULL;
-//  output = new double[pLayers[nNumLayers-1].nNumNeurons];
-//  SetInputSignal(input);
-//  PropagateSignal();
-//  GetOutputSignal(output);
-//  for ( int i=0; i< pLayers[nNumLayers-1].nNumNeurons ; i++)
-//  	printf(" %2f\n ",output[i]);
-//}
-
 int MultiLayerPerceptron::Test(const char* fname)
 {
   int count = 0;
@@ -418,6 +410,42 @@ int MultiLayerPerceptron::Test(const char* fname)
 
   return count;
 }
+
+
+void MultiLayerPerceptron::Save(const char* fname)
+{
+  int i,j,k;
+  FILE * fp_w;
+  
+  fp_w = fopen(fname, "w+");
+  for( i = 1; i < nNumLayers; i++ )
+    for( j = 0; j < pLayers[i].nNumNeurons; j++ )
+      for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ ) {
+			pLayers[i].pNeurons[j].save_weight[k] = pLayers[i].pNeurons[j].weight[k];
+			fprintf(fp_w," %.17f",pLayers[i].pNeurons[j].save_weight[k]);
+		}
+	fclose(fp_w);
+}
+
+void MultiLayerPerceptron::Load(const char* fname)
+{
+  int i,j,k;
+  FILE * fp_r;	
+  double dNumber;
+  
+  fp_r = fopen(fname, "r");
+  
+	//
+  	for( i = 1; i < nNumLayers; i++ )
+    	for( j = 0; j < pLayers[i].nNumNeurons; j++ )
+      		for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ ) {
+      			read_number(fp_r,&dNumber);
+      			pLayers[i].pNeurons[j].weight [k]    = dNumber;
+    		}
+
+  if(fp_r) fclose(fp_r);
+}
+
 
 void MultiLayerPerceptron::Init()
 {

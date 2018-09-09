@@ -11,10 +11,10 @@ int RandomEqualINT(int Low, int High)
 int main()
 {
    FILE *fp;
-   double tmp;
-   int a,b,c,d,e,f,h,g,i;
+   double tmp,e,f,c,d,h,g;
+   int a,b,i;
    srand((unsigned)time( NULL ) );
-   fp = fopen("createtest7.txt", "w+");
+   fp = fopen("createtest8.txt", "w+");
 //   fprintf(fp, "Vi du kiem tra ham fprintf ...\n");
 //	for( a=0;a<10;a++)
 //	for( b=0;b<10;b++)
@@ -26,16 +26,22 @@ int main()
 //	for( g=0;g<10;g++)
 	for(i=0;i<10;i++)
 		{
-			a = RandomEqualINT(0,15);
-			b = RandomEqualINT(0,15);
-			c = RandomEqualINT(0,15);
-			d = RandomEqualINT(0,15);
-			e = RandomEqualINT(0,15);
-			f = RandomEqualINT(0,15);
-			h = RandomEqualINT(0,15);
-			g = RandomEqualINT(0,15);
+			a = RandomEqualINT(0,12);
+			b = RandomEqualINT(0,23);
+			c = RandomEqualINT(20,37);
+			d = RandomEqualINT(20,37);
+			e = RandomEqualINT(50,90);
+			f = RandomEqualINT(50,90);
+			h = RandomEqualINT(25,50);
+			g = RandomEqualINT(25,50);
+			c = c/10;
+			d = d/10;
+			e = e/10;
+			f = f/10;
+			h = h/10;
+			g = g/10;
 			tmp = a + b + c + d + e + f + h + g;
-			fprintf(fp, " %d %d %d %d %d %d %d %d %.2f\n",a,b,c,d,e,f,h,g,tmp/100);
+			fprintf(fp, " %d %d %.2f %.2f %.2f %.2f %.2f %.2f %.3f\n",a,b,c,d,e,f,h,g,tmp/100);
 		}
    fclose(fp);
    return 0;
