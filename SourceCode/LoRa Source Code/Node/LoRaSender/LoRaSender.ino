@@ -80,7 +80,7 @@ void setup()
       ;
   }
 
-  LoRa.setSignalBandwidth(10400);
+  LoRa.setSignalBandwidth(125000);
   LoRa.setCodingRate4(8);
   LoRa.setSpreadingFactor(12);
   LoRa.setPreambleLength(8);
