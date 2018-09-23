@@ -1,6 +1,8 @@
 /*********** LIBRARY ***********/
 #include <SPI.h>
 #include <LoRa.h>
+#include <avr/wdt.h>
+#include <avr/interrupt.h>
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include "TimerOne.h"
@@ -43,20 +45,21 @@ void wakeNow(void);
 void timerOneInterruptHandler(void);
 void getMessageFromStc(void);
 void sendMessageToGateway(void);
-void resetFunction(void);
+void hardResetFunction(void);
+void wdtConfig(void);
 
 /*********** MAIN ***********/
 void setup()
 {
+  wdt_disable();
+
   pinMode(hardResetPin, INPUT);
-  
+
   pinMode(led, OUTPUT);
   digitalWrite(led, ledState);
-  
+
   pinMode(4, INPUT);
   pinMode(5, INPUT);
-
-  timerOneCounter = 0;
 
   stcOutputData_Create(&sendingDataObject);
   clearSendingObject();
@@ -66,6 +69,7 @@ void setup()
   while (!Serial)
     ;
 
+  timerOneCounter = 0;
   Timer1.initialize(1000000); // 1s
   Timer1.attachInterrupt(timerOneInterruptHandler);
 
@@ -94,6 +98,7 @@ void loop()
 {
   if (getObjectFlag)
   {
+    wdt_reset();
     if ((inputString.str[33] == '\r') && (inputString.str[34] == '\n'))
     {
       getObjectFlag = false;
@@ -107,8 +112,6 @@ void loop()
     sendObjectFlag = false;
 
     sendMessageToGateway();
-
-    resetFunction();
   }
 
   sleepNow();
@@ -252,32 +255,32 @@ void getMessageFromStc(void)
   saveNewObjectToSendingObject(newDataObject);
   switch (newDataObject->airDirection)
   {
-    case 0:
-      windDirectionCounterArray[0]++;
-      break;
-    case 45:
-      windDirectionCounterArray[1]++;
-      break;
-    case 90:
-      windDirectionCounterArray[2]++;
-      break;
-    case 135:
-      windDirectionCounterArray[3]++;
-      break;
-    case 180:
-      windDirectionCounterArray[4]++;
-      break;
-    case 225:
-      windDirectionCounterArray[5]++;
-      break;
-    case 270:
-      windDirectionCounterArray[6]++;
-      break;
-    case 315:
-      windDirectionCounterArray[7]++;
-      break;
-    default:
-      break;
+  case 0:
+    windDirectionCounterArray[0]++;
+    break;
+  case 45:
+    windDirectionCounterArray[1]++;
+    break;
+  case 90:
+    windDirectionCounterArray[2]++;
+    break;
+  case 135:
+    windDirectionCounterArray[3]++;
+    break;
+  case 180:
+    windDirectionCounterArray[4]++;
+    break;
+  case 225:
+    windDirectionCounterArray[5]++;
+    break;
+  case 270:
+    windDirectionCounterArray[6]++;
+    break;
+  case 315:
+    windDirectionCounterArray[7]++;
+    break;
+  default:
+    break;
   }
 
   // Delete new object
@@ -311,8 +314,20 @@ void sendMessageToGateway(void)
   Serial.println(sendingDataStringBuffer);
 }
 
-void resetFunction(void)
+void hardResetFunction(void)
 {
   pinMode(hardResetPin, OUTPUT);
   digitalWrite(hardResetPin, LOW);
+}
+
+void wdtConfig(void)
+{
+  cli();       //  __disable_interrupt();
+  wdt_reset(); //  __watchdog_reset();
+  /* Start timed sequence */
+  WDTCSR |= (1 << WDCE) | (1 << WDE);
+  /* Set new prescaler(time-out) value = 1024K cycles (~8 s) */
+  WDTCSR = (1 << WDE) | (1 << WDP3) | (1 << WDP0);
+  wdt_reset(); //  __watchdog_reset();
+  sei();       //  __enable_interrupt();
 }
