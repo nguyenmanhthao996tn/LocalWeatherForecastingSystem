@@ -112,6 +112,8 @@ void loop()
     sendObjectFlag = false;
 
     sendMessageToGateway();
+
+    hardResetFunction();
   }
 
   sleepNow();
