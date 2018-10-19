@@ -89,7 +89,13 @@ void setup()
 
   delay(500);
 
+  LoRa.beginPacket();
+  LoRa.print(NodeID);
+  LoRa.endPacket();
+  
   Serial.println(NodeID);
+  
+  wdtConfig();
 
   sleepNow();
 }
@@ -98,9 +104,10 @@ void loop()
 {
   if (getObjectFlag)
   {
-    wdt_reset();
     if ((inputString.str[33] == '\r') && (inputString.str[34] == '\n'))
     {
+      wdt_reset();
+
       getObjectFlag = false;
 
       getMessageFromStc();
@@ -329,7 +336,12 @@ void wdtConfig(void)
   /* Start timed sequence */
   WDTCSR |= (1 << WDCE) | (1 << WDE);
   /* Set new prescaler(time-out) value = 1024K cycles (~8 s) */
-  WDTCSR = (1 << WDE) | (1 << WDP3) | (1 << WDP0);
+  WDTCSR = (1 << WDE) | (1 << WDIE) | (1 << WDP3) | (1 << WDP0);
   wdt_reset(); //  __watchdog_reset();
   sei();       //  __enable_interrupt();
+}
+
+ISR(WDT_vect)
+{
+  Serial.println("WDT_vect");
 }
