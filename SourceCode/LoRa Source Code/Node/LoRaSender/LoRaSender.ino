@@ -16,10 +16,13 @@ typedef struct
 } inputString_t;
 
 /*********** CONSTANT ***********/
-#define NodeID "Weather_Node_01"
+#define NodeID 123
 const int led = 9;
 const uint16_t windDirectionValueArray[] = {0, 45, 90, 135, 180, 225, 270, 315};
 const int hardResetPin = A5;
+const int chargeEnablePin = A2;
+const int batteryPercentagePin = A3;
+
 
 /*********** GLOBAL VARIABLE ***********/
 inputString_t inputString;
@@ -45,6 +48,8 @@ void wakeNow(void);
 void timerOneInterruptHandler(void);
 void getMessageFromStc(void);
 void sendMessageToGateway(void);
+uint8_t getBatteryPercentage(void);
+void setChargingState(uint8_t chargeEnable);
 void hardResetFunction(void);
 void wdtConfig(void);
 
@@ -54,6 +59,9 @@ void setup()
   wdt_disable();
 
   pinMode(hardResetPin, INPUT);
+
+  pinMode(chargeEnablePin, OUTPUT);
+  digitalWrite(chargeEnablePin, HIGH); // enable
 
   pinMode(led, OUTPUT);
   digitalWrite(led, ledState);
@@ -92,9 +100,9 @@ void setup()
   LoRa.beginPacket();
   LoRa.print(NodeID);
   LoRa.endPacket();
-  
+
   Serial.println(NodeID);
-  
+
   wdtConfig();
 
   sleepNow();
@@ -231,7 +239,7 @@ void clearSendingObject(void)
 
 void disableUnusedPeripheral(void)
 {
-  power_adc_disable();
+  // power_adc_disable();
   power_spi_disable();
   power_timer0_disable();
   // power_timer1_disable();
@@ -264,32 +272,32 @@ void getMessageFromStc(void)
   saveNewObjectToSendingObject(newDataObject);
   switch (newDataObject->airDirection)
   {
-  case 0:
-    windDirectionCounterArray[0]++;
-    break;
-  case 45:
-    windDirectionCounterArray[1]++;
-    break;
-  case 90:
-    windDirectionCounterArray[2]++;
-    break;
-  case 135:
-    windDirectionCounterArray[3]++;
-    break;
-  case 180:
-    windDirectionCounterArray[4]++;
-    break;
-  case 225:
-    windDirectionCounterArray[5]++;
-    break;
-  case 270:
-    windDirectionCounterArray[6]++;
-    break;
-  case 315:
-    windDirectionCounterArray[7]++;
-    break;
-  default:
-    break;
+    case 0:
+      windDirectionCounterArray[0]++;
+      break;
+    case 45:
+      windDirectionCounterArray[1]++;
+      break;
+    case 90:
+      windDirectionCounterArray[2]++;
+      break;
+    case 135:
+      windDirectionCounterArray[3]++;
+      break;
+    case 180:
+      windDirectionCounterArray[4]++;
+      break;
+    case 225:
+      windDirectionCounterArray[5]++;
+      break;
+    case 270:
+      windDirectionCounterArray[6]++;
+      break;
+    case 315:
+      windDirectionCounterArray[7]++;
+      break;
+    default:
+      break;
   }
 
   // Delete new object
@@ -307,10 +315,9 @@ void sendMessageToGateway(void)
   sendingDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
 
   // Send to Gateway
-  stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer);
+  stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer, NodeID, 0, 0, getBatteryPercentage());
 
   LoRa.beginPacket();
-  LoRa.print(NodeID);
   LoRa.print(sendingDataStringBuffer);
   LoRa.endPacket();
   LoRa.sleep();
@@ -321,6 +328,24 @@ void sendMessageToGateway(void)
 
   Serial.print("Sent: ");
   Serial.println(sendingDataStringBuffer);
+}
+
+uint8_t getBatteryPercentage(void)
+{
+  uint8_t returnValue = 0;
+  uint16_t adcValue = analogRead(batteryPercentagePin);
+  float batteryVoltage = (6.6 / 1023.0) * adcValue;
+
+  return (uint8_t)(batteryVoltage / 5.0);
+}
+
+void setChargingState(uint8_t chargeEnable)
+{
+  if (chargeEnable) {
+    digitalWrite(chargeEnablePin, HIGH);
+  } else {
+    digitalWrite(chargeEnablePin, LOW);
+  }
 }
 
 void hardResetFunction(void)
