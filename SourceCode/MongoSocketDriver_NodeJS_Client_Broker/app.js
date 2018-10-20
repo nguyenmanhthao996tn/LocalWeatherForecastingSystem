@@ -28,7 +28,7 @@ server.on('published', function (packet, client) {
   var str = packet.payload.toString();
   consoleLogWithISODate('Publish ' + str + ' | Length: ' + str.length);
 
-  if ((str.length == 50) && (str[48] == '\r') && (str[49] == '\n')) {
+  if ((str.length == 17) && (str[15] == '\r') && (str[16] == '\n')) {
     var client = new net.Socket();
 
     client.on('data', function (data) {
@@ -43,9 +43,9 @@ server.on('published', function (packet, client) {
     client.connect(5001, MONGO_SERVER_NAME, function () {
       consoleLogWithISODate('Connected');
 
-      var weatherDataWriteRequestObject = { code: 1, nodeId: '', data: '' };
-      weatherDataWriteRequestObject.nodeId = packet.payload.toString().substring(0, 15);
-      weatherDataWriteRequestObject.data = packet.payload.toString().substring(15);;
+      var weatherDataWriteRequestObject = getWriteRequestObject(packet.payload.toString());
+      // weatherDataWriteRequestObject.nodeId = packet.payload.toString().substring(0, 15);
+      // weatherDataWriteRequestObject.data = packet.payload.toString().substring(15);
       client.write(JSON.stringify(weatherDataWriteRequestObject));
     });
   }
@@ -63,4 +63,15 @@ function consoleLogWithISODate(str) {
   var n = d.toISOString();
 
   console.log(n + ': ' + str);
+}
+
+function getWriteRequestObject(payloadString) {
+  var weatherDataWriteRequestObject = { code: 1, nodeId: '', data: '' };
+  var nodeIdHighByte = payloadString[0];
+  var nodeIdLowByte = payloadString[1];
+  
+  weatherDataWriteRequestObject.nodeId = (nodeIdHighByte << 8) | nodeIdLowByte;
+  weatherDataWriteRequestObject.data = payloadString;
+
+  return weatherDataWriteRequestObject;
 }
