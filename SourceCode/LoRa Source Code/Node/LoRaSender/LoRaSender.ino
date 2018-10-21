@@ -336,7 +336,7 @@ uint8_t getBatteryPercentage(void)
   uint16_t adcValue = analogRead(batteryPercentagePin);
   float batteryVoltage = (6.6 / 1023.0) * adcValue;
 
-  return (uint8_t)(batteryVoltage / 5.0);
+  return (uint8_t)((batteryVoltage - 3.2) * 20);
 }
 
 void setChargingState(uint8_t chargeEnable)
