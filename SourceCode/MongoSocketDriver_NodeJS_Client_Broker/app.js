@@ -26,7 +26,7 @@ server.on('clientConnected', function (client) {
 // fired when a message is received
 server.on('published', function (packet, client) {
   var str = packet.payload.toString();
-  consoleLogWithISODate('Publish ' + str + ' | Length: ' + str.length);
+  consoleLogWithISODate('Publish ' + packet.payload + ' | Length: ' + str.length);
 
   if ((str.length == 17) && (str[15] == '\r') && (str[16] == '\n')) {
     var client = new net.Socket();
@@ -67,11 +67,18 @@ function consoleLogWithISODate(str) {
 
 function getWriteRequestObject(payloadString) {
   var weatherDataWriteRequestObject = { code: 1, nodeId: '', data: '' };
-  var nodeIdHighByte = payloadString[0];
-  var nodeIdLowByte = payloadString[1];
+  var nodeIdHighByte = payloadString.charCodeAt(0);
+  var nodeIdLowByte = payloadString.charCodeAt(1);
   
-  weatherDataWriteRequestObject.nodeId = (nodeIdHighByte << 8) | nodeIdLowByte;
-  weatherDataWriteRequestObject.data = payloadString;
+  weatherDataWriteRequestObject.nodeId = ((nodeIdHighByte << 8) | nodeIdLowByte).toString();
+
+  var buffer = "";
+  for (var i = 0; i < payloadString.length - 3; i++) {
+    buffer += payloadString.charCodeAt(i).toString() + ",";
+  }
+  buffer += payloadString.charCodeAt(payloadString.length - 3);
+  weatherDataWriteRequestObject.data = buffer;
 
   return weatherDataWriteRequestObject;
 }
+
