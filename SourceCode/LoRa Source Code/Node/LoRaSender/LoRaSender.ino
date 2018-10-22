@@ -105,6 +105,8 @@ void setup()
 
   wdtConfig();
 
+  //  sendMessageToGateway(); // DEBUG
+
   sleepNow();
 }
 
@@ -315,19 +317,23 @@ void sendMessageToGateway(void)
   sendingDataObject->airDirection = getMostAppearValue(windDirectionValueArray, windDirectionCounterArray, 8);
 
   // Send to Gateway
-  stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer, NodeID, 0, 0, getBatteryPercentage());
+  stcOutputData_ToDataString(sendingDataObject, sendingDataStringBuffer, NodeID, 0xff, 0xffff, getBatteryPercentage());
 
+  Serial.print("Sent: ");
   LoRa.beginPacket();
-  LoRa.print(sendingDataStringBuffer);
+  for (int i = 0; i < 17; i++)
+  {
+    LoRa.write((uint8_t) sendingDataStringBuffer[i]);
+    Serial.print((uint8_t) sendingDataStringBuffer[i]);
+    Serial.print(", ");
+  }
   LoRa.endPacket();
   LoRa.sleep();
+  Serial.println();
 
   // Reset all object buffer
   memset((void *)windDirectionCounterArray, 0, sizeof(windDirectionCounterArray));
   clearSendingObject();
-
-  Serial.print("Sent: ");
-  Serial.println(sendingDataStringBuffer);
 }
 
 uint8_t getBatteryPercentage(void)
