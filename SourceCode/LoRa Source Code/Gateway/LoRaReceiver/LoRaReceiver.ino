@@ -18,11 +18,13 @@
 const uint16_t mqtt_port = 5002;
 
 #define receiveBufferSize 128
+#define sendingBufferSize 1024
 
 /*********** Global variables ***********/
 WiFiClient espClient;
 PubSubClient client(espClient);
-char receiveBuffer[128];
+char receiveBuffer[receiveBufferSize];
+char sendingBuffer[sendingBufferSize];
 
 /*********** Method headers ***********/
 void setupLoRa(void);
@@ -34,6 +36,7 @@ void mqttClientOnMessagecallback(char *topic, byte *payload, unsigned int length
 void setup()
 {
   memset(receiveBuffer, 0, receiveBufferSize);
+  memset(sendingBuffer, 0, sendingBufferSize);
 
   Serial.begin(115200);
   Serial.println("LoRa Receiver");
@@ -47,6 +50,8 @@ void setup()
 
 void loop()
 {
+  char sendingBuffer_temp[128];
+
   if (!client.connected())
   {
     reconnectToWifi();
@@ -61,20 +66,32 @@ void loop()
     Serial.print(" Received packet '");
 
     memset(receiveBuffer, 0, receiveBufferSize);
-    for (int i = 0; i < packetSize; i++)
+    memset(sendingBuffer, 0, sendingBufferSize);
+
+    for (int i = 0; i < packetSize - 1; i++)
     {
       receiveBuffer[i] = (char)LoRa.read();
+      snprintf(sendingBuffer_temp, 128, "%d,", receiveBuffer[i]);
+      strcat(sendingBuffer, sendingBuffer_temp);
     }
+
+    // receiveBuffer[packetSize - 1]
+    receiveBuffer[packetSize - 1] = (char)LoRa.read();
+    snprintf(sendingBuffer_temp, 128, "%d", receiveBuffer[packetSize - 1]);
+    strcat(sendingBuffer, sendingBuffer_temp);
+
     receiveBuffer[packetSize] = '\0';
 
-    Serial.print(receiveBuffer);
+    Serial.print(sendingBuffer);
 
     // Publish to MQTT
-    client.publish(mqtt_topic_pub, receiveBuffer);
+    client.publish(mqtt_topic_pub, sendingBuffer);
 
     Serial.print("' with RSSI ");
     Serial.println(LoRa.packetRssi());
-  } else if (packetSize == -1) {
+  }
+  else if (packetSize == -1)
+  {
     // Publish to MQTT
     client.publish(mqtt_topic_pub, "CRC ERROR");
   }
@@ -144,6 +161,6 @@ void mqttClientOnMessagecallback(char *topic, byte *payload, unsigned int length
 {
   // Handle control message received from server
   char buffer[25];
-  
+
   LcdController.getResultScreenString(buffer, 25, 0);
 }
