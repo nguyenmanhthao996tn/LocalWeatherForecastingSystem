@@ -244,8 +244,8 @@ function formatSensorDataForWebTable(data) {
     row.push((i + 1).toString());
     row.push(dateObject.toLocaleString());
     row.push(object.AirDirection + '&deg;');
-    row.push((Math.round(object.AirSpeed1Min * 160.9344 * 100) / 100).toString() + ' m/s');
-    row.push((Math.round(object.AirSpeed5Min * 160.9344 * 100) / 100).toString() + ' m/s');
+    row.push((Math.round(object.AirSpeed1Min * 0.044704 * 100) / 100).toString() + ' m/s');
+    row.push((Math.round(object.AirSpeed5Min * 0.044704 * 100) / 100).toString() + ' m/s');
     row.push(Math.round(((object.Temperature - 32) * 5.0/9.0 * 100) / 100).toString() + '&deg;C');
     row.push((object.Humidity == 0 ? 100 : object.Humidity).toString() + '%');
     row.push(object.Atmosphere / 10 + ' hpa');
