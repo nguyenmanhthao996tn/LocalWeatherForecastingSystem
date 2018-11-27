@@ -1,4 +1,5 @@
 const WEB_PORT = 5003;
+const NUMBER_OF_DOCUMENT_PER_REQUEST = 500;
 
 var path = require('path');
 var express = require('express');
@@ -95,7 +96,7 @@ io.on('connection', function (socket) {
 
                     var querryObject = { "nodeId": firstNodeId };
                     var filterObject = { '_id': 0 };
-                    db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                    db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                       assert.equal(null, err);
 
                       dataObject.firstNode.data = {};
@@ -103,7 +104,7 @@ io.on('connection', function (socket) {
 
                       var querryObject = { "nodeId": firstNodeId };
                       var filterObject = { '_id': 0 };
-                      db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                      db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                         assert.equal(null, err);
 
                         dataObject.firstNode.data.forecastResult = formatForecastResultForWebTable(result);
@@ -152,12 +153,12 @@ io.on('connection', function (socket) {
 
                   responseObject.info = result;
 
-                  db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                  db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                     assert.equal(null, err);
 
                     responseObject.sensorData = formatSensorDataForWebTable(result);
 
-                    db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                    db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                       assert.equal(null, err);
 
                       responseObject.forecastResult = formatForecastResultForWebTable(result);
