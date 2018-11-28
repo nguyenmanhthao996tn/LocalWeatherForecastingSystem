@@ -32,16 +32,17 @@ int main()
 			d = RandomEqualINT(20,37);
 			e = RandomEqualINT(50,90);
 			f = RandomEqualINT(50,90);
-			h = RandomEqualINT(25,50);
-			g = RandomEqualINT(25,50);
+//			h = RandomEqualINT(25,50);
+//			g = RandomEqualINT(25,50);
 			c = c/10;
 			d = d/10;
 			e = e/10;
 			f = f/10;
-			h = h/10;
-			g = g/10;
-			tmp = a + b + c + d + e + f + h + g;
-			fprintf(fp, " %d %d %.2f %.2f %.2f %.2f %.2f %.2f %.3f\n",a,b,c,d,e,f,h,g,tmp/100);
+//			h = h/10;
+//			g = g/10;
+			tmp = a + b + c + d + e + f;
+			if (tmp/100 > 0.4) tmp = 1; else tmp =0;
+			fprintf(fp, " %d %d %.2f %.2f %.2f %.2f %.3f\n",a,b,c,d,e,f,tmp);
 		}
    fclose(fp);
    return 0;

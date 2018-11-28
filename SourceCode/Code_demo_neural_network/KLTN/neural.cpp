@@ -32,7 +32,7 @@ MultiLayerPerceptron::MultiLayerPerceptron(int nl, int npl[]) :
   dAlpha(0.25),
   dGain(1.0),
   dAvgTestError(0.0), 
-  nRight(0)
+  degr_avg(0)
 {
 	int i,j;
 
@@ -232,15 +232,22 @@ void MultiLayerPerceptron::Simulate(double* input, double* output, double* targe
 {
   if(!input)  return;
   if(!target) return;
-
+  double tmp;
   /* --- the signal is passed through the network --- */
   SetInputSignal(input);
   PropagateSignal();
   if(output) GetOutputSignal(output);
 
   if(output && !training) {
-  	  if(fabs(target[0]-output[0]) > 0.01) nRight++;
-	  printf("test: %.2f   %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f= %.2f\n",fabs(target[0]-output[0]), input[0],input[1],input[2],input[3],input[4],input[5],input[6],input[7],target[0],output[0]);
+  	  if(fabs(target[0]-output[0]) < 0.01 ) tmp = 0.0;
+  	  else {
+  	  	if (target[0] > output[0])
+			tmp = (fabs(target[0]-output[0])/target[0])*100.0;
+		else 
+			tmp = (fabs(target[0]-output[0])/output[0])*100.0;
+	  }
+	  degr_avg += tmp;
+	  printf("test: %.2f   %.3f %.3f %.3f %.3f %.3f %.3f %.3f= %.3f\n",tmp, input[0],input[1],input[2],input[3],input[4],input[5],target[0],output[0]);
   }
   /* --- if it's an apprenticeship, we do a re-propagation of the error */
   if (training)
@@ -391,13 +398,14 @@ int MultiLayerPerceptron::Test(const char* fname)
 	      dAvgTestError += dMAE;
 	      nbi = 0;
 	      nbt = 0;
-	      count++;
+	      count= count +1;
 	    }
 	}
       else
 	{
 	  break;
 	}
+	
     }
 
   dAvgTestError /= count;
@@ -441,6 +449,7 @@ void MultiLayerPerceptron::Load(const char* fname)
       		for ( k = 0; k < pLayers[i-1].nNumNeurons; k++ ) {
       			read_number(fp_r,&dNumber);
       			pLayers[i].pNeurons[j].weight [k]    = dNumber;
+      			pLayers[i].pNeurons[j].save_weight[k] = pLayers[i].pNeurons[j].weight[k];
     		}
 
   if(fp_r) fclose(fp_r);

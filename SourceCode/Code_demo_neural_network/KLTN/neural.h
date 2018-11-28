@@ -42,7 +42,7 @@ public:
   double dAlpha;
   double dGain;
   double dAvgTestError;
-  int	nRight;
+  double degr_avg;
 
   MultiLayerPerceptron(int nl, int npl[]);
   ~MultiLayerPerceptron();

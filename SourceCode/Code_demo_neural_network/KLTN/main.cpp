@@ -6,7 +6,7 @@
 
 int main()
 {
-  int layers2[] = {8,32,1};
+  int layers2[] = {6,24,1};
   char str[255];
   int chose=-1,num;
   MultiLayerPerceptron mlp2(3,layers2);
@@ -32,12 +32,13 @@ int main()
   	}
   	if (chose == 2)
   	{
-  		int a,b;
+  		double b;
+  		int a;
 		printf("\nNhap file: ");
   		gets(str);
 	  	a = mlp2.Test(str);
-	  	b = mlp2.nRight;
-	  	printf("%d %d\n",a,b);
+	  	b = mlp2.degr_avg;
+	  	printf("%.2f \n",b/a);
 	}
 	if (chose == 3)
 	{
