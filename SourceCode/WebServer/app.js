@@ -1,4 +1,5 @@
 const WEB_PORT = 5003;
+const NUMBER_OF_DOCUMENT_PER_REQUEST = 500;
 
 var path = require('path');
 var express = require('express');
@@ -95,7 +96,7 @@ io.on('connection', function (socket) {
 
                     var querryObject = { "nodeId": firstNodeId };
                     var filterObject = { '_id': 0 };
-                    db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                    db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                       assert.equal(null, err);
 
                       dataObject.firstNode.data = {};
@@ -103,7 +104,7 @@ io.on('connection', function (socket) {
 
                       var querryObject = { "nodeId": firstNodeId };
                       var filterObject = { '_id': 0 };
-                      db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                      db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                         assert.equal(null, err);
 
                         dataObject.firstNode.data.forecastResult = formatForecastResultForWebTable(result);
@@ -152,12 +153,12 @@ io.on('connection', function (socket) {
 
                   responseObject.info = result;
 
-                  db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                  db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                     assert.equal(null, err);
 
                     responseObject.sensorData = formatSensorDataForWebTable(result);
 
-                    db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(100).toArray(function (err, result) {
+                    db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                       assert.equal(null, err);
 
                       responseObject.forecastResult = formatForecastResultForWebTable(result);
@@ -238,17 +239,19 @@ function formatSensorDataForWebTable(data) {
   for (var i = 0; i < data.length; i++) {
     var row = [];
     var object = data[i];
+    var dateObject = new Date(object.Time);
+    dateObject.setHours(dateObject.getHours() + 7);
 
     row.push((i + 1).toString());
-    row.push((new Date(object.Time)).toLocaleString());
-    row.push(object.AirDirection);
-    row.push(object.AirSpeed1Min);
-    row.push(object.AirSpeed5Min);
-    row.push(object.Temperature);
-    row.push(object.Humidity);
-    row.push(object.Atmosphere);
-    row.push(object.Rainfall1Hour);
-    row.push(object.Rainfall24Hour);
+    row.push(dateObject.toLocaleString());
+    row.push(object.AirDirection + '&deg;');
+    row.push((Math.round(object.AirSpeed1Min * 0.044704 * 100) / 100).toString() + ' m/s');
+    row.push((Math.round(object.AirSpeed5Min * 0.044704 * 100) / 100).toString() + ' m/s');
+    row.push(Math.round(((object.Temperature - 32) * 5.0/9.0 * 100) / 100).toString() + '&deg;C');
+    row.push((object.Humidity == 0 ? 100 : object.Humidity).toString() + '%');
+    row.push(object.Atmosphere / 10 + ' hpa');
+    row.push((Math.round(object.Rainfall1Hour * 0.254 * 1000) / 1000).toString() + ' mm');
+    row.push((Math.round(object.Rainfall24Hour * 0.254 * 1000) / 1000).toString() + ' mm');
 
     resultObject.push(row);
   }
@@ -272,3 +275,4 @@ function formatForecastResultForWebTable(data) {
 
   return resultObject;
 }
+

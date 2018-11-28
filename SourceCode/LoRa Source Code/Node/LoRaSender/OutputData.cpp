@@ -97,17 +97,36 @@ void stcOutputData_ToString(stcOutputData_t *stcOutputDataStructure, char *buffe
           stcOutputDataStructure->atmosphere);
 }
 
-void stcOutputData_ToDataString(stcOutputData_t *stcOutputDataStructure, char *buffer)
+void stcOutputData_ToDataString(stcOutputData_t *stcOutputDataStructure, char *buffer, uint16_t nodeId, uint8_t nodeKey, uint16_t timeOffset, uint8_t batteryPercentage)
 {
-  sprintf(buffer, "c%.3ds%.3dg%.3dt%.3dr%.3dp%.3dh%.2db%.5d\r\n\0",
-          stcOutputDataStructure->airDirection,
-          stcOutputDataStructure->airSpeed1Min,
-          stcOutputDataStructure->airSpeed5Min,
-          stcOutputDataStructure->temperature,
-          stcOutputDataStructure->rainfall1Hour,
-          stcOutputDataStructure->rainfall24Hour,
-          stcOutputDataStructure->humidity,
-          stcOutputDataStructure->atmosphere);
+  // sprintf(buffer, "c%.3ds%.3dg%.3dt%.3dr%.3dp%.3dh%.2db%.5d\r\n\0",
+  //         stcOutputDataStructure->airDirection,
+  //         stcOutputDataStructure->airSpeed1Min,
+  //         stcOutputDataStructure->airSpeed5Min,
+  //         stcOutputDataStructure->temperature,
+  //         stcOutputDataStructure->rainfall1Hour,
+  //         stcOutputDataStructure->rainfall24Hour,
+  //         stcOutputDataStructure->humidity,
+  //         stcOutputDataStructure->atmosphere);
+
+  memset((void *)buffer, 0, sizeof(buffer));
+
+  setNodeId(buffer, nodeId);
+  setTime(buffer, timeOffset);
+  setBattery(buffer, batteryPercentage);
+  setAirDirection(buffer, ((stcOutputDataStructure->airDirection) / 45));
+  setAirSpeed1Min(buffer, stcOutputDataStructure->airSpeed1Min);
+  setAirSpeed5Min(buffer, stcOutputDataStructure->airSpeed5Min);
+  setTemperature(buffer, stcOutputDataStructure->temperature);
+  setRainfall1Hour(buffer, stcOutputDataStructure->rainfall1Hour);
+  setRainfall24Hour(buffer, stcOutputDataStructure->rainfall24Hour);
+  setNodeKey(buffer, nodeKey);
+  setHumidity(buffer, stcOutputDataStructure->humidity);
+  setAtmosphere(buffer, stcOutputDataStructure->atmosphere);
+  calculateCRC(buffer);
+
+  buffer[15] = '\r';
+  buffer[16] = '\n';
 }
 
 void stcOutputData_Delete(stcOutputData_t *stcOutputDataStructure)

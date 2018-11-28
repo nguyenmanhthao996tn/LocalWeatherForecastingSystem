@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include "WeatherData.h"
 
 /**************** DATA STRUCTURE ****************/
 typedef struct
@@ -57,7 +58,7 @@ void stcOutputData_ToString(stcOutputData_t *stcOutputDataStructure, char *buffe
    @param buffer Character array to print
    @return Void
 */
-void stcOutputData_ToDataString(stcOutputData_t *stcOutputDataStructure, char *buffer);
+void stcOutputData_ToDataString(stcOutputData_t *stcOutputDataStructure, char *buffer, uint16_t nodeId, uint8_t nodeKey, uint16_t timeOffset, uint8_t batteryPercentage);
 
 /**
    @brief Free and delete stcOutputDataStructure pointer

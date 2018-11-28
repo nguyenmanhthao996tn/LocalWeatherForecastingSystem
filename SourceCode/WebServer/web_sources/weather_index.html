@@ -105,7 +105,7 @@
                         display: true,
                         ticks: {
                             suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
-                            // beginAtZero: true   // minimum value will be 0.
+                            beginAtZero: true   // minimum value will be 0.
                         }
                     }]
                 }
@@ -151,13 +151,13 @@
                 { title: "#" },
                 { title: "Time" },
                 { title: "Wind Direction" },
-                { title: "Wind Speed 1min" },
-                { title: "Wind Speed 5mins" },
+                { title: "Avg. Wind Speed 1min" },
+                { title: "Max Wind Speed 5mins" },
                 { title: "Temperature" },
                 { title: "Humidity" },
                 { title: "Atmosphere" },
-                { title: "Rainfall 1h" },
-                { title: "Rainfall 24h" }
+                { title: "Avg. Rainfall in 1h" },
+                { title: "Max Rainfall in 24h" }
             ]
         });
     }
@@ -255,9 +255,10 @@
         var label = [];
         var rainfall = [];
 
+        data.reverse();
         data.forEach(element => {
-            label.push(element[1]);
-            rainfall.push(element[8] * 0.254);
+            label.push(element[1].substring(0, element[1].length - 3));
+            rainfall.push(element[8].replace(' mm', ''));
         });
 
         addData(label, rainfall);
@@ -346,13 +347,15 @@
                 <br>
                 <h2> Forecast Results </h2>
                 <hr>
-                <table width="100%" class="table table-striped table-bordered table-hover" id="forecast_result_table"> </table>
+                <table width="100%" class="table table-striped table-bordered table-hover" id="forecast_result_table">
+                </table>
                 <br>
                 <h2> Environmental Values </h2>
                 <hr>
-                <table width="100%" class="table table-striped table-bordered table-hover" id="sensor_data_table"> </table>
+                <table width="100%" class="table table-striped table-bordered table-hover" id="sensor_data_table">
+                </table>
                 <br>
-                <h2> Rainfall in last 24H </h2>
+                <h2> Average Rainfall in last 24H </h2>
                 <hr>
                 <div class="container">
                     <canvas id="rainfallChart" width="400" height="250"></canvas>
