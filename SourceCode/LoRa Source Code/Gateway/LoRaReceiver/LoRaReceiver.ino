@@ -35,11 +35,14 @@ void mqttClientOnMessagecallback(char *topic, byte *payload, unsigned int length
 /*********** Methods define ***********/
 void setup()
 {
+  ESP.wdtDisable();
+
   memset(receiveBuffer, 0, receiveBufferSize);
   memset(sendingBuffer, 0, sendingBufferSize);
 
   Serial.begin(115200);
   Serial.println("LoRa Receiver");
+  Serial.printf("\n\nSdk version: %s\n", ESP.getSdkVersion());
 
   setupLoRa();
   setupWifi();
@@ -51,6 +54,8 @@ void setup()
 void loop()
 {
   char sendingBuffer_temp[128];
+
+  ESP.wdtFeed();
 
   if (!client.connected())
   {
