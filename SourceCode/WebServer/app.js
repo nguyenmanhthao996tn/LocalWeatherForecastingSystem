@@ -31,149 +31,239 @@ io.on('connection', function (socket) {
   socket.on('type', function (msg) {
     switch (msg) {
       case 'LOGIN':
-        console.log('IO: Login');
-        socket.on('login-info', function (msg) {
-          console.log('IO: ' + msg.username + "|" + msg.password);
+        {
+          console.log('IO: Login');
+          socket.on('login-info', function (msg) {
+            console.log('IO: ' + msg.username + "|" + msg.password);
 
-          // generate seasion-key
-          checkAccountAvailable(msg.username, msg.password, (seasionKeyObject) => {
-            socket.emit('login-request', seasionKeyObject);
-          });
-        });
-        break;
-      case 'INDEX':
-        console.log('IO: Index ');
-
-        var g_username = '';
-
-        socket.on('sign-out', () => {
-          var querryObject = { "username": g_username };
-          var updateObject = { '$set': { "seasionKey": {} } };
-
-          MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-
-            db.collection("Users").updateOne(querryObject, updateObject, function (err, result) {
-              assert.equal(null, err);
-              console.log(g_username + " loged out");
-              db.close();
+            // generate seasion-key
+            checkAccountAvailable(msg.username, msg.password, (seasionKeyObject) => {
+              socket.emit('login-request', seasionKeyObject);
             });
           });
-        });
+          break;
+        }
+      case 'INDEX':
+        {
+          console.log('IO: Index ');
 
-        socket.on('seasion-info', function (info) {
-          var username = info.username;
-          var seasionKey = info.seasion;
-          console.log('seasion-info: ' + username + ' | ' + seasionKey);
+          var g_username = '';
 
-          // Check seasion key
-          MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
+          socket.on('sign-out', () => {
+            var querryObject = { "username": g_username };
+            var updateObject = { '$set': { "seasionKey": {} } };
 
-            // Check account
-            var querryObject = { "username": username };
-            var fieldSelect = { _id: 0, 'password': 0, 'role': 0 };
-            db.collection("Users").findOne(querryObject, fieldSelect, function (err, result) {
+            MongoClient.connect(url, function (err, db) {
               assert.equal(null, err);
 
-              var dataObject = {};
-              if ((result != null) && (result.seasionKey.key == seasionKey)) {
-                dataObject.seasionKeyStatus = 'OK';
-                g_username = username;
+              db.collection("Users").updateOne(querryObject, updateObject, function (err, result) {
+                assert.equal(null, err);
+                console.log(g_username + " loged out");
+                db.close();
+              });
+            });
+          });
 
-                // Get data of user
-                dataObject.userInfo = result;
+          socket.on('seasion-info', function (info) {
+            var username = info.username;
+            var seasionKey = info.seasion;
+            console.log('seasion-info: ' + username + ' | ' + seasionKey);
 
-                // First node data
-                var firstNodeId = result.owningNode[0];
-                if (firstNodeId) {
-                  var querryObject = { "nodeId": firstNodeId };
-                  db.collection("Nodes").findOne(querryObject, { '_id': 0 }, function (err, result) {
-                    assert.equal(null, err);
+            // Check seasion key
+            MongoClient.connect(url, function (err, db) {
+              assert.equal(null, err);
 
-                    dataObject.firstNode = {};
-                    dataObject.firstNode.info = result;
+              // Check account
+              var querryObject = { "username": username };
+              var fieldSelect = { _id: 0, 'password': 0 };
+              db.collection("Users").findOne(querryObject, fieldSelect, function (err, result) {
+                assert.equal(null, err);
 
+                var dataObject = {};
+                if ((result != null) && (result.seasionKey.key == seasionKey) && (result.role == 'user')) {
+                  dataObject.seasionKeyStatus = 'OK';
+                  g_username = username;
+
+                  // Get data of user
+                  dataObject.userInfo = result;
+
+                  // First node data
+                  var firstNodeId = result.owningNode[0];
+                  if (firstNodeId) {
                     var querryObject = { "nodeId": firstNodeId };
-                    var filterObject = { '_id': 0 };
-                    db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
+                    db.collection("Nodes").findOne(querryObject, { '_id': 0 }, function (err, result) {
                       assert.equal(null, err);
 
-                      dataObject.firstNode.data = {};
-                      dataObject.firstNode.data.sensorData = formatSensorDataForWebTable(result);
+                      dataObject.firstNode = {};
+                      dataObject.firstNode.info = result;
 
                       var querryObject = { "nodeId": firstNodeId };
                       var filterObject = { '_id': 0 };
+                      db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
+                        assert.equal(null, err);
+
+                        dataObject.firstNode.data = {};
+                        dataObject.firstNode.data.sensorData = formatSensorDataForWebTable(result);
+
+                        var querryObject = { "nodeId": firstNodeId };
+                        var filterObject = { '_id': 0 };
+                        db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
+                          assert.equal(null, err);
+
+                          dataObject.firstNode.data.forecastResult = formatForecastResultForWebTable(result);
+
+                          // Send data
+                          socket.emit('index_data', dataObject);
+                        });
+                      });
+                    });
+                  }
+                } else {
+                  dataObject.seasionKeyStatus = 'Expired';
+
+                  // Send data
+                  socket.emit('index_data', dataObject);
+                }
+              });
+            });
+          });
+
+          socket.on('request-node-data', (dataObject) => {
+            // console.log(JSON.stringify(dataObject));
+
+            var username = dataObject.username;
+            var seasionKey = dataObject.seasion;
+            var nodeId = dataObject.node_id;
+
+            // Check username & seasion key
+            MongoClient.connect(url, function (err, db) {
+              assert.equal(null, err);
+
+              // Check account
+              var querryObject = { "username": username };
+              var fieldSelect = { _id: 0, 'seasionKey': 1 };
+              db.collection("Users").findOne(querryObject, fieldSelect, function (err, result) {
+                assert.equal(null, err);
+
+                if ((result != null) && (result.seasionKey.key == seasionKey)) {
+                  var querryObject = { "nodeId": nodeId };
+                  var filterObject = { '_id': 0 };
+
+                  var responseObject = { info: {}, sensorData: [], forecastResult: [] };
+
+                  db.collection("Nodes").findOne(querryObject, { '_id': 0 }, function (err, result) {
+                    assert.equal(null, err);
+
+                    responseObject.info = result;
+
+                    db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
+                      assert.equal(null, err);
+
+                      responseObject.sensorData = formatSensorDataForWebTable(result);
+
                       db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                         assert.equal(null, err);
 
-                        dataObject.firstNode.data.forecastResult = formatForecastResultForWebTable(result);
+                        responseObject.forecastResult = formatForecastResultForWebTable(result);
 
-                        // Send data
-                        socket.emit('index_data', dataObject);
+                        socket.emit('response-node-data', responseObject);
                       });
                     });
                   });
                 }
-              } else {
-                dataObject.seasionKeyStatus = 'Expired';
-
-                // Send data
-                socket.emit('index_data', dataObject);
-              }
+              });
             });
           });
-        });
 
-        socket.on('request-node-data', (dataObject) => {
-          // console.log(JSON.stringify(dataObject));
+          socket.emit('seasion-info', 'request');
+          break;
+        }
+      case 'MANAGER':
+        {
+          console.log('IO: manager ');
 
-          var username = dataObject.username;
-          var seasionKey = dataObject.seasion;
-          var nodeId = dataObject.node_id;
+          var g_username = '';
 
-          // Check username & seasion key
-          MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
+          socket.on('sign-out', () => {
+            var querryObject = { "username": g_username };
+            var updateObject = { '$set': { "seasionKey": {} } };
 
-            // Check account
-            var querryObject = { "username": username };
-            var fieldSelect = { _id: 0, 'seasionKey': 1 };
-            db.collection("Users").findOne(querryObject, fieldSelect, function (err, result) {
+            MongoClient.connect(url, function (err, db) {
               assert.equal(null, err);
 
-              if ((result != null) && (result.seasionKey.key == seasionKey)) {
-                var querryObject = { "nodeId": nodeId };
-                var filterObject = { '_id': 0 };
-
-                var responseObject = { info: {}, sensorData: [], forecastResult: [] };
-
-                db.collection("Nodes").findOne(querryObject, { '_id': 0 }, function (err, result) {
-                  assert.equal(null, err);
-
-                  responseObject.info = result;
-
-                  db.collection("WeatherData").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
-                    assert.equal(null, err);
-
-                    responseObject.sensorData = formatSensorDataForWebTable(result);
-
-                    db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
-                      assert.equal(null, err);
-
-                      responseObject.forecastResult = formatForecastResultForWebTable(result);
-
-                      socket.emit('response-node-data', responseObject);
-                    });
-                  });
-                });
-              }
+              db.collection("Users").updateOne(querryObject, updateObject, function (err, result) {
+                assert.equal(null, err);
+                console.log(g_username + " loged out");
+                db.close();
+              });
             });
           });
-        });
 
-        socket.emit('seasion-info', 'request');
-        break;
+          socket.on('seasion-info', function (info) {
+            var username = info.username;
+            var seasionKey = info.seasion;
+            console.log('seasion-info: ' + username + ' | ' + seasionKey);
+
+            // Check seasion key
+            MongoClient.connect(url, function (err, db) {
+              assert.equal(null, err);
+
+              // Check account
+              var querryObject = { "username": username };
+              var fieldSelect = { _id: 0, 'password': 0 };
+              db.collection("Users").findOne(querryObject, fieldSelect, function (err, result) {
+                assert.equal(null, err);
+
+                var dataObject = {};
+                if ((result != null) && (result.seasionKey.key == seasionKey) && (result.role == 'admin')) {
+                  dataObject.seasionKeyStatus = 'OK';
+                  g_username = username;
+
+                  // Querry User list
+                  db.collection("Users").find({}, { _id: 0, 'password': 0, 'seasionKey': 0 }).toArray(function (err, res) {
+                    assert.equal(null, err);
+
+                    dataObject.users = res;
+
+                    // Querry node list
+                    db.collection("Nodes").find({}, { _id: 0 }).toArray(function (err, res) {
+                      assert.equal(null, err);
+
+                      dataObject.nodes = res;
+
+                      // Send data
+                      socket.emit('manage_data', dataObject);
+                    });
+                  });
+                } else {
+                  dataObject.seasionKeyStatus = 'Expired';
+
+                  // Send data
+                  socket.emit('manage_data', dataObject);
+                }
+              });
+            });
+          });
+
+          socket.on('create-a-user', (data) => { 
+            console.log(JSON.stringify(data));
+          });
+
+          socket.on('delete-a-user', (data) => { 
+            console.log(JSON.stringify(data));
+          });
+
+          socket.on('create-a-node', (data) => { 
+            console.log(JSON.stringify(data));
+          });
+
+          socket.on('delete-a-node', (data) => { 
+            console.log(JSON.stringify(data));
+          });
+
+          socket.emit('seasion-info', 'request');
+          break;
+        }
       default:
         break;
     }
@@ -198,6 +288,7 @@ function checkAccountAvailable(username, password, callback) {
       console.log('LOGIN: ' + result);
       if (result != null) {
         resultObject.accountAvailability = true;
+        resultObject.accountType = result.role;
 
         // Generate Seasion key
         var str = "";
@@ -247,7 +338,7 @@ function formatSensorDataForWebTable(data) {
     row.push(object.AirDirection + '&deg;');
     row.push((Math.round(object.AirSpeed1Min * 0.044704 * 100) / 100).toString() + ' m/s');
     row.push((Math.round(object.AirSpeed5Min * 0.044704 * 100) / 100).toString() + ' m/s');
-    row.push(Math.round(((object.Temperature - 32) * 5.0/9.0 * 100) / 100).toString() + '&deg;C');
+    row.push(Math.round(((object.Temperature - 32) * 5.0 / 9.0 * 100) / 100).toString() + '&deg;C');
     row.push((object.Humidity == 0 ? 100 : object.Humidity).toString() + '%');
     row.push(object.Atmosphere / 10 + ' hpa');
     row.push((Math.round(object.Rainfall1Hour * 0.254 * 1000) / 1000).toString() + ' mm');

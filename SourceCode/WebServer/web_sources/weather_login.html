@@ -61,8 +61,13 @@
                 document.cookie = 'username=' + document.getElementById("username").value + ';';
                 document.cookie = 'seasion=' + object.seasionKey + ';';
 
-                // Navigate to index page
-                window.location.href += 'static/weather_index.html';
+                if (object.accountType == 'admin') {
+                    // Navigate to admin page
+                    window.location.href += 'static/weather_manager.html';
+                } else {
+                    // Navigate to index page
+                    window.location.href += 'static/weather_index.html';
+                }
             } else {
                 // Display message
                 var message = document.getElementById("message");
@@ -139,12 +144,12 @@
                         <form role="form">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" id="username" placeholder="Username" name="username" type="username" onkeypress="return runCheckEnterScript(event)"
-                                        autofocus>
+                                    <input class="form-control" id="username" placeholder="Username" name="username"
+                                        type="username" onkeypress="return runCheckEnterScript(event)" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" id="password" placeholder="Password" name="password" type="password" onkeypress="return runCheckEnterScript(event)"
-                                        value="">
+                                    <input class="form-control" id="password" placeholder="Password" name="password"
+                                        type="password" onkeypress="return runCheckEnterScript(event)" value="">
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
 

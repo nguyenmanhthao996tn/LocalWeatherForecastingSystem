@@ -98,8 +98,36 @@
         });
 
         socket.on('manage_data', (data) => {
-            // Update updateUserList
-            // Update updateNodeList
+            // Update UI with received data
+            if (data.seasionKeyStatus == 'OK') {
+                // Update updateUserList
+                var counter = 0;
+                var userList = [];
+                data.users.forEach(element => {
+                    var row = [(++counter).toString(), element.username, element.fullname, element.email, element.role];
+                    userList.push(row);
+                });
+
+                // Update updateNodeList
+                counter = 0;
+                var nodeList = [];
+                data.nodes.forEach(element => {
+                    var row = [(++counter).toString(), element.nodeId, element.owner, element.location.long + ', ' + element.location.lat];
+                    nodeList.push(row);
+                });
+
+                updateUserList(userList);
+                updateNodeList(nodeList);
+            } else { // Seasion key expired, navigate to login page
+                window.location.href = window.location.protocol + '//' + window.location.host;
+            }
+        });
+
+        socket.on('reload', (msg) => {
+            if (msg.length > 0) {
+                window.alert(msg);
+            }
+            location.reload();
         });
     });
 
@@ -124,7 +152,8 @@
                 { title: "#" },
                 { title: "Username" },
                 { title: "Full name" },
-                { title: "Email" }
+                { title: "Email" },
+                { title: "Role" }
             ]
         });
     }
@@ -147,6 +176,78 @@
         socket.emit('sign-out');
         window.location.href = window.location.protocol + '//' + window.location.host;
         return false;
+    }
+
+    function createANode() {
+        var form = document.getElementById('create-node-form');
+        var formElements = form.elements;
+
+        var object = {};
+        object.nodeid = formElements[0].value;
+        object.owner = formElements[1].value;
+        object.location = {};
+        object.location.long = formElements[2].value;
+        object.location.lat = formElements[3].value;
+
+        // Check availability
+        if (!form.checkValidity()) {
+            form.reportValidity();
+        } else {
+            // Send to server
+            socket.emit('create-a-node', object);
+        }
+    }
+
+    function createAUser() {
+        var form = document.getElementById('create-user-form');
+        var formElements = form.elements;
+
+        var object = {};
+        object.username = formElements[0].value;
+        object.email = formElements[1].value;
+        object.password = formElements[2].value;
+        object.confirmPassword = formElements[3].value;
+        object.Fullname = formElements[4].value;
+
+        // Check availability
+        if (!form.checkValidity()) {
+            form.reportValidity();
+        } else {
+            // Send to server
+            socket.emit('create-a-user', object);
+        }
+    }
+
+    function deleteANode() {
+        var form = document.getElementById('delete-node-form');
+        var formElements = form.elements;
+
+        var object = {};
+        object.nodeid = formElements[0].value;
+
+        // Check availability
+        if (!form.checkValidity()) {
+            form.reportValidity();
+        } else {
+            // Send to server
+            socket.emit('delete-a-node', object);
+        }
+    }
+
+    function deleteAUser() {
+        var form = document.getElementById('delete-user-form');
+        var formElements = form.elements;
+
+        var object = {};
+        object.username = formElements[0].value;
+
+        // Check availability
+        if (!form.checkValidity()) {
+            form.reportValidity();
+        } else {
+            // Send to server
+            socket.emit('delete-a-user', object);
+        }
     }
 </script>
 
@@ -199,24 +300,28 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" name="username" class="form-control">
+                            <input type="text" name="username" class="form-control" required="required">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" class="form-control">
+                            <input type="email" name="email" class="form-control" required="required">
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" name="password" class="form-control">
+                            <input type="password" name="password" class="form-control" required="required">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="confirm-password" name="password" class="form-control" required="required">
                         </div>
                         <div class="form-group">
                             <label for="fullname">Fullname</label>
-                            <input type="text" name="fullname" class="form-control">
+                            <input type="text" name="fullname" class="form-control" required="required">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                        <button type="button" class="btn btn-success" onclick="createAUser()">OK</button>
                     </div>
                 </form>
             </div>
@@ -234,23 +339,32 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="nodeid">NodeID</label>
-                            <input type="text" name="nodeid" class="form-control">
+                            <input type="text" name="nodeid" class="form-control" required="required">
                         </div>
                         <div class="form-group">
                             <label for="owner">Owner</label>
                             <select id="owner" class="form-control">
                                 <option selected>Choose...</option>
                                 <option>...</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="location">Location</label>
-                            <input type="text" name="location" class="form-control">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="location-long">Long</label>
+                                <input type="number" name="location-long" class="form-control" required="required">
+                            </div>
+                            <div class="form-group">
+                                <label for="location-lat">Lat</label>
+                                <input type="number" name="location-lat" class="form-control" required="required">
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                        <button type="button" class="btn btn-success" onclick="createANode()">OK</button>
                     </div>
                 </form>
             </div>
@@ -276,7 +390,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                        <button type="button" class="btn btn-success" onclick="deleteAUser()">OK</button>
                     </div>
                 </form>
             </div>
@@ -302,7 +416,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                        <button type="button" class="btn btn-success" onclick="deleteANode()">OK</button>
                     </div>
                 </form>
             </div>
