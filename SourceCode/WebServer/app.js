@@ -245,20 +245,100 @@ io.on('connection', function (socket) {
             });
           });
 
-          socket.on('create-a-user', (data) => { 
-            console.log(JSON.stringify(data));
+          socket.on('create-a-user', (data) => {
+            // Check data validation
+
+            // add to database
+            MongoClient.connect(url, function (err, db) {
+              assert.equal(null, err);
+
+              var document = {
+                "username": data.username,
+                "password": data.password,
+                "fullname": data.Fullname,
+                "email": data.email,
+                "owningNode": [],
+                "role": "user",
+                "seasionKey": {}
+              };
+              db.collection("Users").insertOne(document, function (error, response) {
+                assert.equal(null, error);
+
+                console.log('MANAGER: ' + g_username + ' has created a new user with username: ' + data.username);
+
+                socket.emit('reload', 'User created successfully with Username: ' + data.username);
+              });
+            });
           });
 
-          socket.on('delete-a-user', (data) => { 
-            console.log(JSON.stringify(data));
+          socket.on('delete-a-user', (data) => {
+            // Check if nodeid existed?
+            // No =>
+            // socket.emit('reload', 'Node delete failed, NodeID: ' + data.nodeid + ' NOT existed!'); 
+
+            MongoClient.connect(url, function (err, db) {
+              assert.equal(null, err);
+
+              var document = {
+                "username": data.username
+              };
+              db.collection("Users").deleteOne(document, function (error, response) {
+                assert.equal(null, error);
+
+                console.log('MANAGER: ' + g_username + ' has deleted a user with username: ' + data.username);
+
+                socket.emit('reload', 'User deleted successfully with Username: ' + data.username);
+              });
+            });
           });
 
-          socket.on('create-a-node', (data) => { 
-            console.log(JSON.stringify(data));
+          socket.on('create-a-node', (data) => {
+            // Check data validation
+            // if NodeId existed?
+            // socket.emit('reload', 'Node create failed, NodeID: ' + data.nodeid + ' has existed!');
+            // Owner valid?
+            // Location valid?
+
+            MongoClient.connect(url, function (err, db) {
+              assert.equal(null, err);
+
+              var document = {
+                "nodeId": data.nodeid,
+                "owner": data.owner,
+                "location": {
+                  "long": parseFloat(data.location.long),
+                  "lat": parseFloat(data.location.lat)
+                }
+              };
+              db.collection("Nodes").insertOne(document, function (error, response) {
+                assert.equal(null, error);
+
+                console.log('MANAGER: ' + g_username + ' has created a new node with node id: ' + data.nodeid);
+
+                socket.emit('reload', 'Node created successfully with NodeID: ' + data.nodeid);
+              });
+            });
           });
 
-          socket.on('delete-a-node', (data) => { 
-            console.log(JSON.stringify(data));
+          socket.on('delete-a-node', (data) => {
+            // Check if nodeid existed?
+            // No =>
+            // socket.emit('reload', 'Node delete failed, NodeID: ' + data.nodeid + ' NOT existed!'); 
+
+            MongoClient.connect(url, function (err, db) {
+              assert.equal(null, err);
+
+              var document = {
+                "nodeId": data.nodeid
+              };
+              db.collection("Nodes").deleteOne(document, function (error, response) {
+                assert.equal(null, error);
+
+                console.log('MANAGER: ' + g_username + ' has deleted a node with node id: ' + data.nodeid);
+
+                socket.emit('reload', 'Node deleted successfully with NodeID: ' + data.nodeid);
+              });
+            });
           });
 
           socket.emit('seasion-info', 'request');

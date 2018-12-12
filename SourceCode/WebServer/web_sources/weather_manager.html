@@ -101,11 +101,16 @@
             // Update UI with received data
             if (data.seasionKeyStatus == 'OK') {
                 // Update updateUserList
+                var usernameList = [];
+                var nodeIdList = [];
+
                 var counter = 0;
                 var userList = [];
                 data.users.forEach(element => {
                     var row = [(++counter).toString(), element.username, element.fullname, element.email, element.role];
                     userList.push(row);
+
+                    usernameList.push(element.username);
                 });
 
                 // Update updateNodeList
@@ -114,6 +119,27 @@
                 data.nodes.forEach(element => {
                     var row = [(++counter).toString(), element.nodeId, element.owner, element.location.long + ', ' + element.location.lat];
                     nodeList.push(row);
+
+                    nodeIdList.push(element.nodeId);
+                });
+
+                var deleteUserUsernameSelect = document.getElementById("delete-user-username");
+                var createNodeOwnerSelect = document.getElementById("create-node-owner");
+                usernameList.forEach(element => {
+                    var option = document.createElement("option");
+                    option.text = element.toString();
+                    deleteUserUsernameSelect.add(option);
+
+                    var option2 = document.createElement("option");
+                    option2.text = element.toString();
+                    createNodeOwnerSelect.add(option2);
+                });
+
+                var deleteNodeNodeIdSelect = document.getElementById("delete-node-nodeid");
+                nodeIdList.forEach(element => {
+                    var option = document.createElement("option");
+                    option.text = element.toString();
+                    deleteNodeNodeIdSelect.add(option);
                 });
 
                 updateUserList(userList);
@@ -201,6 +227,8 @@
     function createAUser() {
         var form = document.getElementById('create-user-form');
         var formElements = form.elements;
+        var password = document.getElementById('user-password');
+        var passwordConfirm = document.getElementById('user-password-confirm');
 
         var object = {};
         object.username = formElements[0].value;
@@ -210,6 +238,11 @@
         object.Fullname = formElements[4].value;
 
         // Check availability
+        if (password.value != passwordConfirm.value) {
+            passwordConfirm.setCustomValidity("Không trùng khớp mật khẩu!");
+        } else {
+            passwordConfirm.setCustomValidity('');
+        }
         if (!form.checkValidity()) {
             form.reportValidity();
         } else {
@@ -308,11 +341,13 @@
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" name="password" class="form-control" required="required">
+                            <input id="user-password" type="password" name="password" class="form-control" minlength=6
+                                required="required">
                         </div>
                         <div class="form-group">
                             <label for="confirm-password">Confirm Password</label>
-                            <input type="confirm-password" name="password" class="form-control" required="required">
+                            <input id="user-password-confirm" type="password" name="password" class="form-control"
+                                minlength=6 required="required">
                         </div>
                         <div class="form-group">
                             <label for="fullname">Fullname</label>
@@ -343,12 +378,7 @@
                         </div>
                         <div class="form-group">
                             <label for="owner">Owner</label>
-                            <select id="owner" class="form-control">
-                                <option selected>Choose...</option>
-                                <option>...</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
+                            <select id="create-node-owner" class="form-control">
                             </select>
                         </div>
                         <div class="modal-body">
@@ -382,9 +412,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <select id="username" class="form-control">
-                                <option selected>Choose...</option>
-                                <option>...</option>
+                            <select id="delete-user-username" class="form-control">
                             </select>
                         </div>
                     </div>
@@ -408,9 +436,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="nodeid">NodeID</label>
-                            <select id="nodeid" class="form-control">
-                                <option selected>Choose...</option>
-                                <option>...</option>
+                            <select id="delete-node-nodeid" class="form-control">
                             </select>
                         </div>
                     </div>
