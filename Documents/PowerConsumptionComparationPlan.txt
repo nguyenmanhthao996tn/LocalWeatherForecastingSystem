@@ -1,0 +1,18 @@
+KẾ HOẠCH KHẢO SÁT POWER CONSUMPTION TRÊN NODE DỰ BÁO THỜI TIẾT
+
+Mục Tiêu:
+    Đưa ra được sự cải tiến về mặt năng lượng so với hệ thống của anh Đạt năm 2016 và các phiên bản trong quá trình phát triển
+    Các phiên bản cần được đưa ra so sánh gồm:
+        Phiên bản của anh Đạt nằm 2016
+        Phiên bản được tỉnh giảm bộ nguồn
+        Phiên bản được thêm tính năng sleep
+        Phiên bản sử dụng VDK STM8L
+        
+Phương Pháp:
+    Đo năng lượng tiêu thụ trên bộ Node đang chạy, thay đỗi các phiên bản của mạch điều khiển trung tâm để đưa ra so sánh
+    Thay Gateway ESP bằng Gateway RPi, lưu kết quả trực tiếp vào file text
+    Cấu trúc mỗi dòng gồm có:
+        <Thời gian> <% pin còn lại>
+    Dự tính thu thập dữ liệu mỗi phiên bản trong 48 tiếng liên tục
+    Ngoài ra còn đo dòng tiêu thụ (mA) trên mỗi node bằng đồng hồ vạn năng
+    Tính toán năng lượng tiêu thụ trên lý thuyết

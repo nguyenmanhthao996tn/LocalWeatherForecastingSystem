@@ -3,6 +3,7 @@
 #include <LoRa.h>
 #include <ESP8266WiFi.h>
 #include "PubSubClient.h"
+#include "LcdController.h"
 
 /*********** Constants ***********/
 #define ssid "UIT Public"
@@ -17,11 +18,13 @@
 const uint16_t mqtt_port = 5002;
 
 #define receiveBufferSize 128
+#define sendingBufferSize 1024
 
 /*********** Global variables ***********/
 WiFiClient espClient;
 PubSubClient client(espClient);
-char receiveBuffer[128];
+char receiveBuffer[receiveBufferSize];
+char sendingBuffer[sendingBufferSize];
 
 /*********** Method headers ***********/
 void setupLoRa(void);
@@ -32,10 +35,14 @@ void mqttClientOnMessagecallback(char *topic, byte *payload, unsigned int length
 /*********** Methods define ***********/
 void setup()
 {
+  ESP.wdtDisable();
+
   memset(receiveBuffer, 0, receiveBufferSize);
+  memset(sendingBuffer, 0, sendingBufferSize);
 
   Serial.begin(115200);
   Serial.println("LoRa Receiver");
+  Serial.printf("\n\nSdk version: %s\n", ESP.getSdkVersion());
 
   setupLoRa();
   setupWifi();
@@ -46,6 +53,10 @@ void setup()
 
 void loop()
 {
+  char sendingBuffer_temp[128];
+
+  ESP.wdtFeed();
+
   if (!client.connected())
   {
     reconnectToWifi();
@@ -54,43 +65,59 @@ void loop()
   client.loop();
 
   int packetSize = LoRa.parsePacket();
-  if (packetSize)
+  if (packetSize > 0)
   {
     Serial.print(packetSize);
     Serial.print(" Received packet '");
 
     memset(receiveBuffer, 0, receiveBufferSize);
-    for (int i = 0; i < packetSize; i++)
+    memset(sendingBuffer, 0, sendingBufferSize);
+
+    for (int i = 0; i < packetSize - 1; i++)
     {
       receiveBuffer[i] = (char)LoRa.read();
+      snprintf(sendingBuffer_temp, 128, "%d,", receiveBuffer[i]);
+      strcat(sendingBuffer, sendingBuffer_temp);
     }
+
+    // receiveBuffer[packetSize - 1]
+    receiveBuffer[packetSize - 1] = (char)LoRa.read();
+    snprintf(sendingBuffer_temp, 128, "%d", receiveBuffer[packetSize - 1]);
+    strcat(sendingBuffer, sendingBuffer_temp);
+
     receiveBuffer[packetSize] = '\0';
 
-    Serial.print(receiveBuffer);
+    Serial.print(sendingBuffer);
 
     // Publish to MQTT
-    client.publish(mqtt_topic_pub, receiveBuffer);
+    client.publish(mqtt_topic_pub, sendingBuffer);
 
     Serial.print("' with RSSI ");
     Serial.println(LoRa.packetRssi());
+  }
+  else if (packetSize == -1)
+  {
+    // Publish to MQTT
+    client.publish(mqtt_topic_pub, "CRC ERROR");
   }
 }
 
 void setupLoRa(void)
 {
   LoRa.setPins(15, 16, 5);
-  if (!LoRa.begin(868100000))
+  if (!LoRa.begin(868300000))
   {
     Serial.println("Starting LoRa failed!");
     while (1)
       ;
   }
 
-  LoRa.setSignalBandwidth(500000);
-  LoRa.setCodingRate4(5);
+  LoRa.setSignalBandwidth(125000);
+  LoRa.setCodingRate4(8);
   LoRa.setSpreadingFactor(12);
   LoRa.setPreambleLength(8);
-  LoRa.setSyncWord(0x24);
+  LoRa.setSyncWord(0x52);
+  LoRa.enableCrc();
 }
 
 void setupWifi(void)
@@ -138,4 +165,7 @@ void reconnectToWifi(void)
 void mqttClientOnMessagecallback(char *topic, byte *payload, unsigned int length)
 {
   // Handle control message received from server
+  char buffer[25];
+
+  LcdController.getResultScreenString(buffer, 25, 0);
 }

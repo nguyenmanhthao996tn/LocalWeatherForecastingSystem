@@ -3,4 +3,5 @@ main: main.c DatabaseHandler.o
 DatabaseHandler.o: DatabaseHandler.h DatabaseHandler.c
 	cc -c DatabaseHandler.c -Wall
 clean:
-	rm *.o main
+	rm *.o main out.txt
+

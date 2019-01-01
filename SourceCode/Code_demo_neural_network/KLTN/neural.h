@@ -42,13 +42,16 @@ public:
   double dAlpha;
   double dGain;
   double dAvgTestError;
+  double degr_avg;
 
   MultiLayerPerceptron(int nl, int npl[]);
   ~MultiLayerPerceptron();
   
   void Init();
-  int Train(const char* fnames);
-  int Test(const char* fnames);
+  int Train(const char* fname);
+  int Test(const char* fname);
+  void Save(const char* fname);
+  void Load(const char* fname);
   void Run(const char* fname, const int& maxiter);
 
 };

@@ -25,17 +25,17 @@ typedef struct
 typedef struct
 {
     int (*init)(void);
-    int (*sendReadSensorDataRequest)(MyTime_t begin, MyTime_t end);
-    int (*readSensorData)(char *buffer);
-    int (*writeForecastResultRequest)(MyTime_t date, int isRain, int amountOfRain);
+    int (*sendReadSensorDataRequest)(char* nodeId, MyTime_t begin, MyTime_t end);
+    int (*readSensorData)(char *buffer, int size);
+    int (*writeForecastResultRequest)(char* nodeId, MyTime_t date, int isRain, int amountOfRain);
     void (*close)(void);
 } DatabaseHandler_t;
 
 /* Methods */
 int __init(void);
-int __sendReadSensorData(MyTime_t begin, MyTime_t end);
-int __readSensorData(char *buffer);
-int __writeForecastResult(MyTime_t date, int isRain, int amountOfRain);
+int __sendReadSensorData(char* nodeId, MyTime_t begin, MyTime_t end);
+int __readSensorData(char *buffer, int size);
+int __writeForecastResult(char* nodeId, MyTime_t date, int isRain, int amountOfRain);
 void __close(void);
 
 #endif /* __DATABASE_HANDLER_H__ */

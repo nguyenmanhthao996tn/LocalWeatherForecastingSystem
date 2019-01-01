@@ -1,0 +1,20 @@
+Lý do chọn đề tài
+Mục tiêu tổng quan
+Mục tiêu cụ thể
+
+Phân tích hiện trạng
+    Tình hình nghiên cứu trong nước
+    Tình hình nghiên cứu quốc tế
+Phân tích các công nghệ
+Tính mới và sáng tạo của đề tài
+
+Tóm tắt kết quả nghiên cứu
+    Đặc tả kỹ thuật
+    Thiết kế hệ thống
+    Thiết kế chi tiết
+    Tích hợp hệ thống và kiểm thử
+    Kết quả nghiên cứu
+    
+Hiệu quả, phương thức chuyển giao kết quả nghiên cứu và khả năng áp dụng
+
+Hình ảnh, sơ đồ minh họa chính
