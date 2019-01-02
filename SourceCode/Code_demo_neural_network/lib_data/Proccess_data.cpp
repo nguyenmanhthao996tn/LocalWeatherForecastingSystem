@@ -46,6 +46,7 @@ int Read_Write_file_data(const char* fname) {
 	FILE*   fp_r = NULL;
 	FILE*   fp_r2 = NULL;	
 	FILE *fp_w;
+	FILE *fp_w2;
 	double data_input[14],avg_temp=0,atm_dec=0,atm_dec_past=0,atm_past,atm_curr=0,avg_hum=0,wind,tmp_atm,h_tmp=-1,wind_dir;
 	int i,count=0,count_rain=0,count_read=0,tmp,month, count_atm=0, count_temp=0, count_hum=0,rain;
 	double arr_atm[24], arr_temp[12], arr_hum[12];
@@ -89,14 +90,15 @@ int Read_Write_file_data(const char* fname) {
 
 	// main process
 	fp_r = fopen(fname,"r");
-	fp_w = fopen("train_v1_10.txt", "w+");
+	fp_w = fopen("train_NN_17.txt", "w+");
+	fp_w2 = fopen("test_NN_17.txt", "w+");
 	if(!fp_r) return 0;
 	
 	for(i =0;i<24;i++) arr_atm[i] = 0;
 	for(i =0;i<12;i++) arr_temp[i] = 0;
 	for(i =0;i<12;i++) arr_hum[i] = 0;
 	count=0;
-	
+	int hour_curren = -1;
 	while( !feof(fp_r) ) 
 	{
       double dNumber;
@@ -236,16 +238,22 @@ int Read_Write_file_data(const char* fname) {
 					}
 					j++;
 				}
-				if ( rain_num > 3) 
+				if ( rain_num >= 2) 
 					rain = 1;
 				else 
 					rain = 0;
 				rain_num =0;
 			}
 			
+			if (h_tmp != hour_curren) {
+				hour_curren = h_tmp;
+				fprintf(fp_w2," %.3f %.3f %.3f %.3f %.3f %.3f %d\n",h_tmp/24,wind/118,wind_dir/12,avg_temp/22,atm_dec/40,avg_hum/45,rain);
+//				fprintf(fp_w2," %d 1:%.3f 2:%.3f 3:%.3f 4:%.3f 5:%.3f 6:%.3f\n",rain,h_tmp,wind,wind_dir,avg_temp,atm_dec,avg_hum);
+			} else {
+			
 			fprintf(fp_w," %.3f %.3f %.3f %.3f %.3f %.3f %d\n",h_tmp/24,wind/118,wind_dir/12,avg_temp/22,atm_dec/40,avg_hum/45,rain);
-			
-			
+//			fprintf(fp_w," %d 1:%.3f 2:%.3f 3:%.3f 4:%.3f 5:%.3f 6:%.3f\n",rain,h_tmp,wind,wind_dir,avg_temp,atm_dec,avg_hum);
+			}
 			
 			// data v2
 //			if(data_input[3] == h_tmp)
@@ -301,5 +309,6 @@ int Read_Write_file_data(const char* fname) {
 //	fprintf(fp_w," %.3f %.3f %.3f %.3f ",max_wind,max_temp,max_atm,max_hum);
 	if(fp_r) fclose(fp_r);
 	fclose(fp_w);
+	fclose(fp_w2);
 	  return 1;
 }

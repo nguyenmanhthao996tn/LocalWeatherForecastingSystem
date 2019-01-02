@@ -239,15 +239,19 @@ void MultiLayerPerceptron::Simulate(double* input, double* output, double* targe
   if(output) GetOutputSignal(output);
 
   if(output && !training) {
-  	  if(fabs(target[0]-output[0]) < 0.01 ) tmp = 0.0;
-  	  else {
-  	  	if (target[0] > output[0])
-			tmp = (fabs(target[0]-output[0])/target[0])*100.0;
-		else 
-			tmp = (fabs(target[0]-output[0])/output[0])*100.0;
-	  }
-	  degr_avg += tmp;
-	  printf("test: %.2f   %.3f %.3f %.3f %.3f %.3f %.3f %.3f= %.3f\n",tmp, input[0],input[1],input[2],input[3],input[4],input[5],target[0],output[0]);
+//  	  if(fabs(target[0]-output[0]) < 0.01 ) tmp = 0.0;
+//  	  else {
+//  	  	if (target[0] > output[0])
+//			tmp = (fabs(target[0]-output[0])/target[0])*100.0;
+//		else 
+//			tmp = (fabs(target[0]-output[0])/output[0])*100.0;
+//	  }
+	  if (( target[0] == 0) && (output[0] < 0.7))
+	  		degr_avg ++;
+	  if (( target[0] == 1) && (output[0] >= 0.7))
+	  		degr_avg ++;
+//	  degr_avg += tmp;
+	  printf("test: %.2f   %.3f %.3f %.3f %.3f %.3f %.3f %.3f= %.3f\n",degr_avg, input[0],input[1],input[2],input[3],input[4],input[5],target[0],output[0]);
   }
   /* --- if it's an apprenticeship, we do a re-propagation of the error */
   if (training)

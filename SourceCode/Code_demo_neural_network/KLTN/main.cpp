@@ -33,12 +33,13 @@ int main()
   	if (chose == 2)
   	{
   		double b;
-  		int a;
+  		double a;
 		printf("\nNhap file: ");
   		gets(str);
 	  	a = mlp2.Test(str);
 	  	b = mlp2.degr_avg;
-	  	printf("%.2f \n",b/a);
+	  	printf("%.2f \n",b/a * 100);
+
 	}
 	if (chose == 3)
 	{
