@@ -1,0 +1,77 @@
+I. Short range weather forecast 
+
+Forecasting of coming weather for 2 to 3 days in advance is called short range
+weather forecasting. Weather phenomena for which forecast are issued under this type is:
+• Rise and fall in temperature
+• Speed and direction of wind
+• Cloudiness
+• Rainfall amount
+ This type of weather forecast is issued by India Meteorological Department, Delhi for
+different regions throughout the country. The error in forecast ranges from 20-30 per cent. 
+
+II. Medium range forecast
+
+ Forecasting of weather 4-10 days in advance is termed as medium range forecasting.
+Presently, medium range weather forecasting for 4 days in advance is issued by National
+Centre for Medium Range Weather Forecasting (NCMRWF) situated in NOIDA, U.P. This
+forecast is issued twice in a week i.e. on Tuesday and Friday forecast error ranges from 30 to
+40 per cent. Weather phenomena on which weather forecast is issued are as under:
+• Increase or decrease in maximum and minimum temperature
+• Cloudiness
+• Speed and direction of wind
+• Precipitation amount
+
+III. Long range weather forecast
+
+ Forecasting of coming weather for more than 10 days or a month or a season in
+advance is called as long range weather forecasting. It may also be categorized as monthly
+forecast or seasonal forecast depending on the lead time. Long range forecasting is issued by
+India Meteorological Department, New Delhi for south west monsoon rains, first in April and
+then the forecast is updated in July. This forecast is issued region wise i.e. country is divided
+in four zones: (1) North eastern region (2) Central region (3) North Western Region (4)
+Peninsular region. The forecast error varied around 40 per cent.
+The weather parameters on which forecast have been issued as under:
+• Onset of monsoon rains
+• Deviation of rainfall amount from long period average (LPA) rainfall 
+
+IV. Methods of weather forecasting
+1. Synoptic method:
+2. Analogue method:
+3. Persistence method: 
+4. Climatological Method:
+5. Statistical methods: 
+6. Numerical weather prediction methods: 
+
+- Local symptoms show good weather:
+    + Barometric increased non-stop, or less varied in the day.
+    + The night sky is clear, many stars.
+    + Morning in the sky appeared a lot of clouds Cumulus, cloud feet is flat, roofed arch, almost stand still.
+    + Daytime, clouds cumulus increased, but grows vertically. Peak of cloud is not clear and develop strongly about 15-16 hours. In the afternoon, the clouds can be lowered, the clouds spread out, the clouds cumulus turn into layers cumulus and gradually dissipate.
+    + Clouds ti are almost non-mobile and have no small hooks at the top, Cloud growth does not increase over time or develop in a certain direction.
+    + Clouds ti-layer form a wide screen covering a portion of the sky with distinct edges. 
+    + The daily variability of the temperature is evident. Daytime, the air temperature rises moderately. Nighttime, the temperature drops due to the ground having good radiation conditions.
+    + In the hot season, there are many fogs in the evening, night fog and frost formed.
+    + In coastal areas there is wind of sea - land, mountainous mountains with mountain wind - strong blowing valley is good weather symptoms.
+    + In the morning, the dawn appears yellow, sometimes the dawn may begin with a light red, but then it becomes yellow, indicating that the sun's rays have relatively little vapor on the way.
+- Local symptoms tell the rain:
+    + Barometric decreases continuously.
+    + Clouds-ti move fast and are like striped, parallel stripes. Clouds-ti move as fast as weather changes. Behind the cloud-ti appeared middle cloud, followed by dark cloud-dark layer.
+    + The direction of clouds in the upper floors does not coincide with the downward direction of the wind.
+    + At nighttime, the wind constantly blows and strengthens.
+    + The sky at aurora, the sunset is bright red color without turning yellow, this phenomenon shows that the atmosphere contains more water.
+    + As a result of the rays shining through the clouds-ti and ti-layers, around the sun and the moon form large circles called clouds.	
+- Symptoms of localized thaw:
+    + Barometric decreases fast.
+    + Clouds cumulus appear, clouds rise rapidly, upper cloud clouds appear as a broom. From above, the cloud forms an anvil, peaking in the direction of the wind. Then there are thunderstorms, sometimes accompanied by hail.
+    + High air temperature and humidity, stifling weather.
+    + After thunderstorms occur, the weather usually becomes cool. If the weather is still mid-clouds and rosy clouds at sunset, the temperature does not drop, the night will continue to have thunder.
+    +  When the thunderstorm approaches, the wind usually blows the direction of the thunderstorm and then changes direction.
+
+
+
+
+
+
+
+[1] Giao trinh khi tuong nong nghiep, TS.Doan Van Diem
+[2] A Text Book on Agricultural Meteorology By Ram Niwas, Surender Singh, Diwan Singh ML Khichar and Raj Singh 
