@@ -107,7 +107,7 @@ io.on('connection', function (socket) {
 
                         var querryObject = { "nodeId": firstNodeId };
                         var filterObject = { '_id': 0 };
-                        db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
+                        db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Date': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                           assert.equal(null, err);
 
                           dataObject.firstNode.data.forecastResult = formatForecastResultForWebTable(result);
@@ -161,7 +161,7 @@ io.on('connection', function (socket) {
 
                       responseObject.sensorData = formatSensorDataForWebTable(result);
 
-                      db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Time': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
+                      db.collection("ForecastResult").find(querryObject, filterObject).sort({ 'Date': -1 }).limit(NUMBER_OF_DOCUMENT_PER_REQUEST).toArray(function (err, result) {
                         assert.equal(null, err);
 
                         responseObject.forecastResult = formatForecastResultForWebTable(result);
@@ -439,7 +439,7 @@ function formatForecastResultForWebTable(data) {
 
     row.push((i + 1).toString());
     row.push((new Date(object.Date)).toLocaleString());
-    row.push(object.AmountOfRain);
+    row.push(object.IsRain?'Yes':'No');
 
     resultObject.push(row);
   }
