@@ -1,0 +1,11 @@
+
+RUN tren cmd
+tro den folder windows va chay theo thu tu tung dong
+
+svm-scale.exe -l 0 -u 1 -s range1 train_svm_1.txt > train_svm_1.txt.scale
+
+svm-scale.exe -r range1 test_svm_1.txt > test_svm_1.txt.scale
+
+svm-train.exe train_svm_1.txt.scale
+
+svm-predict.exe test_svm_1.txt.scale train_svm_1.txt.scale.model out_svm_1.txt
