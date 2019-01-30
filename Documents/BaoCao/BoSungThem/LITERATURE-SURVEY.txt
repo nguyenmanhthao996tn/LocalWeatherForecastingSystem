@@ -1,0 +1,204 @@
+	Ch. Jyosthna Devi et al., 2012 presented an ANN based
+algorithm for predicting the temperature [1]. The BPN is used
+because it can fairly approximate a large class of functions.
+Authors propose a model which takes real time dataset with
+fifteen parameters as input, which is then normalized using
+min-max normalization to scale data between zeros to one.
+Then it is trained and tested using the Backpropagation Neural
+Network. The results are compared with the meteorological
+department to check the least error and accuracy of the model.
+It is found that the model has the potential for temperature
+forecasting.
+	Anomaly in this paper is that, it does not predict the complete
+weather condition like rainfall, clouds, etc.
+
+
+
+
+	Rainfall forecasting was done using Ensemble neural network
+(ENN) by Harshani R. K. Nagahamulla et al., 2012 [2]. In
+ENN, finite numbers of ANN are trained for the same task
+and their results are combined using the weighted average
+method. Here, each ANN is assigned a weight to minimize
+mean square error. The study area selected to be Colombo,
+where daily observed data of forty one years was used by
+dividing it in four climatic seasons every year with twenty six
+variables. The performance is compared with
+Backpropagation neural network (BPN), radial basis function
+network (RBFN) and general regression neural network
+GRNN). Results show that, ENN model predicts rainfall more
+accurately than individual BPN, RBFN and GRNN.
+	The paper compares ANN with BPN, RBFN and GRNN and
+the comparison shows that ANN gives more accuracy
+compared to others.
+
+
+	A research was conducted by M. Nasseri et al., 2008 [3], in
+which they developed Feed forward type network to forecast
+rainfall using the backpropagation algorithm coupled with the
+Genetic Algorithm (GA). The study area selected was Sydney,
+Australia consisting fourteen recording rain gauges of four
+years data. Measurements of rainfall were at intervals of five
+minutes. After preliminary data analysis, twenty six storm
+events were selected for synchronization. Among which
+eighteen events were selected for training and four for testing.
+This paper concludes that multilayer perceptron (MLP) type
+network coupled with GA performs better than MLP type
+network alone.
+	It compares the performance of Multilayer Perceptron type
+networks and itself combined with GA. Thus, found that
+adding GA to MLP improves performance.
+
+
+
+
+	R Lee et al., 2004 [4] proposed an innovative, intelligent,
+multi-agent based environment named as intelligent Java
+Agent Development Environment (iJADE). It is used for
+weather prediction of eleven weather stations in Hong Kong
+using five years data which provides more than 7300 data
+records. The model uses GA for input node selection, a fuzzy
+classification for rainfall parameters and neural network for
+training using a BPN. Its experimental results are more
+promising than single point sources using similar network and
+other networks like Radial Basis Function Network, Learning
+Vector Quantization and Naive Bayesian Network. Authors
+compare ANN with RBF, LVQ and Naive Bayesian Network
+and prove that ANN results are better as compared to others.
+
+
+
+
+
+	Mohsen hayati et al., 2007 [5] uses ANN for one day ahead
+prediction of temperature. Here multilayer perceptron (MLP)
+is trained using 65% of patterns and tested using 35% of
+patterns for ten years meteorological data from Iran which
+was split into four seasons namely spring, summer, fall and
+winter. MLP network of three layers with sigmoid transfer
+function for hidden layers and linear transfer function for
+output layer is used. Number of hidden neurons and epochs
+were decided using the trial and error method. This paper
+concludes that MLP with this structure has minimum
+prediction error, good performance and reasonable prediction
+accuracy. The above paper uses historical data for ten years
+and achieves minimum error and reasonable accuracy.
+
+
+
+
+	Kumar Abhishek et al., 2012 [6] develops an ANN model to
+forecast average monthly rainfall. He selected data from
+Udupi, Karnataka which is eight months data for fifty years
+making 400 entries for input and output. The data is
+normalized by finding mean and standard deviation of each
+parameter. Then training is done on 70% of data and the
+remaining 30% data is used for testing and validation. The
+model used is a three layered ANN with backpropagation
+learning. Later after testing, the results are compared with
+actual output. It showed higher degree of similarity in output.
+Thus it is proved that ANN model is accurate in prediction.
+Authors concluded that, learngdm is the best learning function
+for training whereas trainlm is the best training function.
+The data used for research is huge enough i.e. of fifty years,
+thus, lager input data reduced the mean square error.
+
+
+
+
+	Yamin Wang et al., 2013 [7] proposes a novel wind speed
+forecasting method based on ensemble empirical mode
+decomposition (EEMD) and Genetic algorithm –
+backpropagation Neural network.
+The wind speed data recorded after every ten minutes is taken
+for five days which gives a total of 721 data for testing. The
+wind speed data is first decomposed by EEMD in eight 
+different IMF’s and a residue. Later GA –BPNN is used for
+forecasting each IMF. Then IMF results are combined and
+then the forecasting result for wind speed is obtained. Thus,
+this method proved to forecast wind speed more precisely as
+compared to traditional GA-BP and hybrid of EMD and GABP.
+But here the forecasting is done considering only wind speed,
+which is not enough for weather forecasting.
+
+
+	Saima H. et al., 2011[8] reviews many hybrid methods used
+for weather forecasting with their merits and demerits. They
+used consortiums of statistical and artificial intelligent
+methods for achieving accuracy. Different models studied are
+1. Hybrid autoregressive moving average (ARMA)
+model and ANN for wind speed prediction
+2. Adaptive Neuro-Fuzzy Inference system (ANFIS)
+which is integration of Fuzzy Inference System and
+Neural network used for rainfall runoff prediction
+3. Fuzzy clustering and Type-2 Fuzzy Logic
+4. A Neuro evaluative Interval Type -2 TSK Fuzzy
+System
+5. Grey Relational Analysis.
+In all forecasting models, the major concern is with accuracy
+not the processing time. It is observed that not a single
+forecasting model can forecast with 100% accuracy, but they
+can reduce the accuracy error by various techniques.
+Authors have compared all the techniques with their accuracy
+and found that no model can be totally accurate but near
+optimum results are expected.
+
+
+	Tony Hall et al., 1999 [9] develops ANN for Probability of
+Precipitation (PoP) and Quantitative precipitation forecast
+(QPF) for Dallas-fort worth, Texas area. Neural Network was
+developed and initially two years data was used consisting
+nineteen variables. Later for three years the verification
+reports were generated. In this application, two networks are
+created, a QPF network for predicting amount of precipitation
+and a PoP network for probability or confidence in the
+forecast. The networks were designed with three features, first
+is a separate network for different seasons like warm and cool,
+and second is the use of QPF and PoP and the last is the
+network made interactive so we can rerun the entire network
+with some changes. This technique improves precipitation
+forecast dramatically, particularly for applications requiring
+accurate results.
+Authors state that QPF and PoP together can improve the
+performance.
+
+
+[1] Ch.Jyosthna Devi, B.Syam Prasad Reddy, K.Vagdhan
+Kumar, B.Musala Reddy, N.RajaNayak, “ANN
+Approach for Weather Prediction using Back
+Propagation,” International Journal of Engineering
+Trends and Technology- Volume3Issue1- 2012.
+[2] Harshani R. K. Nagahamulla, Uditha R. Ratnayake,
+AsangaRatnaweera,” An Ensemble of Artificial Neural
+Networks in Rainfall Forecasting,” The International
+Conference on Advances in ICT for Emerging Regions -
+ICTer 2012: 176-181
+[3] M. Nasseri, K. Asghari, M.J. Abedini, “Optimized
+scenario for rainfall forecasting using genetic algorithm
+coupled with artificial neural network,” Elsevier,
+ScienceDirect, Expert Systems with Applications 35
+(2008) 1415–1421
+[4] R Lee, J Liu, "iJADEWeatherMAN: A Weather
+Forecasting System Using Intelligent Multiagent-Based
+Fuzzy Neuro Network", IEEE 181 Transactions on
+Systems, Man and Cybernetics - Part C: Applications
+and Reviews, vol 34, no 3, 369 - 377, August 2004.
+[5] Mohsen hayati and Zahra mohebi, “Temperature
+Forecasting based on Neural Network Approach”, World
+Applied Sciences Journal 2(6): 613-620, 2007, ISSN
+1818-4952, IDOSI Publications, 2007.
+[6] Kumar Abhishek, Abhay Kumar, Rajeev Ranjan, Sarthak
+Kumar, “A Rainfall Prediction Model using Artificial
+Neural Network”, IEEE Control and System Graduate
+Research Colloquium (ICSGRC 2012), pp 82-87.
+[7] Yamin Wang, Shouxiang Wang, Na Zhang, “A Novel
+Wind Speed Forecasting Method Based on Ensemble
+Empirical Mode Decomposition and GA-BP Neural
+Network”, 978-1-4799-1303-9/13/©2013 IEEE.
+[8] Saima H., J. Jaafar, S. Belhaouari, T.A. Jillani,
+“Intelligent Methods for Weather Forecasting: A
+Review”, 978-1-4577-1884-7/11/©2011 IEEE.
+[9] Tony Hall, Harold E. Brooks, Charles A. Doswell, ”
+Precipitation Forecasting Using a Neural Network”,
+Weather and Forecasting, Volume 14, June 1999, pp
+338-345
